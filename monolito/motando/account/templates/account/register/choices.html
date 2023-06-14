@@ -1,0 +1,39 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% block title %} Particular ou Lojista {% endblock %}
+{% block body %}
+    {% include "account/include/navbar.html" %}    
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-center">
+                        <a href="{% url 'home:main_page' %}">
+                            <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando" style="width: 300px;">
+                        </a>
+                    </div>
+                </div>
+                <div class="row pt-4">
+                    <div class="col">
+                        <p class="text-center text-uppercase fs-3 fw-bold"> Venda agora sua moto </p>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="d-grid gap-2 col-3 mx-auto">
+                        <a class="fw-bold btn btn-primary btn-lg p-2" href="{% url 'account:new_user' %}" role="button">
+                            Particular (GRÁTIS)
+                        </a>
+                    </div>
+                </div>
+                <div class="row pt-4">
+                    <div class="d-grid gap-2 col-3 mx-auto">
+                        <a class="fw-bold btn btn-primary btn-lg p-2" href="#" role="button">
+                            Lojista
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <br>
+        <br>
+        {% include "account/include/footer.html" %}    
+{% endblock %} 

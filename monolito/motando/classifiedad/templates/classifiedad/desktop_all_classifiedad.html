@@ -1,0 +1,659 @@
+{% extends "include/desktop_base.html" %}
+{% block title %} Todos os Anúncios {% endblock %}
+{% load static %}   
+{% block head %}
+   {{ block.super }}      
+{% endblock %}
+{% block body %}
+   {% spaceless %} 
+   {{ block.super }}
+   {% load humanize %}
+    <section>
+        <div class="container">            
+            <div class="row">
+                    <div class="col-3 d-flex justify-content-start">
+                        <a href="{% url 'home:main_page' %}">
+                            <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando">
+                        </a>
+                    </div>         
+                    <div class="col-9 d-flex justify-content-end">
+                        <img src="{% static 'img/banner-2.jpg' %}" class="img-fluid float-end" alt="Banner 2">
+                    </div>
+            </div>
+            <div class="row">
+                    <div class="col-12 d-flex pt-2 p-2">
+                        <nav style="--bs-breadcrumb-divider: '>'; background-color: #F7F7F7; border: 0;" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'home:main_page' %}">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Todos os Anúncios</li>
+                            </ol>
+                        </nav>              
+                    </div>
+            </div>                    
+        </div>
+    </section> 
+    <section>
+        <div class="container">           
+                <div class="row">
+                    <div class="col-4">      
+                        <div class="row">
+                            <div class="col">                                                                 
+                                    <div class="card border-light shadow position-static">
+                                        <div class="card-header bg-secondary" id="id_card_moto_props">
+                                            <h5 class="h5 fw-bold mb-0 text-white">
+                                                Moto
+                                                <button class="btn bg-secondary text-decoration-none" data-toggle="collapse" 
+                                                        data-target="#id_data_target_moto_props" 
+                                                        aria-expanded="true" aria-controls="id_data_target_moto_props">
+                                                    <i class="fas fa-caret-down text-white"></i>
+                                                </button>
+                                            </h5>
+                                        </div>  
+                                        <div class="row p-2">
+                                            <div class="col">
+                                                    <label for="id_marca" class="form-label">Marca</label>
+                                                    <div class="input-group">                                                                                                    
+                                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                                        </button>
+                                                        <input type="text" class="form-control" placeholder="Digite uma marca" value="Triumph" id="id_marca">
+                                                        <ul class="dropdown-menu dropdown-menu-scroll">
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">KTM</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">Honda</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">Yamaha</a></li>                                                    
+                                                        </ul>                                            
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2">
+                                            <div class="col">
+                                                    <label for="id_modelo" class="form-label">Modelo</label>
+                                                    <div class="input-group">                                                                                                    
+                                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                                        </button>
+                                                        <input type="text" class="form-control" placeholder="Digite um modelo" value="Tiger" id="id_modelo">
+                                                        <ul class="dropdown-menu dropdown-menu-scroll">
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">KTM</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">Honda</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">Yamaha</a></li>                                                    
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">KTM</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">KTM</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">Honda</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">Yamaha</a></li>                                                    
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">KTM</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">KTM</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">Honda</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">Yamaha</a></li>                                                    
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">KTM</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">KTM</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">Honda</a></li>
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">Yamaha</a></li>                                                    
+                                                            <li><a class="dropdown-item dropdown-item-scroll" href="#">KTM</a></li>                                                          
+                                                        </ul>                                            
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2">
+                                            <div class="col">
+                                                <span>Ano</span>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2">
+                                            <div class="col">         
+                                                <label for="id_ano_de" class="form-label">De:</label>                                         
+                                                <div class="input-group">                                                                                                    
+                                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" 
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                                    </button>
+                                                    <input type="text" class="form-control" id="id_ano_de">
+                                                    <ul class="dropdown-menu dropdown-menu-scroll">
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">1990</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">1991</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">1992</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">1993</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2000</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2001</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2002</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2003</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2013</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2016</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2020</a></li>                                                                                             
+                                                    </ul>                                            
+                                                </div>
+                                            </div>
+                                            <div class="col">             
+                                                <label for="id_ano_ate" class="form-label">Até:</label>                                                                            
+                                                <div class="input-group">                                                                                                    
+                                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" 
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                                    </button>
+                                                    <input type="text" class="form-control" id="id_ano_ate">
+                                                    <ul class="dropdown-menu dropdown-menu-scroll">
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">1990</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">1991</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">1992</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">1993</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2000</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2001</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2002</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2003</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2013</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2016</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">2020</a></li>                                                     
+                                                    </ul>                                            
+                                                </div>
+                                        </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>                                 
+                            </div> 
+                        </div> <!-- row: Moto -->         
+                        <div class="row pt-4">
+                            <div class="col">                                                                 
+                                <div class="card border-light shadow position-static">
+                                    <div class="card-header bg-secondary" id="id_card_localizacao_props">
+                                        <h5 class="h5 fw-bold mb-0 text-white">
+                                            Localização
+                                            <button class="btn bg-secondary text-decoration-none" data-toggle="collapse" data-target="#id_data_target_localizacao_props" 
+                                                    aria-expanded="true" aria-controls="id_data_target_localizacao_props">
+                                                <i class="fas fa-caret-down text-white"></i>
+                                            </button>
+                                        </h5>
+                                    </div>         
+
+                                    <div class="row p-2">
+                                        <div class="col">
+                                                <label for="id_estado" class="form-label">Estado</label>
+                                                <div class="input-group">                                                                                                    
+                                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                                    </button>
+                                                    <input type="text" class="form-control" placeholder="Estados" id="id_estado">
+                                                    <ul class="dropdown-menu dropdown-menu-scroll">
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">São Paulo</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">Minas Gerais</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">Acre</a></li>                                                    
+                                                    </ul>                                            
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class="row p-2">
+                                        <div class="col">
+                                                <label for="id_cidade" class="form-label">Cidade</label>
+                                                <div class="input-group">                                                                                                    
+                                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                                    </button>
+                                                    <input type="text" class="form-control" placeholder="Cidades" id="id_cidade">
+                                                    <ul class="dropdown-menu dropdown-menu-scroll">
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">Piedade</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">Sorolovers</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">São Loque</a></li>                                                      
+                                                    </ul>                                            
+                                                </div>
+                                        </div>
+                                    </div>                                   
+                                    <div class="row">
+                                        <div class="col">
+                                            <br>
+                                        </div>
+                                    </div>
+                                </div>                                 
+                            </div> 
+                        </div> <!-- row: Localizacao -->
+                        <div class="row pt-4">
+                            <div class="col">                                                                 
+                            <div class="card border-light shadow position-static">
+                                    <div class="card-header bg-secondary" id="id_card_valores_props">
+                                        <h5 class="h5 fw-bold mb-0 text-white">
+                                            Valor
+                                            <button class="btn bg-secondary text-decoration-none" data-toggle="collapse" data-target="#id_data_target_valores_props" 
+                                                    aria-expanded="true" aria-controls="id_data_target_valores_props">
+                                                <i class="fas fa-caret-down text-white"></i>
+                                            </button>
+                                        </h5>
+                                    </div>         
+                                    <div class="row p-2">                                        
+                                        <div class="col">         
+                                            <label for="id_valor_de" class="form-label">De:</label>    
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text">R$</span>
+                                                <input type="text" class="form-control" id="id_valor_de">
+                                                <span class="input-group-text">,00</span>
+                                            </div>                                                                                 
+                                        </div>
+                                        <div class="col">             
+                                            <label for="id_valor_ate" class="form-label">De:</label>    
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text">R$</span>
+                                                <input type="text" class="form-control" id="id_valor_ate">
+                                                <span class="input-group-text">,00</span>
+                                            </div>                       
+                                        </div>
+                                    </div>     
+                            </div>                                 
+                            </div> 
+                        </div> <!-- row: Valor -->
+                        <div class="row pt-4">
+                            <div class="col">                                                                 
+                                <div class="card border-light shadow position-static">
+                                    <div class="card-header bg-secondary" id="id_card_detalhes_props">
+                                        <h5 class="h5 fw-bold mb-0 text-white">
+                                            Detalhes
+                                            <button class="btn bg-secondary text-decoration-none" data-toggle="collapse" data-target="#id_data_target_detalhes_props" 
+                                                    aria-expanded="true" aria-controls="id_data_target_detalhes_props">
+                                                <i class="fas fa-caret-down text-white"></i>
+                                            </button>
+                                        </h5>
+                                    </div>         
+                                    <div class="row p-2">
+                                        <div class="col">
+                                                <label for="id_cor" class="form-label text-primary">Cor:</label>
+                                                <div class="input-group">                                                                                                    
+                                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                                    </button>
+                                                    <input type="text" class="form-control" id="id_cor">
+                                                    <ul class="dropdown-menu dropdown-menu-scroll">
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">Preto</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">Prata</a></li>
+                                                        <li><a class="dropdown-item dropdown-item-scroll" href="#">Branco</a></li>                                                    
+                                                    </ul>                                            
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <span class="text-primary">Cilindradas:</span>
+                                        </div>
+                                    </div>                   
+                                    <div class="row p-2">
+                                        <div class="col">         
+                                            <label for="id_cilindrada_de" class="form-label">De:</label>                                         
+                                            <div class="input-group">                                                                                                    
+                                                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" 
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                                </button>
+                                                <input type="text" class="form-control" id="id_cilindrada_de">
+                                                <ul class="dropdown-menu dropdown-menu-scroll">
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">1990</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">1991</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">1992</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">1993</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2000</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2001</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2002</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2003</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2013</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2016</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2020</a></li>                                                                                             
+                                                </ul>                                            
+                                            </div>
+                                        </div>
+                                        <div class="col">             
+                                            <label for="id_cilindrada_ate" class="form-label">Até:</label>                                                                            
+                                            <div class="input-group">                                                                                                    
+                                                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" 
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                                </button>
+                                                <input type="text" class="form-control" id="id_cilindrada_ate">
+                                                <ul class="dropdown-menu dropdown-menu-scroll">
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">1990</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">1991</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">1992</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">1993</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2000</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2001</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2002</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2003</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2013</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2016</a></li>
+                                                    <li><a class="dropdown-item dropdown-item-scroll" href="#">2020</a></li>                                                     
+                                                </ul>                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <span class="text-primary">Disco de freio:</span>
+                                        </div>
+                                    </div>         
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_freios_disco">
+                                                <label class="form-check-label" for="id_freios_disco">
+                                                    Disco
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_freios_abs">
+                                                <label class="form-check-label" for="id_freios_abs">
+                                                    ABS
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_freios_combinado">
+                                                <label class="form-check-label" for="id_freios_combinado">
+                                                    Combinado
+                                                </label>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <span class="text-primary">Refrigeração:</span>
+                                        </div>
+                                    </div>      
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_refrigeracao_liquida">
+                                                <label class="form-check-label" for="id_refrigeracao_liquida">
+                                                    Líquida
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_refrigeracao_ar">
+                                                <label class="form-check-label" for="id_refrigeracao_ar">
+                                                    Ar
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <span class="text-primary">Tipo do motor:</span>
+                                        </div>
+                                    </div>       
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_motor_2tempos">
+                                                <label class="form-check-label" for="id_motor_2tempos">
+                                                    2 Tempos 
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_motor_4tempos">
+                                                <label class="form-check-label" for="id_motor_4tempos">
+                                                    4 Tempos 
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <span class="text-primary">Tipo de partida:</span>
+                                        </div>
+                                    </div>   
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_partida_pedal">
+                                                <label class="form-check-label" for="id_partida_pedal">
+                                                    Pedal  
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_partida_eletrica">
+                                                <label class="form-check-label" for="id_partida_eletrica">
+                                                    Elétrica  
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>   
+                                    <div class="row p-2">
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_partida_pedal_eletrica">
+                                                <label class="form-check-label" for="id_partida_pedal_eletrica">
+                                                    Pedal + Elétrica (ambos)  
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>   
+                                    <div class="row">
+                                        <div class="col">
+                                            <br>
+                                        </div>
+                                    </div>
+                                </div>                                 
+                            </div> 
+                        </div> <!-- row: Detalhes -->
+                        <div class="row pt-4">
+                            <div class="col">                                                                 
+                                <div class="card border-light shadow position-static">
+                                    <div class="card-header bg-secondary" id="id_card_outros_detalhes_props">
+                                        <h5 class="h5 fw-bold mb-0 text-white">
+                                            Outros Detalhes
+                                            <button class="btn bg-secondary text-decoration-none" data-toggle="collapse" data-target="#id_card_outros_detalhes_props" 
+                                                    aria-expanded="true" aria-controls="id_card_outros_detalhes_props">
+                                                <i class="fas fa-caret-down text-white"></i>
+                                            </button>
+                                        </h5>
+                                    </div>         
+                                    <div class="row p-2">                                        
+                                        <div class="col pt-3">                                                     
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="id_outros_detalhes_contra_oferta">
+                                                <label class="form-check-label" for="id_outros_detalhes_contra_oferta">
+                                                    Aceita Contra Oferta?
+                                                </label>
+                                            </div>                                                                          
+                                        </div>                                        
+                                    </div>     
+                                    <div class="row p-2">                                        
+                                        <div class="col">                                                     
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="id_outros_detalhes_moto_trilha">
+                                            <label class="form-check-label" for="id_outros_detalhes_moto_trilha">
+                                                Moto para Trilha
+                                            </label>
+                                        </div>                                                                          
+                                        </div>                                        
+                                    </div>    
+                                    <div class="row p-2">                                        
+                                        <div class="col">                                                     
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="id_outros_detalhes_moto_pista">
+                                            <label class="form-check-label" for="id_outros_detalhes_moto_pista">
+                                                Moto para Pista
+                                            </label>
+                                        </div>                                                                          
+                                        </div>                                        
+                                    </div>     
+                                    <div class="row p-2">                                        
+                                        <div class="col">                                                     
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="id_outros_detalhes_gps">
+                                            <label class="form-check-label" for="id_outros_detalhes_gps">
+                                                GPS
+                                            </label>
+                                        </div>                                                                          
+                                        </div>                                        
+                                    </div>
+                                    <div class="row p-2">                                        
+                                        <div class="col">                                                     
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="id_outros_detalhes_compbordo">
+                                            <label class="form-check-label" for="id_outros_detalhes_compbordo">
+                                                Computador de Bordo 
+                                            </label>
+                                        </div>                                                                          
+                                        </div>                                        
+                                    </div>     
+                                    <div class="row p-2">                                        
+                                        <div class="col">                                                     
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="id_outros_detalhes_alarme">
+                                            <label class="form-check-label" for="id_outros_detalhes_alarme">
+                                                Alarme 
+                                            </label>
+                                        </div>                                                                          
+                                        </div>                                        
+                                    </div>    
+                                    <div class="row p-2">                                        
+                                        <div class="col">                                                     
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="id_outros_detalhes_baumalas">
+                                            <label class="form-check-label" for="id_outros_detalhes_baumalas">
+                                                Baú / Malas  
+                                            </label>
+                                        </div>                                                                          
+                                        </div>                                        
+                                    </div>     
+                                    <div class="row p-2">                                        
+                                        <div class="col">                                                     
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="id_outros_detalhes_actroca">
+                                            <label class="form-check-label" for="id_outros_detalhes_actroca">
+                                                Aceita Troca?
+                                            </label>
+                                        </div>                                                                          
+                                        </div>                                        
+                                    </div>  
+                                    <div class="row">
+                                        <div class="col">
+                                            <br>
+                                        </div>
+                                    </div>   
+                                </div>                                 
+                            </div> 
+                        </div> <!-- row: Outros Detalhes -->
+                    </div> <!-- col-4 -->                    
+                    <div class="col-8">
+                        <h1 class="h3 text-uppercase fw-bold my-text-purple"> Motos Novas e Usadas </h1>
+                        <h2 class="h5 my-text-purple"> {{ total_published }} anúncio(s) encontrado(s) </h2>
+                        <hr>
+                        <form class="form-inline pb-3">
+                            <label class="mr-sm-2" for="inlineFormCustomSelect">Ordenar anúncios: &nbsp; </label>
+                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                                <option selected>Mais relevantes</option>
+                                <option value="1">Mais recentes</option>
+                                <option value="2">Menor preço</option>
+                                <option value="3">Maior preço</option>
+                                <option value="3">Mais antigas</option>
+                                <option value="3">Mais novas</option>
+                                <option value="3">Menor quilometragem</option>
+                                <option value="3">Maior quilometragem</option>
+                            </select>                 
+                        </form>        
+                        {% if classifiedad_page|length > 0 %}
+                                {% for classifiedad in classifiedad_page %}
+                                        {% if classifiedad.status == 'PUBLISHED' %}
+                                             <a href="{% url 'classifiedad:detail' brand=classifiedad.model.brand.brand|slugify|lower model=classifiedad.model.model|slugify|lower model_year=classifiedad.model_year classifiedad_id=classifiedad.id %}" 
+                                                class="text-decoration-none text-dark" target="_blank">
+                                        {% else %}
+                                             <a href="javascript:void(0);" class="text-decoration-none text-dark">
+                                        {% endif %}
+                                            <div class="card shadow">
+                                                <div class="row no-gutters">
+                                                    <div class="col-auto">
+                                                        <img src="{{ classifiedad.images.first.url }}" class="img-fluid rounded" 
+                                                             style="max-width: 18rem;" alt="{{ classifiedad.model.brand.brand }} - {{ classifiedad.model.model }}">
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="card-block">
+                                                            <h4 class="card-title pt-3">{{ classifiedad.model.brand.brand }} - {{ classifiedad.model.model }}</h4>
+                                                            <h5 class="h6 text-uppercase">{{ classifiedad.sales_phrase }}</h5>
+                                                            <hr class="p-1" style="width: 98%;">                                     
+                                                            {% comment %}
+                                                                <p class="card-text small">                                                     
+                                                                    <img src="" class="img-fluid rounded float-end p-4" alt="Saga Triumph">
+                                                                        <span class="fw-bold"> Saga Triumph </span> | Goiânia - GO <br>
+                                                                        <span class="text-capitalize"> {{ classifiedad.type|title }} </span> | <span class="fw-bold text-info"> Nova </span>                                                    
+                                                                </p>         
+                                                            {% endcomment %}                                                                   
+                                                            <p class="h5 pt-2">                                                    
+                                                                {% if classifiedad.accept_exchange %}
+                                                                    <i class="fas fa-exchange-alt text-primary"></i>
+                                                                    <span class="text-primary"> Aceita Troca </span>
+                                                                {% else %}
+                                                                    <i class="fas fa-exchange-alt text-secondary"></i>
+                                                                    <span class="text-secondary"> Não Aceita Troca </span>
+                                                                {% endif %}
+                                                            </p>                                                                   
+                                                            <p class="h3 fw-bold text-success"> R$ {{ classifiedad.price|intcomma }} </p>                                                                   
+                                                            <p class="h6 pt-2 pb-3"> 
+                                                                <i class="far fa-calendar-alt"></i> {{ classifiedad.fabrication_year }}/{{ classifiedad.model_year }}
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                                <i class="fas fa-fill-drip"></i> <span class="text-capitalize"> {{ classifiedad.color|title }} </span>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                                <i class="fas fa-tachometer-alt"></i> {{ classifiedad.mileage|intcomma }} KM
+                                                            </p>                                                                   
+                                                        </div>
+                                                    </div>
+                                                </div>                                
+                                            </div>
+                                        </a> 
+                                        <br>                                   
+                                {% endfor %}       
+                                {% if classifiedad_page.has_other_pages %}  
+                                    <br><br>
+                                    <div class="position-relative">
+                                        <div class="position-absolute top-50 start-50 translate-middle">
+                                                <nav aria-label="Anúncios Navegação" style="background-color: #F7F7F7; border-bottom: 0px;" class="navbar-light bg-light">
+                                                        <ul class="pagination">                                            
+                                                                {% if classifiedad_page.has_previous %}
+                                                                    <li class="page-item">
+                                                                            <a class="page-link" href="?p={{ classifiedad_page.previous_page_number }}">Anterior</a>
+                                                                    </li>
+                                                                {% endif %}                                                
+                                                                {% for page_number in classifiedad_page.paginator.page_range %}
+                                                                    {% if classifiedad_page.number == page_number %}
+                                                                            <li class="page-item active" aria-current="page">
+                                                                                <span class="page-link"> {{ page_number }} </span>
+                                                                            </li>                                                        
+                                                                    {% else %}
+                                                                            <li class="page-item">
+                                                                                <a class="page-link" href="?p={{ page_number }}"> {{ page_number }} </a>
+                                                                            </li>
+                                                                    {% endif %}
+                                                                {% endfor %}                                                
+                                                                {% if classifiedad_page.has_next %}
+                                                                    <li class="page-item">
+                                                                            <a class="page-link" href="?p={{ classifiedad_page.next_page_number }}">Próximo</a>
+                                                                    </li>
+                                                                {% endif %}
+                                                        </ul>
+                                                </nav>  
+                                        </div>     
+                                    </div>                                                
+                                {% endif %}     
+                        {% else %}
+                            <h2 class="text-dark text-center pt-4 fst-italic">Por enquanto... Nenhum anúncio foi cadastrado!</h2>
+                        {% endif %} 
+                    </div>
+                </div>              
+        </div>
+    </section>
+    <br><br><br>
+   {% endspaceless %} 
+{% endblock %}
+{% block footer %}
+      {% include "include/desktop_footer.html" %}
+{% endblock %}
+{% block body_scripts %}   
+{% endblock %}

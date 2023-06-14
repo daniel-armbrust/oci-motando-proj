@@ -1,0 +1,55 @@
+{% extends "motandoadm/include/base.html" %}
+{% block title %} Moto (Modelo) {% endblock %}
+{% load static %}   
+{% block head %}
+   {{ block.super }}      
+{% endblock %}
+{% block body %}
+   {% spaceless %} 
+   {{ block.super }}       
+       <div class="container-fluid">           
+            <h1 class="h1 mb-4 text-gray-800"> Moto </h1>
+            <h4 class="h4 mb-4 text-gray-800"> Listar Modelos </h3>  
+            <div class="row">
+                  <div class="col-12">
+                     {% include "motandoadm/include/messages.html" %}      
+                  </div>
+            </div> 
+            <div class="row">
+               <div class="col-3">
+                  <div class="form-group">
+                        <label for="id_motorcycle_brand">Marca</label>
+                        <select class="form-control" id="id_motorcycle_brand" disabled>                          
+                        </select>
+                  </div>                
+               </div>
+            </div>  
+            <div class="row">
+               <div class="col-auto">
+                   <a class="btn btn-info btn-block" id="id_brand_model_list" onclick="listBrandModels();"> Listar Modelos </a>                   
+               </div>
+            </div>       
+       </div>      
+       <br><br> 
+   {% endspaceless %} 
+{% endblock %}
+{% block footer %}
+{% endblock %}
+{% block body_scripts %}    
+     <script type="text/javascript" src="{% static 'js/commons.js' %}"></script>  
+     <script type="text/javascript">
+          function listBrandModels() {            
+             let brandId = $('#id_motorcycle_brand option:selected').val();
+             let url = `/motandoadm/moto/marca/${brandId}/modelo`;
+
+             if (brandId) 
+                $('#id_brand_model_list').attr('href', url).trigger('click');             
+             else
+                alert('Por favor, selecione uma Marca de Moto!');
+          }
+          
+          $(document).ready(function() {
+               getMotorcycleBrand('id_motorcycle_brand');                             
+          });
+     </script>
+{% endblock %}

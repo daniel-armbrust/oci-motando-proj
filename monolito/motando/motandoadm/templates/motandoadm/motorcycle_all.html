@@ -1,0 +1,55 @@
+{% extends "motandoadm/include/base.html" %}
+{% block title %} Moto {% endblock %}
+{% load static %}   
+{% block head %}
+   {{ block.super }}      
+{% endblock %}
+{% block body %}
+   {% spaceless %} 
+   {{ block.super }}
+      
+       <div class="container-fluid">   
+           <h1 class="h1 mb-4 text-gray-800"> Moto </h1>
+           <div class="row">
+               <div class="col-3">
+                    <div class="form-group">
+                        <label for="id_motorcycle_brand">Marca</label>
+                        <select class="form-control" id="id_motorcycle_brand" disabled>                          
+                        </select>
+                    </div>                
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-3">
+                    <div class="form-group">
+                        <label for="id_motorcycle_brand_model">Modelo</label>
+                        <select class="form-control" id="id_motorcycle_brand_model" disabled>                     
+                        </select>
+                    </div>                
+                </div>
+           </div>
+           <div class="row">
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="id_motorcycle_brand_model_version">Versão</label>
+                        <select class="form-control" id="id_motorcycle_brand_model_version" disabled>                     
+                        </select>
+                    </div>                
+                </div>
+           </div>
+           <div class="row">
+                <div class="col-3">
+                    <a class="btn btn-primary" href="javascript:void(0);" role="button" id="id_edit_motorcycle" onclick="editMotorcycle();">
+                        Editar
+                    </a>
+                </div>
+           </div>          
+       </div>        
+   {% endspaceless %} 
+{% endblock %}
+{% block footer %}
+{% endblock %}
+{% block body_scripts %}
+    <script type="text/javascript" src="{% static 'js/commons.js' %}"></script>   
+    <script type="text/javascript" src="{% static 'js/motandoadm.js' %}"></script>   
+{% endblock %}

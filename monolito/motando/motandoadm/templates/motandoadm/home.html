@@ -1,0 +1,16 @@
+{% extends "motandoadm/include/base.html" %}
+{% block title %} Home {% endblock %}
+{% load static %}   
+{% block head %}
+   {{ block.super }}      
+{% endblock %}
+{% block body %}
+   {% spaceless %} 
+   {{ block.super }}
+      
+   {% endspaceless %} 
+{% endblock %}
+{% block footer %}
+{% endblock %}
+{% block body_scripts %}
+{% endblock %}

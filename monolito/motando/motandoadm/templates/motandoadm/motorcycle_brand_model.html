@@ -1,0 +1,63 @@
+{% extends "motandoadm/include/base.html" %}
+{% block title %} Moto (Modelo) {% endblock %}
+{% load static %}   
+{% block head %}
+   {{ block.super }}      
+{% endblock %}
+{% block body %}
+   {% spaceless %} 
+   {{ block.super }}      
+       <div class="container-fluid">           
+          <h1 class="h1 mb-4 text-gray-800"> Moto </h1>
+          {% if brand_id and model_id %}
+              <h4 class="h4 mb-4 text-gray-800"> Editar Modelo </h3>
+              <form method="post" autocomplete="off" 
+                    action="{% url 'motandoadm:motorcycle_brand_model_edit' brand_id=brand_id model_id=model_id %}">  
+          {% else %}
+              <h4 class="h4 mb-4 text-gray-800"> Adicionar Modelo </h3>
+              <form method="post" autocomplete="off">    
+          {% endif %}          
+                {% csrf_token %}  
+                <div class="row">
+                    <div class="col-6">
+                        {% include "motandoadm/include/messages.html" %}      
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">  
+                            {{ form.as_p }}           
+                            {% for form_errors in form.errors %}        
+                                <p class="text-danger h6"> &#8226; {{ form_errors }} </p>       
+                            {% endfor %}                            
+                            {% if brand_id and model_id %}
+                               <input type="hidden" name="brand_id" id="id_brand_id" value="{{ brand_id }}">
+                               <input type="hidden" name="model_id" id="id_model_id" value="{{ model_id }}">
+                            {% endif %}
+                        </div>          
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="col-1">
+                        {% if brand_id and model_id %}
+                            <button type="submit" class="btn btn-info btn-block"> Atualizar </button>                            
+                        {% else %}
+                            <button type="submit" class="btn btn-success btn-block"> Salvar </button>
+                        {% endif %}
+                    </div>
+                    <div class="col-1">
+                        <a class="btn btn-secondary btn-block" 
+                           href="{% url 'motandoadm:motorcycle_brand_model_select' %}" 
+                           role="button"> Cancelar </a>
+                    </div>
+                </div> 
+          </form>           
+       </div>
+       <br>
+       <br>
+   {% endspaceless %} 
+{% endblock %}
+{% block footer %}
+{% endblock %}
+{% block body_scripts %}       
+{% endblock %}

@@ -1,0 +1,513 @@
+{% extends "classifiedad/include/base.html" %}
+{% load static %}
+{% block title %} Cadastro de Anúncio {% endblock %}
+{% block head %}    
+    {{ block.super }} 
+    <link href="{% static 'vendor/jquery.filer/css/jquery.filer.css' %}" type="text/css" rel="stylesheet" />
+    <link href="{% static 'vendor/jquery.filer/css/themes/jquery.filer-dragdropbox-theme.css' %}" type="text/css" rel="stylesheet" />    
+    <script src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
+    <script type="text/javascript">       
+         tinymce.init({
+             selector: '#{{ form.description.auto_id }}',
+             statusbar: false,
+             menubar: false,
+             plugins: 'lists',          
+             toolbar: 'undo redo | bold italic | numlist bullist | alignleft aligncenter alignright alignjustify',
+             lists_indent_on_tab: false
+         });        
+    </script>       
+{% endblock %}
+{% block body %}
+   <section>
+        <div class="container">   
+            <div class="row">               
+                <div class="col-12 d-flex justify-content-center pb-3">
+                    <a href="{% url 'classifiedad:home' %}">
+                        <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando" 
+                             style="width: 220px;">
+                    </a>
+                </div>                  
+            </div>            
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <h1 class="fs-2 text-center text-primary fw-bold"> Detalhes do Anúncio </h1>                       
+                    <p class="p-2 m-2"> 
+                        Confira os seus dados e insira as informações da moto para deixar seu anúncio mais completo. 
+                    </p>
+                </div>
+            </div>        
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    {% include "classifiedad/include/messages.html" %}      
+                </div>
+                <div class="col-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">                        
+                    <div class="shadow rounded bg-white border p-3">                         
+                        <form name="form_classifiedad" id="id_form_classifiedad" autocomplete="off" 
+
+                              {% if classifiedad_id %}
+                                  method="post" action="{% url 'classifiedad:edit' classifiedad_id %}" enctype="multipart/form-data">
+                              {% else %}
+                                  method="post" action="{% url 'classifiedad:new' %}" enctype="multipart/form-data">
+                              {% endif %}                            
+                              
+                              {% csrf_token %}                                                            
+                               <div class="row pt-2 p-2">
+                                    <div class="col">
+                                        <label for="{{ form.brand.auto_id }}" class="form-label my-text-purple">{{ form.brand.label }}&nbsp;<span class="text-danger">*</span></label>
+                                        {{ form.brand }}
+                                        <div class="invalid-feedback">
+                                            É necessário selecionar uma Marca.
+                                        </div>                  
+                                    </div>
+                               </div>
+                               {% for brand_error in form.brand.errors %}
+                                    <div class="row pt-2">
+                                        <div class="col d-flex">                                                                            
+                                            <div class="text-danger h6"> &#8226; {{ brand_error }} </div>                                                                                
+                                        </div>
+                                    </div>
+                               {% endfor %}
+                              <br>
+                              <div class="row pt-2 p-2">
+                                    <div class="col">
+                                        <label for="{{ form.model.auto_id }}" class="form-label my-text-purple"> {{ form.model.label }} &nbsp;<span class="text-danger">*</span></label>
+                                        {{ form.model }}
+                                        <div class="invalid-feedback">
+                                            É necessário selecionar uma Marca.
+                                        </div>                  
+                                    </div>
+                              </div>
+                              {% for model_error in form.model.errors %}
+                                    <div class="row pt-2">
+                                        <div class="col d-flex">                                                                            
+                                            <div class="text-danger h6"> &#8226; {{ model_error }} </div>                                                                                
+                                        </div>
+                                    </div>
+                              {% endfor %}
+                              <br>
+                              <div class="row pt-2 p-2">
+                                <div class="col">
+                                    <label for="{{ form.fabrication_year.auto_id }}" class="form-label my-text-purple">{{ form.fabrication_year.label }} &nbsp;<span class="text-danger">*</span></label>
+                                    {{ form.fabrication_year }}                                                                           
+                                    <div class="invalid-feedback">
+                                        É necessário especificar o Ano de Fabricação.
+                                    </div>    
+                                </div>
+                                <br>
+                                <div class="col">
+                                    <label for="{{ form.model_year.auto_id }}" class="form-label my-text-purple">{{ form.model_year.label }} &nbsp; <span class="text-danger">*</span></label>
+                                    {{ form.model_year }}                                        
+                                    <div class="invalid-feedback">
+                                        É necessário especificar o Ano do Modelo.
+                                    </div>    
+                                </div>
+                            </div>
+                            {% for fabrication_year_error in form.fabrication_year.errors %}                                    
+                                <div class="row pt-2">
+                                    <div class="col d-flex">                                                                            
+                                        <div class="text-danger h6"> &#8226; {{ fabrication_year_error }} </div>                                                                                
+                                    </div>
+                                </div>                                          
+                            {% endfor %} 
+                            {% for model_year_error in form.model_year.errors %}
+                                <div class="row pt-2">
+                                    <div class="col d-flex">                                                                            
+                                        <div class="text-danger h6"> &#8226; {{ model_year_error }} </div>                                                                                
+                                    </div>
+                                </div>
+                            {% endfor %}             
+                            <br>
+                            <div class="row pt-2 p-2">
+                                <div class="col">
+                                    <label for="{{ form.license_plate.auto_id }}" class="form-label my-text-purple">{{ form.license_plate.label }} &nbsp; <span class="text-danger">*</span></label>
+                                    {{ form.license_plate }}                                                                            
+                                    <div class="invalid-feedback">
+                                        É necessário especificar a Placa.
+                                    </div>    
+                                </div>
+                            </div>
+                            {% for license_plate_error in form.license_plate.errors %}                                    
+                                <div class="row pt-2">
+                                    <div class="col d-flex">                                                                            
+                                        <div class="text-danger h6"> &#8226; {{ license_plate_error }} </div>                                                                                
+                                    </div>
+                                </div>                                          
+                            {% endfor %}    
+                            <br>
+                            <div class="row pt-2 p-2 d-flex align-items-center">
+                                <div class="col d-flex">
+                                     <div class="form-check form-check-inline">                                        
+                                         {{ form.is_new }} &nbsp;
+                                         <label class="form-check-label" for="{{ form.is_new.auto_id }}">{{ form.is_new.label }} &nbsp; <span class="text-danger">*</span></label>
+                                     </div>                                   
+                                </div>
+                                <div class="col">
+                                     <label for="{{ form.mileage.auto_id }}" class="form-label my-text-purple"> {{ form.mileage.label }} &nbsp; <span class="text-danger">*</span></label>
+                                     {{ form.mileage }}
+                                     <div class="invalid-feedback">
+                                        É necessário informar o KM.
+                                     </div>
+                                </div>
+                            </div>
+                            {% for is_new_error in form.is_new.errors %}
+                                <div class="row pt-2">
+                                    <div class="col d-flex">                                                                            
+                                        <div class="text-danger h6"> &#8226; {{ is_new_error }} </div>                                                                                
+                                    </div>
+                                </div>   
+                            {% endfor %}
+                            <br>
+                            <div class="row pt-2 p-2">
+                                <div class="col">
+                                    <label for="{{ form.color.auto_id }}" class="form-label my-text-purple">{{ form.color.label }} &nbsp; <span class="text-danger">*</span></label>                                        
+                                    {{ form.color }}                                                                               
+                                    <div class="invalid-feedback">
+                                        É necessário selecionar uma Cor.
+                                    </div>    
+                                </div>
+                            </div>
+                            {% for color_error in form.color.errors %}
+                                <div class="row pt-2">
+                                    <div class="col d-flex">                                                                            
+                                        <div class="text-danger h6"> &#8226; {{ color_error }} </div>                                                                                
+                                    </div>
+                                </div>   
+                            {% endfor %}
+                            <br>
+                            <div class="row pt-2 p-2">
+                                <div class="col">
+                                    <label for="{{ form.price.auto_id }}" class="form-label my-text-purple">{{ form.price.label }} &nbsp; <span class="text-danger">*</span></label>
+                                    {{ form.price }}
+                                    <div class="invalid-feedback">
+                                        É necessário especificar o Preço.
+                                    </div>  
+                                </div>
+                            </div>
+                            {% for price_error in form.price.errors %}
+                                <div class="row pt-2">
+                                    <div class="col d-flex">                                                                            
+                                        <div class="text-danger h6"> &#8226; {{ price_error }} </div>                                                                                
+                                    </div>
+                                </div>  
+                            {% endfor %}
+                            <br>
+                            <div class="row pt-2 p-2">
+                                <div class="col">
+                                    <label for="{{ form.sales_phrase.auto_id }}" class="form-label my-text-purple">{{ form.sales_phrase.label }}</label>
+                                    {{ form.sales_phrase }}                                                                            
+                                </div>
+                            </div>
+                            {% for sales_phrase_error in form.sales_phrase.errors %}
+                                <div class="row pt-2">
+                                    <div class="col d-flex">                                                                            
+                                        <div class="text-danger h6"> &#8226; {{ sales_phrase_error }} </div>                                                                                
+                                    </div>
+                                </div>  
+                            {% endfor %}
+                            <br>
+                            <div class="row pt-4 p-2">
+                                <div class="col">
+                                    <label for="{{ form.description.auto_id }}" class="form-label fs-5 text-left text-primary fw-bold ms-2"> {{ form.description.label }} </label>                                    
+                                    <p class="fst-italic ms-2"><span class="text-danger">*</span> &nbsp;  Não inserir dados pessoais, e-mail ou telefone neste campo.</p>
+                                </div>
+                            </div>                            
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">     
+                                        {{ form.description }}
+                                    </div>                                        
+                                    <div class="invalid-feedback">
+                                        É necessário especificar uma descrição.
+                                    </div>    
+                                </div>
+                            </div>
+                            {% for description_error in form.description.errors %}
+                                 <div class="row pt-2">
+                                    <div class="col d-flex">                                                                            
+                                        <div class="text-danger h6"> &#8226; {{ description_error }} </div>                                                                                
+                                    </div>
+                                 </div>  
+                            {% endfor %}
+                            <br>
+                            <div class="row pt-4 p-2">
+                                <div class="col">                                        
+                                    <input type="file" multiple="multiple" name="files[]" id="filer_input">
+                                </div>
+                            </div>                      
+                            {% if classifiedad_id %}
+                                 <div class="row">
+                                     <div class="col">
+                                        <div id="id_classifiedad_images"></div>
+                                     </div>
+                                 </div>
+                            {% endif %}
+                            <div class="row pt-2">
+                                <div class="col">
+                                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingOne">
+                                                <button class="accordion-button collapsed fs-5 text-left text-primary fw-bold" type="button" 
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" 
+                                                        aria-expanded="false" aria-controls="flush-collapseOne">
+                                                    Opcionais
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" 
+                                                 data-bs-parent="#accordionFlushExample">
+                                                <div class="accordion-body">                                                        
+                                                      <div class="form-check form-check-inline">
+                                                            {{ form.optional_alarm }}
+                                                            <label class="form-check-label" for="{{ form.optional_alarm.auto_id }}"> {{ form.optional_alarm.label }} </label>
+                                                      </div>
+                                                      <div class="form-check form-check-inline">
+                                                            {{ form.optional_chest }}
+                                                            <label class="form-check-label" for="{{ form.optional_chest.auto_id }}"> {{ form.optional_chest.label }} </label>
+                                                      </div>                                                        
+                                                      <div class="form-check form-check-inline">
+                                                            {{ form.optional_computer }}
+                                                            <label class="form-check-label" for="{{ form.optional_computer.auto_id }}"> {{ form.optional_computer.label }} </label>
+                                                      </div>      
+                                                      <div class="form-check form-check-inline">
+                                                            {{ form.optional_gps }}
+                                                            <label class="form-check-label" for="{{ form.optional_gps.auto_id }}"> {{ form.optional_gps.label }} </label>
+                                                      </div>                                                    
+                                                </div>
+                                            </div>
+                                        </div>                                       
+                                    </div>                                                       
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row pt-2">
+                                <div class="col">
+                                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingTwo">
+                                                <button class="accordion-button collapsed fs-5 text-left text-primary fw-bold" type="button" 
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" 
+                                                        aria-controls="flush-collapseTwo">
+                                                    Outros Detalhes
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="flush-headingTwo" 
+                                                 data-bs-parent="#accordionFlushExampleTwo">
+                                                <div class="accordion-body">                                                        
+                                                        <div class="form-check form-check-inline pb-3">                                                                
+                                                            {{ form.accept_new_offer }}
+                                                            <label class="form-check-label" for="{{ form.accept_new_offer.auto_id }}"> {{ form.accept_new_offer.label }} </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline pb-3">                                                                
+                                                            {{ form.accept_exchange }}
+                                                            <label class="form-check-label" for="{{ form.accept_exchange.auto_id }}"> {{ form.accept_exchange.label }} </label>
+                                                        </div>                                                        
+                                                        <div class="form-check form-check-inline pb-3">                                                                
+                                                            {{ form.doc_ok }}
+                                                            <label class="form-check-label" for="{{ form.doc_ok.auto_id }}"> {{ form.doc_ok.label }} </label>
+                                                        </div>   
+                                                        {% comment %}
+                                                        <br><br>   
+                                                        <div class="form-check form-check-inline">                                                                
+                                                            {{ form.sinistro(id="id_sinistro", class_="form-check-input") }}
+                                                            <label class="form-check-label" for="id_outros_sinistro"> {{ form.sinistro.label.text }} </label>
+                                                        </div>  
+                                                        {% endcomment %}
+                                                        <div class="form-check form-check-inline">                                                                
+                                                            {{ form.track_ready }}
+                                                            <label class="form-check-label" for="{{ form.track_ready.auto_id }}"> {{ form.track_ready.label }} </label>
+                                                        </div>   
+                                                        <hr>
+                                                        <br>
+                                                        <label for="{{ form.brake_system.auto_id }}" class="form-label my-text-purple"> {{ form.brake_system.label }} </label>
+                                                        {{ form.brake_system }}
+                                                        <br><br>
+                                                        <label for="{{ form.ignition_system.auto_id }}" class="form-label my-text-purple"> {{ form.ignition_system.label }} </label>
+                                                        {{ form.ignition_system }}
+                                                        <br><br>
+                                                        <label for="{{ form.refrigeration.auto_id }}" class="form-label my-text-purple"> {{ form.refrigeration.label }} </label>
+                                                        {{ form.refrigeration }}
+                                                        <br><br>
+                                                        <label for="{{ form.type.auto_id }}" class="form-label my-text-purple">{{ form.type.label }}</label>
+                                                        {{ form.type }}
+                                                        <br><br>
+                                                        <label for="{{ form.origin.auto_id }}" class="form-label my-text-purple">{{ form.origin.label }}</label>
+                                                        {{ form.origin }}
+                                                </div>
+                                            </div>
+                                        </div>                                       
+                                    </div>                                                       
+                                </div>
+                            </div>     
+                            <br>
+                            <div class="row pt-4">
+                                {% if classifiedad_id %}
+                                    <div class="col d-flex justify-content-center">
+                                        <a class="btn btn-secondary fw-bold p-3 fs-5" href="{% url 'classifiedad:my' %}" role="button">
+                                            &nbsp;&nbsp; Cancelar &nbsp;&nbsp;
+                                        </a>
+                                    </div>
+                                    <div class="col d-flex justify-content-center">
+                                        <input type="submit" class="btn btn-success fw-bold p-3 fs-5" value="Salvar Alterações">                                                                                 
+                                    </div>
+                                {% else %}
+                                    <div class="col">
+                                        <div class="d-grid gap-2">                                        
+                                            <input type="submit" class="btn btn-success fw-bold p-3 fs-5" value="Concluír Anúncio">                                         
+                                        </div>                                            
+                                    </div>
+                                {% endif %}                                
+                            </div>
+                            <br>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-3"></div>
+            </div>              
+        </div>
+   </section>
+   <br>
+   <br>   
+{% endblock %}
+{% block footer %}
+     {% include "classifiedad/include/footer.html" %}     
+{% endblock %}   
+{% block body_scripts %}    
+    <script type="text/javascript" src="{% static 'vendor/jquery.filer/js/jquery.filer.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script>    
+    <script type="text/javascript" src="{% static 'vendor/jquery.maskMoney.min.js' %}"></script>    
+    <script type="text/javascript" src="{% static 'js/commons.js' %}"></script>          
+    <script type="text/javascript">        
+         const IMG_UPLOAD_URL = '{% url "classifiedad:image_upload" %}';   
+
+         localStorage.clear();
+
+         function confirmDeleteImage(imgUrlFilenameDelete, jfilerIndex) {
+            const result = window.confirm('Tem certeza que deseja remover essa imagem do anúncio?');
+
+            if (result) {
+               for (let i = 0 ; i < localStorage.length ; i++) {
+                  const [originalFilename, imgUrlFilename] = localStorage.getItem(i).split(',');                 
+
+                  if (imgUrlFilename === imgUrlFilenameDelete) {
+                      localStorage.removeItem(i);
+
+                      $(`#id_jfiler_item_${jfilerIndex}`).remove();                      
+                      
+                      ordeningLocalStorage();               
+                      break;
+                  }                      
+               }               
+            }
+         }
+
+         $(document).ready(function() {            
+             const PRICE = parseFloat($('#{{ form.price.auto_id }}').val());             
+
+             if (PRICE) {
+                const BR_PRICE = PRICE.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
+                $('#{{ form.price.auto_id }}').val(BR_PRICE);
+             }    
+
+             $('#{{ form.price.auto_id }}').maskMoney({symbol:'R$ ', thousands:'.', decimal:',', symbolStay: true});
+
+             {% if classifiedad_id %}          
+                 
+                 getMotorcycleBrand('{{ form.brand.auto_id }}', {{ form.brand.value }});
+                 getMotorcycleBrandModel('{{ form.model.auto_id }}', {{ form.brand.value }}, {{ form.model.value }});
+
+                 const IMAGE_URL_LIST = new Array(
+                    {% for image in image_list %}   
+                        {% if forloop.last %}
+                           '{{ image.url }}' 
+                        {% else %}
+                           '{{ image.url }}',
+                        {% endif %}                         
+                    {% endfor %}
+                 );
+
+                 for (let i = 0 ; i < IMAGE_URL_LIST.length ; i++) {
+                    localStorage.setItem(i, ['', IMAGE_URL_LIST[i]]);
+
+                    $('#id_classifiedad_images').append(`
+                            <div class="jFiler-items" id="id_jfiler_item_${i}">
+                                <ul class="jFiler-items-list jFiler-items-grid">
+                                    <li class="jFiler-item" data-jfiler-index="0">
+                                        <div class="jFiler-item-container">
+                                            <div class="jFiler-item-inner">
+                                                <div class="jFiler-item-thumb">
+                                                    <div class="jFiler-item-status"></div>
+                                                    <div class="jFiler-item-thumb-overlay"></div>
+                                                    <div class="jFiler-item-thumb-image">
+                                                        <img src="${IMAGE_URL_LIST[i]}" draggable="false">
+                                                    </div>
+                                                </div>
+                                                <div class="jFiler-item-assets jFiler-row">
+                                                    <ul class="list-inline pull-left"></ul>
+                                                    <ul class="list-inline pull-right">
+                                                        <li><a class="icon-jfi-trash jFiler-item-trash-action text-decoration-none"
+                                                               onclick="confirmDeleteImage('${IMAGE_URL_LIST[i]}', ${i});"></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>`);
+                 }
+                    
+
+             {% else %}
+
+                 getMotorcycleBrand('{{ form.brand.auto_id }}');
+             
+             {% endif %}             
+
+             $('#{{ form.brand.auto_id }}').on('change', function() {        
+                 let brandId = this.value;
+
+                 if (brandId) {
+                    getMotorcycleBrandModel('{{ form.model.auto_id }}', brandId); 
+                 }           
+                 else {
+                    $('#{{ form.model.auto_id }}').prop('disabled', true); 
+                    $('#{{ form.model.auto_id }}').empty();
+                    $('#{{ form.model.auto_id }}').append('<option value="">Selecione o Modelo</option>');            
+                 }
+             }); 
+
+             $('#{{ form.is_new.auto_id }}').click(function() {
+                let zeroKm = $('#{{ form.is_new.auto_id }}').prop('checked');
+
+                if (zeroKm) {
+                    $('#{{ form.mileage.auto_id }}').prop('readonly', true)
+                    $('#{{ form.mileage.auto_id }}').val(0);
+                }                   
+                else {
+                    $('#{{ form.mileage.auto_id }}').prop('readonly', false)
+                    $('#{{ form.mileage.auto_id }}').val('');
+                }   
+             });
+             
+             $('#id_form_classifiedad').submit(function(e) {         
+                 if (localStorage.length <= 0) {
+                    alert('Seu anúncio necessita de imagen(s) para ser publicado!');
+                    e.preventDefault();
+                 }
+                 else {       
+                    for (let i = 0 ; i < localStorage.length ; i++) {
+                       let [originalFilename, bucketUrlFilename] = localStorage.getItem(i).split(',');
+                       $('<input>').attr('type', 'hidden').attr('name', 'image_list[]').attr('value', bucketUrlFilename).appendTo('#id_form_classifiedad');
+                    }       
+
+                    return true;
+                 }
+             });
+         });
+    </script>   
+    <script type="text/javascript" src="{% static 'js/filer-input.js' %}"></script>                    
+{% endblock %}

@@ -1,0 +1,338 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% block head %}
+    {{ block.super }}
+    <style type="text/css">
+        body { padding-top: 80px; }
+    </style>
+    <link rel="stylesheet" href="{% static 'vendor/jquery-ui-1.13.2.custom/jquery-ui.min.css' %}">
+{% endblock %}
+{% block title %} Minha Conta {% endblock %}
+{% block body %}
+   {% include "account/include/navbar.html" %}     
+   <section>
+       <div class="container">     
+            <div class="row">               
+                  <div class="col-3 d-flex justify-content-center">
+                      <a href="{% url 'account:home' %}">
+                         <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando" 
+                              style="width: 220px;">
+                      </a>
+                  </div>         
+                  <div class="col-9 d-flex justify-content-center">                                
+                     {% include "account/include/messages.html" %}      
+                 </div>               
+            </div>
+            <div class="row">
+               <div class="col-3">
+                    {% include "account/user/left_menu.html" with user_profile=user_profile %}  
+               </div> 
+               <div class="col-9">
+                     <br>
+                     <form id="id_form" autocomplete="off" method="post" action="{% url 'account:profile' %}">
+                        {% csrf_token %}       
+                        <div class="shadow rounded bg-white border p-3">
+                            <div class="row">
+                            <div class="col">
+                                    <h2 class="h4 fw-bold"> Dados do Usuário </h2>                                 
+                            </div>
+                            </div>                                              
+                            <div class="row pt-2 p-2">
+                                <div class="col-5">           
+                                    <label for="id_fullname" class="form-label my-text-purple">Nome <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control my-btn-outline" id="id_fullname" style="box-shadow: none; background-color: white;" 
+                                        value="{{ user_profile.user.full_name }}" readonly="readonly">         
+                                </div>                            
+                            </div>
+                            <div class="row pt-2 p-2">
+                                <div class="col-5">           
+                                    <label for="id_email" class="form-label my-text-purple">E-mail <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control my-btn-outline" id="id_email" style="box-shadow: none; background-color: white;" 
+                                        value="{{ user_profile.user.email }}" readonly="readonly">         
+                                </div>                        
+                                <div class="col-6">           
+                                    <br>                                
+                                    {{ user_profile_form.subscribe_offer }}
+                                    <label class="form-check-label" for="id_subscribe_offer"> &nbsp;
+                                        Desejo receber ofertas de produtos do <span class="fst-italic">MOTANDO.com.br</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <br> 
+                            <div class="row pt-4">
+                                <div class="col">
+                                    <h2 class="h4"> Dados Complementares </h2>                                 
+                                </div>                            
+                            </div>                                                  
+                            <div class="row pt-2 p-2">                            
+                                <div class="col-4">    
+                                    <p class="form-label my-text-purple">Sexo <span class="text-danger">*</span> </p>                                  
+                                    {% for gender_choice in user_profile_form.gender %}
+                                        <div class="form-check form-check-inline"> 
+                                            {{ gender_choice }}
+                                        </div>
+                                    {% endfor %}
+                                    {% for gender_choice_error in user_profile_form.gender.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ gender_choice_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar o Sexo.
+                                    </div>                                                                    
+                                </div>                            
+                                <div class="col-4">
+                                    <label for="{{ user_profile_form.date_of_birth.id }}" class="form-label my-text-purple">Data de Nascimento</label>
+                                    {{ user_profile_form.date_of_birth }}
+                                    {% for date_of_birth_error in user_profile_form.date_of_birth.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ date_of_birth_error }} </div>
+                                    {% endfor %}                                   
+                                    <div class="invalid-feedback">
+                                        É necessário informar a sua Data de Nascimento.
+                                    </div>   
+                                </div>
+                            </div>        
+                            <div class="row pt-4 p-2">   
+                                <div class="col">                                
+                                    <p class="form-label my-text-purple">Possui Motocicleta?</p>
+                                    {% for has_motorcycle_choice in user_profile_form.has_motorcycle %}
+                                        <div class="form-check form-check-inline"> 
+                                            {{ has_motorcycle_choice }}
+                                        </div>
+                                    {% endfor %}
+                                    {% for has_motorcycle_choice_error in user_profile_form.has_motorcycle.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ has_motorcycle_choice_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar se você possui Motocicleta.
+                                    </div>                     
+                                </div>                         
+                                <div class="col">    
+                                    <label for="{{ user_profile_form.motorcycle_brand_wanted.id }}" 
+                                           class="form-label my-text-purple">Marca Desejada</label>
+                                    {{ user_profile_form.motorcycle_brand_wanted }}
+                                    {% for motorcycle_brand_wanted_error in user_profile_form.motorcycle_brand_wanted.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ motorcycle_brand_wanted_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar se você possui Motocicleta.
+                                    </div>                                         
+                                </div>
+                                <div class="col">    
+                                    <label for="{{ user_profile_form.motorcycle_brand_model_wanted.id }}" 
+                                           class="form-label my-text-purple">Modelo Desejado</label>
+                                    {{ user_profile_form.motorcycle_brand_model_wanted }}
+                                    {% for motorcycle_brand_wanted_error in user_profile_form.motorcycle_brand_wanted.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ motorcycle_brand_wanted_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar se você possui Motocicleta.
+                                    </div>        
+                                </div>
+                                <div class="col">                                        
+                                    <label for="{{ user_profile_form.motorcycle_wanted_year.id }}" class="form-label my-text-purple">Ano </label>
+                                    {{ user_profile_form.motorcycle_wanted_year }}
+                                    {% for motorcycle_wanted_year_error in user_profile_form.motorcycle_wanted_year.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ motorcycle_wanted_year_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar o seu Bairro.
+                                    </div>                      
+                                </div>
+                            </div>   
+                            <div class="row pt-4">
+                                <div class="col">
+                                    <h2 class="h4"> Localização </h2>                                 
+                                </div>                            
+                            </div> 
+                            <div class="row pt-2 p-2">
+                                <div class="col">
+                                    <label for="{{ user_profile_form.zip_code.id }}" class="form-label my-text-purple">CEP</label>
+                                    {{ user_profile_form.zip_code }}
+                                    {% for zip_code_error in user_profile_form.zip_code.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ zip_code_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar o seu CEP.
+                                    </div>   
+                                </div>
+                                <div class="col">
+                                    <label for="{{ user_profile_form.state.id }}" 
+                                           class="form-label my-text-purple">Estado <span class="text-danger">*</span></label>
+                                    {{ user_profile_form.state }}
+                                    {% for state_error in user_profile_form.state.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ state_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar o seu Estado.
+                                    </div>                                              
+                                </div>
+                                <div class="col">
+                                    <label for="{{ user_profile_form.city.id }}" 
+                                           class="form-label my-text-purple">Cidade <span class="text-danger">*</span></label>
+                                    {{ user_profile_form.city }}
+                                    {% for city_error in user_profile_form.city.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ city_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar a sua Cidade.
+                                    </div>                                                                                        
+                                </div>
+                            </div>
+                            <div class="row pt-2 p-2">
+                                <div class="col">
+                                    <label for="{{ user_profile_form.address.id }}" class="form-label my-text-purple">Endereço</label>
+                                    {{ user_profile_form.address }}
+                                    {% for address_error in user_profile_form.address.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ address_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar o seu Endereço.
+                                    </div>                       
+                                </div>                            
+                            </div>
+                            <div class="row pt-2 p-2">
+                                <div class="col-4">
+                                    <label for="{{ user_profile_form.neighborhood.id }}" class="form-label my-text-purple">Bairro</label>
+                                    {{ user_profile_form.neighborhood }}
+                                    {% for neighborhood_error in user_profile_form.neighborhood.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ neighborhood_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar o seu Bairro.
+                                    </div>               
+                                </div>
+                                <div class="col-8">
+                                    <label for="{{ user_profile_form.address_complement.id }}" class="form-label my-text-purple">Complemento </label>
+                                    {{ user_profile_form.address_complement }}
+                                    {% for neighborhood_error in user_profile_form.neighborhood.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ neighborhood_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar o seu Bairro.
+                                    </div>               
+                                </div>                          
+                            </div>
+                            <div class="row pt-4">
+                                <div class="col">
+                                    <h2 class="h4"> Telefone para Contato </h2>                                 
+                                </div>                            
+                            </div> 
+                            <div class="row pt-2 p-2">
+                                <div class="col">
+                                    <label for="id_telefone" class="form-label my-text-purple">DDD + Telefone <span class="text-danger">*</span></label>                                
+                                    {{ user_profile_form.telephone }}
+                                    {% for telephone_error in user_profile_form.telephone.errors %}
+                                        <div class="text-danger pt-1"> &nbsp;&bull; {{ telephone_error }} </div>
+                                    {% endfor %}
+                                    <div class="invalid-feedback">
+                                        É necessário informar o seu Telefone.
+                                    </div>
+                                </div>                        
+                                <div class="col pt-4">
+                                    {{ user_profile_form.authz_whatsapp }}
+                                    <label class="form-check-label" for="id_authz_whatsapp"> &nbsp;
+                                        Autoriza WhatsApp
+                                    </label>                                    
+                                </div>
+                                <div class="col pt-4">
+                                    {{ user_profile_form.authz_sms }}
+                                    <label class="form-check-label" for="id_authz_sms"> &nbsp;
+                                        Disponível para SMS 
+                                    </label>   
+                                </div>
+                                <div class="col pt-4">
+                                    {{ user_profile_form.show_telephone_classifiedad }}
+                                    <label class="form-check-label" for="id_show_telephone_classifiedad"> &nbsp;
+                                        Disponível no Anúncio  
+                                    </label>   
+                                </div>
+                            </div>
+                            <div class="row pt-4">
+                                <div class="col">
+                                    <h2 class="h4"> Alterar Senha </h2>                                 
+                                </div>                            
+                            </div> 
+                            <div class="row pt-2 p-2">
+                                <div class="col">
+                                    <label for="id_senha_atual" class="form-label my-text-purple">Senha atual <span class="text-danger">*</span> </label>
+                                    <input type="password" class="form-control my-btn-outline" id="id_senha_atual" style="box-shadow: none;"> 
+                                </div>
+                                <div class="col">
+                                    <label for="id_senha_nova" class="form-label my-text-purple">Nova Senha <span class="text-danger">*</span> </label>
+                                    <input type="password" class="form-control my-btn-outline" id="id_senha_nova" style="box-shadow: none;"> 
+                                </div>
+                                <div class="col">
+                                    <label for="id_confirm_senha_nova" class="form-label my-text-purple">Confirmação da Nova Senha <span class="text-danger">*</span> </label>
+                                    <input type="password" class="form-control my-btn-outline" id="id_confirm_senha_nova" style="box-shadow: none;"> 
+                                </div>
+                            </div>
+                            <div class="row pt-4">
+                                <div class="col-3">
+                                    <div class="d-grid gap-2 mx-auto">                                     
+                                        <button type="submit" class="btn btn-success fw-bold btn-lg p-2">
+                                            Salvar
+                                        </button>
+                                    </div>          
+                                </div>                            
+                            </div>                      
+                        </div>
+                     </form>
+               </div> <!-- right panel -->                
+            </div>
+       </div>
+   </section>
+   <br><br> 
+{% endblock %}
+{% block footer %}
+   {% include "account/include/footer.html" %}     
+{% endblock %}
+{% block body_scripts %}      
+    <script type="text/javascript" src="{% static 'vendor/jquery-ui-1.13.2.custom/jquery-ui.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'vendor/jquery.maskedinput.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/commons.js' %}"></script>          
+    <script type="text/javascript">
+        $(document).ready(function() {
+            {% if user_profile_form.motorcycle_brand_wanted.value %}
+               getMotorcycleBrand('id_motorcycle_brand', {{ user_profile_form.motorcycle_brand_wanted.value }}); 
+            {% else %}
+               getMotorcycleBrand('id_motorcycle_brand');
+            {% endif %}
+
+            $('#id_motorcycle_brand').change(function() {
+                let brandId = $(this).children(':selected').val();
+                getMotorcycleBrandModel('id_motorcycle_brand_model', brandId);
+            });
+
+            {% if user_profile_form.motorcycle_brand_model_wanted.value %}               
+               getMotorcycleBrandModel('id_motorcycle_brand_model', {{ user_profile_form.motorcycle_brand_wanted.value }}, {{ user_profile_form.motorcycle_brand_model_wanted.value }}); 
+            {% else %}
+               getMotorcycleBrandModel('id_motorcycle_brand_model'); 
+            {% endif %}            
+
+            getBrazilState('id_brazil_state', {{ user_profile_form.state.value }});     
+            getBrazilStateCity('id_brazil_state_city', {{ user_profile_form.state.value }}, {{ user_profile_form.city.value }});
+            
+            $('#id_date_of_birth').datepicker({changeYear: true});
+            
+            $('#id_brazil_state').change(function() {
+                let stateId = $(this).children(':selected').val();
+                getBrazilStateCity('id_brazil_state_city', stateId);
+            });
+
+            $('#id_telephone').mask('(99) 9999-9999?9').focusout(function (event) {  
+                var target, phone, element;  
+                
+                target = (event.currentTarget) ? event.currentTarget : event.srcElement;                 
+                phone = target.value.replace(/\D/g, '');
+                
+                element = $(target);  
+                element.unmask();  
+
+                if(phone.length > 10)
+                    element.mask('(99) 99999-999?9');  
+                else 
+                    element.mask('(99) 9999-9999?9');                    
+            });
+
+        });
+    </script>
+{% endblock %}

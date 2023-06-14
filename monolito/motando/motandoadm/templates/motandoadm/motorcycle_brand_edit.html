@@ -1,0 +1,47 @@
+{% extends "motandoadm/include/base.html" %}
+{% block title %} Moto (Marca) {% endblock %}
+{% load static %}   
+{% block head %}
+   {{ block.super }}      
+{% endblock %}
+{% block body %}
+   {% spaceless %} 
+   {{ block.super }}
+      
+       <div class="container-fluid">           
+          <h1 class="h1 mb-4 text-gray-800"> Moto </h1>
+          <h4 class="h4 mb-4 text-gray-800"> Editar Marca </h3>
+          <form method="post" autocomplete="off">
+                {% csrf_token %}  
+                <div class="row">
+                    <div class="col-6">
+                        {% include "motandoadm/include/messages.html" %}      
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">  
+                            <div class="form-group">
+                                <label for="id_motorcycle_brand">Marca</label>
+                                <input type="text" class="form-control" id="id_motorcycle_brand" value="{{ motorcycle_brand.brand }}">                                
+                            </div>
+                        </div>          
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="col-2">
+                        <button type="submit" class="btn btn-success btn-block"> Salvar Alterações </button>
+                    </div>
+                    <div class="col-1">
+                        <a class="btn btn-secondary btn-block" href="{% url 'motandoadm:motorcycle_brand_list' %}" role="button"> Cancelar </a>
+                    </div>
+                </div> 
+          </form>           
+       </div>
+      
+   {% endspaceless %} 
+{% endblock %}
+{% block footer %}
+{% endblock %}
+{% block body_scripts %}       
+{% endblock %}

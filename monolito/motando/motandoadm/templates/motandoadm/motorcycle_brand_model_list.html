@@ -1,0 +1,133 @@
+{% extends "motandoadm/include/base.html" %}
+{% block title %} Moto (Modelo) {% endblock %}
+{% load static %}   
+{% block head %}
+   {{ block.super }}      
+{% endblock %}
+{% block body %}
+   {% spaceless %} 
+   {{ block.super }}
+      
+       <div class="container-fluid">           
+          <h1 class="h1 mb-4 text-gray-800"> Moto </h1>
+          <h4 class="h4 mb-4 text-gray-800"> Listar Modelos </h3>  
+          <div class="row">
+               <div class="col-12">
+                   {% include "motandoadm/include/messages.html" %}      
+               </div>
+          </div> 
+          <div class="row">
+            <div class="col-3">
+                 <div class="form-group">
+                     <label for="id_motorcycle_brand">Marca</label>
+                     <select class="form-control" id="id_motorcycle_brand" disabled>                          
+                     </select>
+                 </div>                
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-auto">
+                <a class="btn btn-info btn-block" id="id_brand_model_list" onclick="listBrandModels();"> Listar Modelos </a>                   
+            </div>
+         </div> 
+         <br> 
+          <div class="row">
+              <div class="col-6">
+                  <div class="card shadow mb-4">
+                     <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Listagem dos Modelos das Marcas de Moto cadastradas</h6>
+                     </div>
+                     <div class="card-body">
+                        <div class="table-responsive">
+                           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                 <thead>
+                                    <tr>
+                                       <th>Marca</th>
+                                       <th>Modelo</th>
+                                       <th>Ação</th>                                       
+                                    </tr>
+                                 </thead>
+                                 <tfoot>
+                                    <tr>
+                                       <th>Marca</th>
+                                       <th>Modelo</th>
+                                       <th>Ação</th>                                               
+                                    </tr>
+                                 </tfoot>
+                                 <tbody>
+                                    {% for motorcycle_model in motorcycle_models_page %}                                    
+                                       <tr>
+                                          <td> {{ motorcycle_model.brand }} </td>
+                                          <td> {{ motorcycle_model.model }} </td>
+                                          <td> 
+                                             <a href="{% url 'motandoadm:motorcycle_brand_model_edit' brand_id=motorcycle_model.brand.id model_id=motorcycle_model.id %}" 
+                                                class="text-decoration-none"> 
+                                                <i class="fa fa-database" aria-hidden="true"></i> Editar 
+                                             </a>
+                                             &nbsp;&nbsp;
+                                             <a href="{% url 'motandoadm:motorcycle_brand_model_delete' brand_id=motorcycle_model.brand.id model_id=motorcycle_model.id %}" 
+                                                class="text-decoration-none"> 
+                                                <i class="fa fa-trash" aria-hidden="true"></i> Excluír 
+                                             </a>
+                                          </td>
+                                       </tr>
+                                    {% endfor %}                                                            
+                                 </tbody>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+              </div>
+          </div>    
+          {% if motorcycle_models_page.has_other_pages %}
+                <div class="row">
+                     <div class="col">
+                         <nav aria-label="Moto Marcas Navegação">
+                              <ul class="pagination">                                            
+                                    {% if motorcycle_models_page.has_previous %}
+                                       <li class="page-item">
+                                             <a class="page-link" href="?p={{ motorcycle_models_page.previous_page_number }}">Anterior</a>
+                                       </li>
+                                    {% endif %}                                                
+                                    {% for page_number in motorcycle_models_page.paginator.page_range %}
+                                       {% if models_page.number  == page_number %}
+                                             <li class="page-item active" aria-current="page">
+                                                <span class="page-link"> {{ page_number }} </span>
+                                             </li>                                                        
+                                       {% else %}
+                                             <li class="page-item">
+                                                <a class="page-link" href="?p={{ page_number }}"> {{ page_number }} </a>
+                                             </li>
+                                       {% endif %}
+                                    {% endfor %}                                                
+                                    {% if motorcycle_models_page.has_next %}
+                                       <li class="page-item">
+                                             <a class="page-link" href="?p={{ motorcycle_models_page.next_page_number }}">Próximo</a>
+                                       </li>
+                                    {% endif %}
+                              </ul>
+                         </nav>
+                     </div>
+                </div>
+          {% endif %}         
+       </div>      
+       <br><br> 
+   {% endspaceless %} 
+{% endblock %}
+{% block footer %}
+{% endblock %}
+{% block body_scripts %}    
+    <script type="text/javascript" src="{% static 'js/commons.js' %}"></script> 
+    <script type="text/javascript">
+         function listBrandModels() {            
+             let brandId = $('#id_motorcycle_brand option:selected').val();
+             let url = `/motandoadm/moto/marca/${brandId}/modelo`;
+
+             $('#id_brand_model_list').attr('href', url).trigger('click');             
+         }
+
+         $(document).ready(function() {
+               getMotorcycleBrand('id_motorcycle_brand', {{ brand_id }});                             
+         });
+    </script>
+{% endblock %}

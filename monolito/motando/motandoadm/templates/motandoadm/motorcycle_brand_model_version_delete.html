@@ -1,0 +1,41 @@
+{% extends "motandoadm/include/base.html" %}
+{% block title %} Moto (Versão) {% endblock %}
+{% load static %}   
+{% block head %}
+   {{ block.super }}      
+{% endblock %}
+{% block body %}
+   {% spaceless %} 
+   {{ block.super }}      
+       <div class="container-fluid">           
+          <h1 class="h1 mb-4 text-gray-800"> Moto </h1>
+          <h4 class="h4 mb-4 text-gray-800"> Excluir Versão </h3>
+          <form method="post" autocomplete="off">
+            {% csrf_token %} 
+            <div class="row">
+                <div class="col-auto">
+                    <p class="h5 pb-3">Tem certeza que deseja <span class="text-danger">excluír</span> a Versão
+                        <span class="font-italic"> "{{ motorcycle_version.version }}" </span> ? 
+                    </p>
+                </div>
+            </div>   
+            <div class="row">
+                <div class="col-2">
+                    <button type="submit" class="btn btn-danger btn-block"> Excluír Versão </button>
+                </div>
+                <div class="col-1">
+                    <a class="btn btn-secondary btn-block" 
+                       href="{% url 'motandoadm:motorcycle_brand_model_version_list' brand_id=motorcycle_version.model.brand.id model_id=motorcycle_version.model.id %}" 
+                       role="button"> Cancelar </a>
+                </div>
+            </div>                 
+          </form>
+       </div>
+       <br>
+       <br>
+   {% endspaceless %} 
+{% endblock %}
+{% block footer %}
+{% endblock %}
+{% block body_scripts %}       
+{% endblock %}

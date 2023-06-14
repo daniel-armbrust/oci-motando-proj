@@ -1,0 +1,69 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% block title %} Login {% endblock %}
+{% block body %}  
+{% spaceless %}
+    <div id="login-wrap">
+        <form id="id_login_form" name="login_form" class="form-signin needs-validation" 
+              method="post" action="{% url 'account:login' %}" novalidate>                 
+            {% csrf_token %}                        
+            <a href="{% url 'home:main_page' %}">
+                <img class="mb-4" src="{% static 'img/motando_logo-402x150.png' %}">
+            </a>
+            <h1 class="h5 mb-3 fst-italic text-center">
+                Já possui cadastro no MOTANDO.com.br?
+            </h1>
+
+            {% include "account/include/messages.html" %}  
+
+            <label for="id_email" class="sr-only">Email</label>
+            {{ form.email }}           
+            <br>
+
+            <label for="id_senha" class="sr-only">Senha</label>
+            {{ form.password }}            
+
+            {% comment %}
+            <div class="custom-control custom-checkbox my-1 mr-sm-2 pb-3 ">                               
+                   {{ form.lembrar_login(class_="custom-control-input", id="id_lembrar_login") }}                
+                <label class="custom-control-label" for="id_lembrar_login">&nbsp; Lembrar de mim </label>
+            </div>
+            {% endcomment %}
+
+            <div class="d-grid gap-2">
+                <input type="submit" class="btn btn-lg btn-success btn-block fw-bold" id="id_submit" value="Login">               
+            </div>
+            <br>  
+            <p class="text-center">Esqueceu sua senha? Clique <a href="#">aqui.</a></p>            
+            <div class="text-center">
+                <a href="{% url 'account:choices' %}" class="btn btn-info fw-bold" role="button">
+                    &nbsp;&nbsp;&nbsp; Criar Conta &nbsp;&nbsp;&nbsp;
+                </a>
+            </div>
+        </form>
+    </div>
+    {% comment %}
+    <div class="modal fade" id="id_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" 
+         aria-labelledby="id_static_backdrop_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="id_static_backdrop_label">Mensagem</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <p class="fw-bold" id="id_modal_message"></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>              
+            </div>
+          </div>
+        </div>
+    </div>
+    {% endcomment %}
+{% endspaceless %}
+{% endblock %}
+{% block body_scripts %}    
+    <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script>            
+    <script type="text/javascript" src="{% static 'js/login.js' %}"></script>            
+{% endblock %}
