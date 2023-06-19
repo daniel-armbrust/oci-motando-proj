@@ -4,6 +4,7 @@
 
 import json
 import time
+import logging as log
 
 from oci.exceptions import ServiceError as OciServiceError
 

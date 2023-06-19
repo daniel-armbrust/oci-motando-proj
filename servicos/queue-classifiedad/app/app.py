@@ -4,16 +4,19 @@
 
 import sys
 import os
+import logging as log
 from time import sleep
 
 from modules.queue import Queue
 from modules.workflow import Workflow
+from modules.ocilog import OciLogHandler
 
 # Globals
 MAIN_LOOP_SLEEP_SECS = 120
 OCI_API_SLEEP_SECS = 1
 APP_ENV = os.environ.get('APP_ENV')
 OCI_QUEUE_ID = os.environ.get('OCI_QUEUE_ID')
+OCI_LOG_ID = os.environ.get('OCI_LOG_ID')
 OCI_REGION_ID = os.environ.get('OCI_REGION_ID')
 OCI_OS_NAMESPACE = os.environ.get('OCI_OBJSTR_NAMESPACE')
 OCI_BUCKET_SRC = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
@@ -119,14 +122,32 @@ def process_messages():
 def main():
     global MAIN_LOOP_SLEEP_SECS 
 
+    log.info(f'Starting workflow application "{__name__}"')
+
     while True:
         process_messages()
+
         sleep(MAIN_LOOP_SLEEP_SECS)
+        log.info(f'Sleeping "{MAIN_LOOP_SLEEP_SECS}secs"')
+        
     
+    log.info(f'Exiting workflow application "{__name__}"')
     sys.exit(0)
 
     
 if __name__ == '__main__':
+    # Configuração dos logs para STDOUT e também para o serviço OCI LOGGING.
+    stdout_handler = log.StreamHandler(stream=sys.stdout)
+    stdout_handler.setLevel(log.INFO)
+
+    ocilog_handler = OciLogHandler(log_id=OCI_LOG_ID, env=APP_ENV)
+
+    log.basicConfig(
+        level=log.INFO,
+        format='%(asctime)s:%(levelname)s:%(module)s: %(message)s',    
+        handlers=[stdout_handler, ocilog_handler]
+    )
+
     main()
 else:
     sys.exit(1)

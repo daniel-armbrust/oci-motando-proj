@@ -2,6 +2,8 @@
 # queue-classifiedad/app/modules/storage.py
 #
 
+import logging as log
+
 import oci
 
 

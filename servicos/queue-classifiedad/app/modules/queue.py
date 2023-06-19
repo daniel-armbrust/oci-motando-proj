@@ -3,6 +3,8 @@
 #
 
 import json
+import logging as log
+
 import oci
 
 

@@ -2,6 +2,8 @@
 # queue-classifiedad/app/modules/db.py
 #
 
+import logging as log
+
 import mysql.connector
 
 
