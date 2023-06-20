@@ -43,7 +43,9 @@ def new_classifiedad(json_msg: str):
     workflow.bucket_dst = OCI_BUCKET_DST
     workflow.queue_id = OCI_QUEUE_ID
     workflow.api_sleep = OCI_API_SLEEP_SECS
-    
+
+    log.info('Processing NEW CLASSIFIEDAD task for messages.')
+
     workflow.new_task(json_msg)
 
 
@@ -62,6 +64,8 @@ def move_classifiedad(json_msg: str):
     workflow.bucket_src = OCI_BUCKET_SRC
     workflow.queue_id = OCI_QUEUE_ID
     workflow.api_sleep = OCI_API_SLEEP_SECS
+
+    log.info('Processing MOVE CLASSIFIEDAD task for messages.')
 
     workflow.move_task(json_msg)
 
@@ -86,6 +90,8 @@ def publish_classifiedad(json_msg: str):
     workflow.db_passwd = OCI_MYSQL_PASSWORD
     workflow.db_name = OCI_MYSQL_DBNAME
 
+    log.info('Processing PUBLISH CLASSIFIEDAD task for messages.')
+
     workflow.publish_task(json_msg)
 
 
@@ -96,10 +102,14 @@ def process_messages():
     global OCI_REGION_ID, OCI_QUEUE_ID, APP_ENV
     
     queue = Queue(queue_id=OCI_QUEUE_ID, region_id=OCI_REGION_ID, env=APP_ENV)
-
+    
+    log.info('Checking OCI QUEUE for new messages.')    
+    
     # Obtém todas as mensagens publicadas 
     json_msg_list = queue.get_all_messages()
 
+    log.info(f'Got {len(json_msg_list)} messages to process.')
+  
     for json_msg in json_msg_list:
         msg_status = json_msg.get('classifiedad_status')
 
@@ -117,21 +127,20 @@ def process_messages():
             pass
         else:
             pass    
-
+    
 
 def main():
     global MAIN_LOOP_SLEEP_SECS 
 
-    log.info(f'Starting workflow application "{__name__}"')
+    log.info(f'Starting MOTANDO WORKFLOW application.')
 
     while True:
         process_messages()
 
-        sleep(MAIN_LOOP_SLEEP_SECS)
-        log.info(f'Sleeping "{MAIN_LOOP_SLEEP_SECS}secs"')
-        
+        log.info(f'Sleeping {MAIN_LOOP_SLEEP_SECS} secs.')
+        sleep(MAIN_LOOP_SLEEP_SECS)        
     
-    log.info(f'Exiting workflow application "{__name__}"')
+    log.info(f'Exiting MOTANDO WORKFLOW application.')
     sys.exit(0)
 
     

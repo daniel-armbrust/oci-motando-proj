@@ -42,7 +42,7 @@ class OciLogHandler(logging.Handler):
                     time=datetime.fromtimestamp(float(record.created))
                 )],
                 source=log_source,
-                type=record.levelname,
+                type=f'{LOG_SUBJECT} ({record.levelname})',
                 subject=LOG_SUBJECT,
                 defaultlogentrytime=datetime.now()
             )],

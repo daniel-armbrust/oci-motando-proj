@@ -36,6 +36,8 @@ class Storage():
 
         if resp.status == 202:
             work_req_id = resp.headers.get('opc-work-request-id')
+        else:
+            log.error(f'Error in MOVE file "{url_src}" from bucket "{bucket_src}" to "{bucket_dst}" (Return code = {resp.status}).')
         
         return work_req_id
     
@@ -47,7 +49,7 @@ class Storage():
 
         if resp.status == 200 and resp.data.status == 'COMPLETED':
             return True
-        else:
+        else:            
             return False
     
     def delete(self, obj_filename: str, bucket_name: str) -> bool:
@@ -62,4 +64,5 @@ class Storage():
         if resp.status == 204:
             return True
         else:
+            log.error(f'Error to DELETE the file "{obj_filename}" in bucket "{bucket_name}" (Return code = {resp.status}).')
             return False

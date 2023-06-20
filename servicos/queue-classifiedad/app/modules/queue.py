@@ -54,6 +54,8 @@ class Queue():
                 msg_dict = json.loads(msg_data.content)
                 msg_dict.update({'id': msg_data.id, 'receipt': msg_data.receipt})
                 msg_list.append(msg_dict)
+        else:
+            log.error(f'Error in GET messages from OCI QUEUE (Return code = {resp.status}).')
 
         return msg_list
 
@@ -71,6 +73,7 @@ class Queue():
         if resp.status == 200:
             return True
         else:
+            log.error(f'Error in PUT message in OCI QUEUE (Return code = {resp.status}).')
             return False
 
     def update_msg(self, msg_receipt: str):
@@ -87,4 +90,5 @@ class Queue():
         if resp.status == 204:
             return True
         else:
+            log.error(f'Error in DELETE message in OCI QUEUE (Return code = {resp.status}).')
             return False      

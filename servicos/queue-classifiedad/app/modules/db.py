@@ -35,7 +35,7 @@ class MysqlDb():
         try:
             result = cursor.execute(stm)
         except mysql.connector.Error as err:
-            print('Error when execute a query: {}'.format(err))
+            log.error('Could execute SQL QUERY: {}'.format(err))            
         else:            
             self._conn.commit()
         

@@ -144,7 +144,7 @@ def create_classifiedad(user=None, max_classifiedad=3):
                 ClassifiedAdImage(url=file_url, classifiedad_id=new_classifiedad_id).save()
 
                 # Queue Task
-                queue_client = ClassifiedAdQueue(queue_id=OCI_QUEUE_ID, region_id=OCI_REGION_ID)                
+                queue_client = ClassifiedAdQueue(queue_id=OCI_QUEUE_ID, region_id=OCI_REGION_ID, env=APP_ENV)                
                 queue_client.classifiedad_id = new_classifiedad_id
                 queue_client.classifiedad_status = 'NEW'
                 queue_client.put_list(msg_list=image_list)

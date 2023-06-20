@@ -119,8 +119,8 @@ class Workflow():
 
     @api_sleep.setter
     def api_sleep(self, secs: int = 2):
-        if secs < 2:
-            secs = 2
+        if secs < 2:            
+            secs = 2            
         self._api_sleep = secs                  
 
     def new_task(self, json_msg: str) -> bool:
@@ -135,29 +135,35 @@ class Workflow():
 
         storage = Storage(region_id=self._region_id, bucket_ns=self._bucket_ns, env=self._env)
 
-        workreq_id_list = []
+        workreq_id_list = []      
 
         for img_url in img_list:
+            log.info(f'Moving image "{img_url}" from bucket "{self._bucket_src}" to bucket "{self._bucket_dst}".')
+
             workreq_id = storage.move(url_src=img_url, bucket_src=self._bucket_src, 
                 bucket_dst=self._bucket_dst)
             
             if workreq_id:
                 workreq_id_list.append({'workreq_id': workreq_id, 'img_url': img_url})
+            else:
+                log.error(f'No WORK REQUEST got from moving an image.')
 
             # Aguarda alguns segundos antes de seguir com novas chamadas as APIs do
             # OCI. Isso evita problemas de "estouro" de limites. 
-            time.sleep(self._api_sleep)
-        
+            time.sleep(self._api_sleep)               
+
         if workreq_id_list:
             msg_template = {'classifiedad_id': classifiedad_id, 
                 'classifiedad_status': 'MOVE', 'data': workreq_id_list}            
             new_json_msg = json.dumps(msg_template)
-
+            
             queue = Queue(queue_id=self._queue_id, region_id=self._region_id, env=self._env)
             put_status = queue.put_msg(new_json_msg)
 
             if put_status is True:
                 task_status = queue.delete_msg(msg_receipt)
+            else:
+                log.error(f'Could not DELETE message from OCI QUEUE (Msg Receipt = {msg_receipt}).')
         
         return task_status  
 
@@ -176,28 +182,33 @@ class Workflow():
 
         # Lista para armazenar as imagens que serão excluídas.
         delete_url_list = []
-
+        
         for img_data in img_list:
             (workreq_id, img_url,) = img_data.get('workreq_id'), img_data.get('img_url')
 
             workreq_complete = storage.verify_workreq(work_req_id=workreq_id)            
 
             if workreq_complete is True:
-                delete_url_list.append(img_url)        
-
+                delete_url_list.append(img_url)
+            
         # Compara a qtde de imagens marcadas para exclusão com a lista de imagens
         # para verificação do "work_request". Se foram iguais, todas as imagens foram
         # movimentadas com sucesso.
-        if len(img_list) == len(delete_url_list):
+        total_imgs = len(img_list)
+        total_urls_delete = len(delete_url_list)
+
+        if total_imgs == total_urls_delete:
+            log.info(f'Try to DELETE {total_urls_delete} objects.')
+
             for img_url in delete_url_list: 
                 img_filename = img_url[img_url.rindex('/') + 1:]
 
                 try:
                     storage.delete(obj_filename=img_filename, bucket_name=self._bucket_src)                  
-                except OciServiceError:
+                except OciServiceError as e:
                     # FIXME: Problema de ObjectNotFound (404) para alguns objetos que
                     # precisam ser excluídos.
-                    pass              
+                    log.warn(f'Could not DELETE the object "{img_filename}" from bucket "{self._bucket_src}" ({str(e.code)}).')
 
                 # Aguarda alguns segundos antes de seguir com novas chamadas as APIs do
                 # OCI. Isso evita problemas de "estouro" de limites. 
@@ -212,6 +223,8 @@ class Workflow():
 
             if put_status is True:
                 task_status = queue.delete_msg(msg_receipt)
+            else:
+                log.error(f'Could not DELETE message from OCI QUEUE (Msg Receipt = {msg_receipt}).')
         
         return task_status
     
@@ -228,7 +241,7 @@ class Workflow():
         img_url_prefix = f'https://objectstorage.{self._region_id}.oraclecloud.com/n/{self._bucket_ns}/b/{self._bucket_dst}'
 
         update_sqlstm_list = []
-
+        
         for img_url in img_list:
             img_filename = img_url[img_url.rindex('/') + 1:]
             new_img_url = img_url_prefix + '/o/' + img_filename
@@ -254,12 +267,16 @@ class Workflow():
 
         # Atualiza o banco de dados.
         for update_sqlstm in update_sqlstm_list:
-            mysql_db.update(update_sqlstm)
+            rows_updated = mysql_db.update(update_sqlstm)
+            log.info(f'UPDATED {rows_updated} rows in MySQL.')            
 
         mysql_db.close()
 
         # Excluí a mensagem da fila.
         queue = Queue(queue_id=self._queue_id, region_id=self._region_id, env=self._env)
         task_status = queue.delete_msg(msg_receipt)
+
+        if task_status is not True:
+            log.error(f'Could not DELETE message from OCI QUEUE (Msg Receipt = {msg_receipt}).')
 
         return task_status
