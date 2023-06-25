@@ -315,7 +315,7 @@
                                      alt="Pessoa" class="img-fluid img-thumbnail float-start me-3" style="max-width: 25%;">                           
                                 <h3 class="h5 fw-bold"> {{ classifiedad.user.full_name }} </h3>
                                 <p class="small">
-                                    {{ user_profile.city.city }} / {{ user_profile.state.state }} <br>
+                                    {{ classifiedad.user.userprofile.city.city }} / {{ classifiedad.user.userprofile.state.state }} <br>
                                     Cliente desde: {{ classifiedad.user.created|date:"d/F/Y" }}                                     
                                 </p>
                             </div> 

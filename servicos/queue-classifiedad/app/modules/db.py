@@ -35,7 +35,7 @@ class MysqlDb():
         try:
             result = cursor.execute(stm)
         except mysql.connector.Error as err:
-            log.error('Could execute SQL QUERY: {}'.format(err))            
+            log.error('Could NOT execute the SQL QUERY: {}'.format(err))            
         else:            
             self._conn.commit()
         
@@ -45,6 +45,33 @@ class MysqlDb():
             return cursor.rowcount
         else:
             return 0
+    
+    def select(self, stm: str) -> list:
+        """
+        
+        """
+        cursor = self.__get_cursor()
+
+        result = None
+        item_list = []
+
+        try:
+            result = cursor.execute(stm)
+        except mysql.connector.Error as err:
+            log.error('Could NOT execute the SQL QUERY: {}'.format(err))            
+        else:            
+            result = cursor.fetchall()
+        
+        for item in result:
+            item_list.append(item[0])
+        
+        return item_list
+ 
+
+
+
+
+
 
 
     

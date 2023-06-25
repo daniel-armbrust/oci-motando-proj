@@ -26,7 +26,7 @@ class ClassifiedAdQueue():
         if status not in valid_status:
             raise ValueError(f'Invalid status value: "{status}"')
         else:
-            self.__classifiedad_status = status
+            self.__classifiedad_status = status       
 
     def __init__(self, queue_id: str, region_id: str, env: str):
         self.__queue_id = queue_id
@@ -61,3 +61,5 @@ class ClassifiedAdQueue():
         # HTTP - 200 OK
         if resp.status == 200:
             return resp.data.messages[0].id
+        else:
+            return None

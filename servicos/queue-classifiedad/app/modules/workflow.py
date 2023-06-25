@@ -120,8 +120,17 @@ class Workflow():
     @api_sleep.setter
     def api_sleep(self, secs: int = 2):
         if secs < 2:            
-            secs = 2            
+            secs = 2      
+            log.warn(f'Force SLEEP to {secs} seconds between OCI API CALLS.')      
         self._api_sleep = secs                  
+    
+    def __compose_msg_list(self, classifiedad_id: str, classifiedad_status: str, msg_list: list):
+        msg_template = {'classifiedad_id': classifiedad_id,
+            'classifiedad_status': classifiedad_status, 'data': msg_list}
+
+        json_msg = json.dumps(msg_template)
+
+        return json_msg
 
     def new_task(self, json_msg: str) -> bool:
         """Processa novos anúncios.
@@ -153,9 +162,8 @@ class Workflow():
             time.sleep(self._api_sleep)               
 
         if workreq_id_list:
-            msg_template = {'classifiedad_id': classifiedad_id, 
-                'classifiedad_status': 'MOVE', 'data': workreq_id_list}            
-            new_json_msg = json.dumps(msg_template)
+            new_json_msg = self.__compose_msg_list(classifiedad_id=classifiedad_id, 
+                classifiedad_status='MOVE', msg_list=workreq_id_list)            
             
             queue = Queue(queue_id=self._queue_id, region_id=self._region_id, env=self._env)
             put_status = queue.put_msg(new_json_msg)
@@ -163,7 +171,7 @@ class Workflow():
             if put_status is True:
                 task_status = queue.delete_msg(msg_receipt)
             else:
-                log.error(f'Could not DELETE message from OCI QUEUE (Msg Receipt = {msg_receipt}).')
+                log.error(f'Could not DELETE message in OCI QUEUE (Msg Receipt = {msg_receipt}).')
         
         return task_status  
 
@@ -181,9 +189,9 @@ class Workflow():
         storage = Storage(region_id=self._region_id, bucket_ns=self._bucket_ns, env=self._env)
 
         # Lista para armazenar as imagens que serão excluídas.
-        delete_url_list = []
-        
-        for img_data in img_list:
+        delete_url_list = []       
+       
+        for img_data in img_list:            
             (workreq_id, img_url,) = img_data.get('workreq_id'), img_data.get('img_url')
 
             workreq_complete = storage.verify_workreq(work_req_id=workreq_id)            
@@ -198,7 +206,7 @@ class Workflow():
         total_urls_delete = len(delete_url_list)
 
         if total_imgs == total_urls_delete:
-            log.info(f'Try to DELETE {total_urls_delete} objects.')
+            log.info(f'Trying to DELETE {total_urls_delete} objects.')
 
             for img_url in delete_url_list: 
                 img_filename = img_url[img_url.rindex('/') + 1:]
@@ -214,9 +222,8 @@ class Workflow():
                 # OCI. Isso evita problemas de "estouro" de limites. 
                 time.sleep(self._api_sleep)
 
-            msg_template = {'classifiedad_id': classifiedad_id, 'classifiedad_status': 'PUBLISH',
-                'data': delete_url_list}
-            new_json_msg = json.dumps(msg_template)
+            new_json_msg = self.__compose_msg_list(classifiedad_id=classifiedad_id, 
+                classifiedad_status='PUBLISH', msg_list=delete_url_list)                  
             
             queue = Queue(queue_id=self._queue_id, region_id=self._region_id, env=self._env)
             put_status = queue.put_msg(new_json_msg)
@@ -224,7 +231,7 @@ class Workflow():
             if put_status is True:
                 task_status = queue.delete_msg(msg_receipt)
             else:
-                log.error(f'Could not DELETE message from OCI QUEUE (Msg Receipt = {msg_receipt}).')
+                log.error(f'Could not ADD NEW message in OCI QUEUE (Msg Receipt = {msg_receipt}).')
         
         return task_status
     
@@ -250,25 +257,28 @@ class Workflow():
                 UPDATE classifiedad_images SET url = "{new_img_url}" 
                     WHERE classifiedad_id = {classifiedad_id} AND url = "{img_url}" LIMIT 1
             '''
-
+            
             update_sqlstm_list.append(update_sqlstm)
+        
+        datetime_now = time.strftime('%Y-%m-%d %H:%M:%S')
 
-        if update_sqlstm_list:
-            datetime_now = time.strftime('%Y-%m-%d %H:%M:%S')
+        update_sqlstm = f'''
+            UPDATE classifiedad SET status = "PUBLISHED", updated = "{datetime_now}" 
+                WHERE id = {classifiedad_id} LIMIT 1
+        '''
 
-            update_sqlstm = f'''
-                UPDATE classifiedad SET status = "PUBLISHED", updated = "{datetime_now}" 
-                    WHERE id = {classifiedad_id} LIMIT 1
-            '''
+        update_sqlstm_list.append(update_sqlstm)
 
-            update_sqlstm_list.append(update_sqlstm)
-
-        mysql_db = MysqlDb(host=self._db_host, user=self._db_user, passwd=self._db_passwd, db_name=self._db_name)
+        mysql_db = MysqlDb(host=self._db_host, user=self._db_user, passwd=self._db_passwd, 
+            db_name=self._db_name)
 
         # Atualiza o banco de dados.
         for update_sqlstm in update_sqlstm_list:
             rows_updated = mysql_db.update(update_sqlstm)
-            log.info(f'UPDATED {rows_updated} rows in MySQL.')            
+            log.info(f'UPDATED {rows_updated} rows in MySQL.')
+
+            if self._env == 'DEV':                
+                log.info(f'UPDATE SQL Statement used: {update_sqlstm}'.rstrip())                        
 
         mysql_db.close()
 
@@ -277,6 +287,106 @@ class Workflow():
         task_status = queue.delete_msg(msg_receipt)
 
         if task_status is not True:
-            log.error(f'Could not DELETE message from OCI QUEUE (Msg Receipt = {msg_receipt}).')
+            log.error(f'Could not DELETE message in OCI QUEUE (Msg Receipt = {msg_receipt}).')
+
+        return task_status
+    
+    def update_task(self, json_msg: str) -> bool:
+        """Tarefa para atualizar um anúncio.
+
+        """
+        task_status = False
+
+        # A lista antiga de imagens está presente no JSON.
+        old_img_list = json_msg.get('data')      
+        
+        classifiedad_id = json_msg.get('classifiedad_id') 
+        msg_receipt = json_msg.get('receipt')    
+
+        select_stm = f'''
+            SELECT url FROM classifiedad_images WHERE classifiedad_id = {classifiedad_id}
+        '''        
+
+        mysql_db = MysqlDb(host=self._db_host, user=self._db_user, passwd=self._db_passwd, 
+            db_name=self._db_name)           
+        
+        new_img_list = []       
+        move_img_list = []
+        delete_img_list = []
+
+        # Obtém todas as novas imagens do anúncio.
+        new_img_list = mysql_db.select(select_stm)   
+        mysql_db.close()        
+
+        queue = Queue(queue_id=self._queue_id, region_id=self._region_id, env=self._env)
+        
+        # String que representa o BUCKET TEMPORÁRIO das imagens.
+        bucket_tmp = '/' + self._bucket_src + '/'
+
+        # Imagens novas para processamento.
+        for img_url in new_img_list:
+            if bucket_tmp in img_url:
+                move_img_list.append(img_url)
+        else:
+            new_json_msg = self.__compose_msg_list(classifiedad_id=classifiedad_id, 
+                classifiedad_status='NEW', msg_list=move_img_list)
+            task_status = queue.put_msg(new_json_msg)
+
+            if task_status is not True:
+                log.error(f'Could not ADD NEW message in OCI QUEUE (NEW TASK).')
+                return task_status
+                    
+        # Imagens que serão processadas pela tarefa de exclusão.
+        for img_url in old_img_list:
+            if img_url not in new_img_list:
+                delete_img_list.append(img_url)
+        else:
+            new_json_msg = self.__compose_msg_list(classifiedad_id=classifiedad_id, 
+                classifiedad_status='DELETE', msg_list=delete_img_list)
+            task_status = queue.put_msg(new_json_msg)
+
+            if task_status is not True:
+                log.error(f'Could not ADD NEW message in OCI QUEUE (DELETE TASK).')
+                return task_status
+
+        # Excluí a mensagem da fila.        
+        task_status = queue.delete_msg(msg_receipt)
+
+        if task_status is not True:
+            log.error(f'Could not DELETE message in OCI QUEUE (Msg Receipt = {msg_receipt}).') 
+
+        return task_status
+    
+    def delete_task(self, json_msg: str) -> bool:
+        """Tarefa para excluír imagens de um anúncio.
+
+        """
+        task_status = False
+
+        img_list = json_msg.get('data')              
+        msg_receipt = json_msg.get('receipt')
+
+        storage = Storage(region_id=self._region_id, bucket_ns=self._bucket_ns, env=self._env)
+
+        for img_url in img_list: 
+            img_filename = img_url[img_url.rindex('/') + 1:]
+
+            try:
+                storage.delete(obj_filename=img_filename, bucket_name=self._bucket_src)                  
+            except OciServiceError as e:
+                # FIXME: Problema de ObjectNotFound (404) para alguns objetos que
+                # precisam ser excluídos.
+                log.error(f'Could not DELETE the object "{img_filename}" from bucket "{self._bucket_src}" ({str(e.code)}).')
+                
+            # Aguarda alguns segundos antes de seguir com novas chamadas as APIs do
+            # OCI. Isso evita problemas de "estouro" de limites. 
+            time.sleep(self._api_sleep)
+
+        # Excluí a mensagem da fila.
+        queue = Queue(queue_id=self._queue_id, region_id=self._region_id, env=self._env)
+        task_status = queue.delete_msg(msg_receipt)
+
+        if task_status is not True:
+            log.error(f'Could not DELETE message in OCI QUEUE (Msg Receipt = {msg_receipt}).')
 
         return task_status

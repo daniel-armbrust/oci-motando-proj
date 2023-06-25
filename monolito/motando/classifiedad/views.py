@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, QueryDict, Http404
 from django.views import View
 from django.contrib import messages
+from django.db.models import Q
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -50,8 +51,8 @@ class HomeClassifiedAdView(View):
         total_published = ClassifiedAd.objects.filter(user_id=request.user, 
             status='PUBLISHED').count()        
 
-        total_not_published = ClassifiedAd.objects.filter(user_id=request.user, 
-            status='NEW').count()
+        total_not_published = ClassifiedAd.objects.filter(Q(user_id=request.user), 
+            Q(status='NEW') | Q(status='MOVE') | Q(status='UPDATE')).count()
         
         page_number = request.GET.get('p')
         classifiedad_page = paginator.get_page(page_number)
@@ -94,7 +95,8 @@ class NewClassifiedAdView(View):
                 ClassifiedAdImage.objects.bulk_create(bulk_img_list)
 
             # Queue Task
-            queue_client = ClassifiedAdQueue(queue_id=settings.QUEUE_ID, region_id=settings.OCI_REGION)                
+            queue_client = ClassifiedAdQueue(queue_id=settings.QUEUE_ID, region_id=settings.OCI_REGION, 
+                env=settings.APP_ENV)                
             queue_client.classifiedad_id = new_classifiedad_id
             queue_client.classifiedad_status = 'NEW'
             queue_client.put_list(msg_list=image_list)
@@ -132,28 +134,42 @@ class EditClassifiedAdView(View):
             raise Http404
         
         form = ClassifiedAdForm(data=request.POST, instance=classifiedad)
-        image_list = request.POST.getlist('image_list[]', None)  
-              
-        if form.is_valid() and (isinstance(image_list, list) and len(image_list) > 0):            
-            form.save()              
+        new_image_list = request.POST.getlist('image_list[]', None)  
 
-            ClassifiedAd.objects.filter(id=classifiedad_id).update(status='UPDATE')
+        # Valida se o formulário é válido e se o mesmo possui imagens do anúncio.
+        if form.is_valid() and (isinstance(new_image_list, list) and len(new_image_list) > 0):               
+            old_img_list = [old_img_url.url for old_img_url in classifiedad.images.all()]
 
-            # TODO: obter imagens antigas antes de excluir.
+            queue_client = ClassifiedAdQueue(queue_id=settings.QUEUE_ID, region_id=settings.OCI_REGION, 
+                env=settings.APP_ENV)                
+            queue_client.classifiedad_id = classifiedad_id
+            queue_client.classifiedad_status = 'UPDATE'
+            put_status = queue_client.put_list(msg_list=old_img_list)
+
+            if not put_status:
+                return HttpResponse(status=500)
+
+            form.save() 
+
+            # Excluí imagens antigas. 
             ClassifiedAdImage.objects.filter(classifiedad_id=classifiedad_id).delete()
-               
+
+            #  Insere novas imagens. 
             bulk_img_list = []
 
-            for img_url in image_list:
+            for img_url in new_image_list:
                 # TODO: necessário regex para validar a URL do Object Storage.
                 classifiedad_img = ClassifiedAdImage(classifiedad_id=classifiedad_id, url=img_url)
                 bulk_img_list.append(classifiedad_img)                
             else:
-                ClassifiedAdImage.objects.bulk_create(bulk_img_list)
+                ClassifiedAdImage.objects.bulk_create(bulk_img_list)           
+
+            # Define o status do classificado para "EM ATUALIZAÇÃO".
+            ClassifiedAd.objects.filter(id=classifiedad_id).update(status='UPDATE')                                   
 
             messages.success(request, 'Anúncio atualizado com sucesso.')
 
-            return redirect('classifiedad:my')
+            return redirect('classifiedad:home')
         
         messages.error(request, 'Erro ao atualizar o Anúncio.')
 
@@ -208,17 +224,17 @@ class ClassifiedAdTmpImageUploadView(View):
 
 
 class ClassifiedAdDetailView(View):
-    def get(self, request, brand: str, model: str, model_year: int, classifiedad_id: int):
-        user_profile = get_object_or_404(UserProfile, user=request.user)
-
+    def get(self, request, brand: str, model: str, model_year: int, classifiedad_id: int): 
+        brand_str = brand.replace('-', ' ')       
         model_str = model.replace('-', ' ')       
 
         try:
-            classifiedad = ClassifiedAd.objects.filter(model__brand__brand=brand, 
+            classifiedad = ClassifiedAd.objects.filter(model__brand__brand=brand_str, 
                 model__model=model_str, model_year=model_year, id=classifiedad_id, 
                 status='PUBLISHED').get()
+            print(classifiedad)
         except ClassifiedAd.DoesNotExist:
             raise Http404
         
         return render(request, 'classifiedad/desktop_details_classifiedad.html', {
-            'user_profile': user_profile, 'classifiedad': classifiedad})
+            'classifiedad': classifiedad})
