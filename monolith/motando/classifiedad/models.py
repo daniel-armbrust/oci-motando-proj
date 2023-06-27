@@ -42,9 +42,9 @@ class ClassifiedAd(models.Model):
         ('EXPIRED', 'Expirado',), ('INACTIVE', 'Inativo',), ('UPDATE', 'Atualizar',),
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
-    model = models.ForeignKey(MotorcycleBrandModel, on_delete=models.CASCADE, null=False) 
-    model_version = models.ForeignKey(MotorcycleBrandModelVersion, on_delete=models.CASCADE, null=True, default=None) 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
+    model = models.ForeignKey(MotorcycleBrandModel, on_delete=models.DO_NOTHING, null=False) 
+    model_version = models.ForeignKey(MotorcycleBrandModelVersion, on_delete=models.DO_NOTHING, null=True, default=None) 
     type = models.CharField(max_length=20, choices=MOTORCYCLE_TYPE_CHOICES, null=True, default=None)
     origin = models.CharField(max_length=10, choices=ORIGIN_CHOICES, null=True, default=None)
     fabrication_year = models.PositiveSmallIntegerField(null=False, blank=False)

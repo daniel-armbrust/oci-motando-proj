@@ -16,6 +16,7 @@ urlpatterns = [
     path('novo', login_required(views.NewClassifiedAdView.as_view()), name='new'),
     path('upload/imagem', login_required(views.ClassifiedAdTmpImageUploadView.as_view()), name='image_upload'),
     path('editar/<int:classifiedad_id>', login_required(views.EditClassifiedAdView.as_view()), name='edit'),   
+    path('excluir', login_required(views.DeleteClassifiedAdView.as_view()), name='delete'),   
 
     # Visualização pública
     path('<str:brand>/<str:model>/<int:model_year>/<int:classifiedad_id>', views.ClassifiedAdDetailView.as_view(), name='detail'),

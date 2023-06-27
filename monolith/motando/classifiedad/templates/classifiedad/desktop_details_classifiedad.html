@@ -325,19 +325,24 @@
                     <div class="bg-white shadow">
                         <div class="row p-3">
                             <div class="col pt-2 text-center">                            
-                                <p class="h5 pb-2">Compartilhe este anúncio</p>
-                                <a href="#" class="text-decoration-none">
-                                   <img src="{% static '/img/whatapp-icon.png' %}" alt="Whatsapp" class="img-fluid p-3">
-                                </a>
-                                <a href="#" class="text-decoration-none">
+                                <p class="h5 pb-2">Compartilhe este anúncio</p>                                
+                                <a href="https://api.whatsapp.com/send?text={{ 'Olá. Veja este anúncio:  https://'|urlencode }}{{ request.META.HTTP_HOST }}{{ request.get_full_path }}" 
+                                   class="text-decoration-none" data-action="share/whatsapp/share">
+                                    <img src="{% static '/img/whatapp-icon.png' %}" alt="Whatsapp" class="img-fluid p-3">
+                                </a>                                                                   
+                                <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ 'https://'|urlencode }}{{ request.META.HTTP_HOST }}{{ request.get_full_path }}&amp;src=sdkpreparse" 
+                                   class="fb-xfbml-parse-ignore" class="text-decoration-none">
                                     <img src="{% static '/img/facebook-icon.png' %}" alt="Facebook" class="img-fluid p-3">
-                                </a>
-                                <a href="#" class="text-decoration-none">
+                                </a>                                
+                                <a target="_blank" href="https://twitter.com/share?url={{ 'https://'|urlencode }}{{ request.META.HTTP_HOST }}{{ request.get_full_path }}" 
+                                   class="text-decoration-none">
                                     <img src="{% static '/img/twiter-icon.png' %}" alt="Twitter" class="img-fluid p-3">
                                 </a>
-                                <a href="#" class="text-decoration-none">
-                                     <img src="{% static '/img/linkedin-icon.png' %}" alt="Linkedin" class="img-fluid p-3"> 
-                                </a>
+                                {% comment %}
+                                    <a href="#" class="text-decoration-none">
+                                        <img src="{% static '/img/linkedin-icon.png' %}" alt="Linkedin" class="img-fluid p-3"> 
+                                    </a>
+                                {% endcomment %}
                             </div> 
                         </div>
                     </div>

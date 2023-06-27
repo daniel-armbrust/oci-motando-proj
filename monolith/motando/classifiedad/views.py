@@ -45,7 +45,8 @@ class HomeClassifiedAdView(View):
     def get(self, request):
         user_profile = get_object_or_404(UserProfile, user=request.user)
 
-        classifiedad_list = ClassifiedAd.objects.filter(user=request.user).all()
+        classifiedad_list = ClassifiedAd.objects.filter(Q(user_id=request.user),
+            Q(status='PUBLISHED') | Q(status='NEW') | Q(status='MOVE') | Q(status='UPDATE')).all()
         paginator = Paginator(classifiedad_list, 4)
 
         total_published = ClassifiedAd.objects.filter(user_id=request.user, 
@@ -238,3 +239,37 @@ class ClassifiedAdDetailView(View):
         
         return render(request, 'classifiedad/desktop_details_classifiedad.html', {
             'classifiedad': classifiedad})
+
+
+class DeleteClassifiedAdView(View):
+    def post(self, request):
+        classifiedad_id = request.POST.get('classifiedad_id', None)
+
+        try:
+            classified_ad = ClassifiedAd.objects.filter(id=classifiedad_id, user=request.user, status='PUBLISHED').get()
+        except ClassifiedAd.DoesNotExist:
+            raise Http404
+        
+        img_list = []
+
+        for img in classified_ad.images.all():
+            img_list.append(img.url)
+        
+        queue_client = ClassifiedAdQueue(queue_id=settings.QUEUE_ID, region_id=settings.OCI_REGION, 
+            env=settings.APP_ENV)                
+        queue_client.classifiedad_id = classifiedad_id
+        queue_client.classifiedad_status = 'DELETE'
+        put_status = queue_client.put_list(msg_list=img_list)
+
+        if put_status is not None:
+            rows = ClassifiedAd.objects.filter(id=classifiedad_id, user=request.user, 
+                status='PUBLISHED').update(status='DELETE')
+            
+            if rows:                       
+                messages.success(request, 'Anúncio excluido com sucesso.')
+            else:
+                messages.error(request, 'Não foi possível excluír este anúncio.')
+            
+            return redirect('classifiedad:home')
+        else:
+            return HttpResponse(status=500)

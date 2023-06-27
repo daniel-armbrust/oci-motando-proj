@@ -41,9 +41,9 @@ class ClassifiedAdQueue():
             config = oci.config.from_file()
             self.__client = oci.queue.QueueClient(config=config, service_endpoint=service_endpoint)
         
-    def _compose_msg_list(self, msg_list: list = None):
+    def _compose_msg_list(self, msg_list: list = None):        
         msg_template = {'classifiedad_id': self.__classifiedad_id,
-            'classifiedad_status': self.__classifiedad_status, 'data': msg_list}
+            'classifiedad_status': self.__classifiedad_status, 'data': msg_list}        
 
         json_msg = json.dumps(msg_template)
 
@@ -51,6 +51,21 @@ class ClassifiedAdQueue():
 
     def put_list(self, msg_list: list = None):
         json_msg = self._compose_msg_list(msg_list)
+
+        resp = self.__client.put_messages(queue_id=self.__queue_id,
+            put_messages_details=oci.queue.models.PutMessagesDetails(
+                messages=[oci.queue.models.PutMessagesDetailsEntry(content=json_msg)]
+            )
+        )
+
+        # HTTP - 200 OK
+        if resp.status == 200:
+            return resp.data.messages[0].id
+        else:
+            return None
+    
+    def put(self):
+        json_msg = self._compose_msg_list()
 
         resp = self.__client.put_messages(queue_id=self.__queue_id,
             put_messages_details=oci.queue.models.PutMessagesDetails(

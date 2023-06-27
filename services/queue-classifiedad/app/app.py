@@ -123,8 +123,9 @@ def update_classifiedad(json_msg: str):
 
 
 def delete_classifiedad(json_msg: str):
-    global OCI_REGION_ID, OCI_OS_NAMESPACE, OCI_BUCKET_SRC, APP_ENV, OCI_API_SLEEP_SECS, \
-        OCI_QUEUE_ID
+    global OCI_REGION_ID, OCI_OS_NAMESPACE, OCI_BUCKET_SRC, OCI_BUCKET_DST, APP_ENV, \
+        OCI_API_SLEEP_SECS, OCI_QUEUE_ID, OCI_MYSQL_HOSTNAME, OCI_MYSQL_USERNAME, \
+        OCI_MYSQL_PASSWORD, OCI_MYSQL_DBNAME
 
     workflow = Workflow()
 
@@ -132,8 +133,13 @@ def delete_classifiedad(json_msg: str):
     workflow.region_id = OCI_REGION_ID
     workflow.bucket_ns = OCI_OS_NAMESPACE
     workflow.bucket_src = OCI_BUCKET_SRC
+    workflow.bucket_dst = OCI_BUCKET_DST
     workflow.queue_id = OCI_QUEUE_ID
     workflow.api_sleep = OCI_API_SLEEP_SECS
+    workflow.db_host = OCI_MYSQL_HOSTNAME
+    workflow.db_user = OCI_MYSQL_USERNAME
+    workflow.db_passwd = OCI_MYSQL_PASSWORD
+    workflow.db_name = OCI_MYSQL_DBNAME
 
     log.info('Processing DELETE CLASSIFIEDAD task for messages.')
 

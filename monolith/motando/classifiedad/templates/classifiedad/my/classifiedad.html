@@ -106,20 +106,29 @@
                                                 </p>
                                                 <p class="card-text"> <span class="text-success h5 fw-bold"> R$ {{ classifiedad.price|intcomma }} </span>
                                                 {% if classifiedad.status == 'PUBLISHED' %} 
-                                                        <div class="row pt-2 pb-4">
-                                                            <div class="col">
-                                                                <a class="btn btn-outline-success" href="#">
-                                                                    Destacar Anúncio
-                                                                </a> &nbsp;&nbsp;
-                                                                <a class="btn btn-outline-info" 
-                                                                   href="{% url 'classifiedad:edit' classifiedad_id=classifiedad.id %}">
-                                                                    Editar
-                                                                </a> &nbsp;&nbsp;
-                                                                <a class="btn btn-outline-danger" href="#">
+                                                    <div class="row pt-2 pb-4">
+                                                        <div class="col-4 d-grid gap-2">
+                                                            <a class="btn btn-outline-success" href="#">
+                                                                Destacar Anúncio
+                                                            </a> 
+                                                        </div>
+                                                        <div class="col-2 d-grid gap-2">
+                                                            <a class="btn btn-outline-info" 
+                                                            href="{% url 'classifiedad:edit' classifiedad_id=classifiedad.id %}">
+                                                            Editar
+                                                            </a> 
+                                                        </div>
+                                                        <div class="col-2 d-grid gap-2">
+                                                            <form method="post" action="{% url 'classifiedad:delete' %}" 
+                                                                onsubmit="return confirm('Deseja realmente excluír este anúncio?');">   
+                                                                {% csrf_token %}
+                                                                <input type="hidden" id="id_classifiedad_id" name="classifiedad_id" value="{{ classifiedad.id }}">                                    
+                                                                <button type="submit" class="btn btn-outline-danger">
                                                                     Excluir
-                                                                </a>
-                                                            </div>
-                                                        </div>                                               
+                                                                </button>                                                                                                                       
+                                                            </form>
+                                                        </div>
+                                                    </div>                         
                                                 {% endif %}
                                                 <div class="row">
                                                     <div class="col">

@@ -364,7 +364,8 @@ class Workflow():
         task_status = False
 
         img_list = json_msg.get('data')              
-        msg_receipt = json_msg.get('receipt')
+        classifiedad_id = json_msg.get('classifiedad_id')        
+        msg_receipt = json_msg.get('receipt')        
 
         storage = Storage(region_id=self._region_id, bucket_ns=self._bucket_ns, env=self._env)
 
@@ -377,10 +378,36 @@ class Workflow():
                 # FIXME: Problema de ObjectNotFound (404) para alguns objetos que
                 # precisam ser excluídos.
                 log.error(f'Could not DELETE the object "{img_filename}" from bucket "{self._bucket_src}" ({str(e.code)}).')
-                
+            
+            try:
+                storage.delete(obj_filename=img_filename, bucket_name=self._bucket_dst)                  
+            except OciServiceError as e:
+                # FIXME: Problema de ObjectNotFound (404) para alguns objetos que
+                # precisam ser excluídos.
+                log.error(f'Could not DELETE the object "{img_filename}" from bucket "{self._bucket_dst}" ({str(e.code)}).')
+                    
             # Aguarda alguns segundos antes de seguir com novas chamadas as APIs do
             # OCI. Isso evita problemas de "estouro" de limites. 
-            time.sleep(self._api_sleep)
+            time.sleep(self._api_sleep)                
+
+        mysql_db = MysqlDb(host=self._db_host, user=self._db_user, passwd=self._db_passwd, 
+            db_name=self._db_name)
+
+        delete_stm_list = [
+            f'''
+                DELETE FROM classifiedad_images WHERE classifiedad_id = {classifiedad_id}
+            ''',
+            f'''
+                DELETE FROM classifiedad WHERE id = {classifiedad_id}
+            ''' 
+        ]
+
+        for delete_stm in delete_stm_list:            
+            rows_deleted = mysql_db.delete(delete_stm)
+            log.info(f'DELETED {rows_deleted} rows in MySQL.')
+
+            if self._env == 'DEV':                
+                log.info(f'DELETE SQL Statement used: {delete_stm}'.rstrip())     
 
         # Excluí a mensagem da fila.
         queue = Queue(queue_id=self._queue_id, region_id=self._region_id, env=self._env)
