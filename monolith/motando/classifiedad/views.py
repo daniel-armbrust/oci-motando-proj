@@ -18,7 +18,7 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 
 from storage import ClassifiedAdTmpImageStorage
-from .forms import ClassifiedAdForm
+from .forms import ClassifiedAdForm, ClassifiedAdLeaveMsgForm
 from .models import ClassifiedAd, ClassifiedAdImage
 from .queue import ClassifiedAdQueue
 from account.models import UserProfile
@@ -237,8 +237,10 @@ class ClassifiedAdDetailView(View):
         except ClassifiedAd.DoesNotExist:
             raise Http404
         
+        form = ClassifiedAdLeaveMsgForm()
+
         return render(request, 'classifiedad/desktop_details_classifiedad.html', {
-            'classifiedad': classifiedad})
+            'classifiedad': classifiedad, 'form': form})
 
 
 class DeleteClassifiedAdView(View):
@@ -250,7 +252,7 @@ class DeleteClassifiedAdView(View):
         except ClassifiedAd.DoesNotExist:
             raise Http404
         
-        img_list = []
+        img_list = []      
 
         for img in classified_ad.images.all():
             img_list.append(img.url)

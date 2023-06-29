@@ -91,7 +91,7 @@ class ClassifiedAdForm(forms.ModelForm):
         )
     )
 
-    description = forms.CharField(label='Descrição do Anúncio', required=False,
+    description = forms.CharField(label='Descrição do Anúncio', required=False, max_length=4000,
         widget=forms.Textarea(
             attrs={'style': 'box-shadow: none; background-color: white; resize: none;', 'rows': 10}
         )
@@ -193,3 +193,29 @@ class ClassifiedAdForm(forms.ModelForm):
         cleaned_data['price'] = price_decimal
 
         return cleaned_data
+
+
+class ClassifiedAdLeaveMsgForm(forms.Form):
+    full_name = forms.CharField(label='Nome', max_length=500, required=True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+
+    email = forms.CharField(label='E-mail', required=True,
+        widget=forms.EmailInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+
+    telephone = forms.CharField(label='Telefone', max_length=40, required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+
+    message = forms.CharField(label='Digite a sua mensagem', required=True, max_length=4000,
+        widget=forms.Textarea(
+            attrs={'class': 'form-control', 'style': 'height: 100px; resize: none', 'rows': 10}
+        )
+    )  
