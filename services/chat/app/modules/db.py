@@ -1,5 +1,5 @@
 #
-# queue-classifiedad/app/modules/db.py
+# chat/app/modules/db.py
 #
 
 import logging as log
@@ -12,7 +12,7 @@ class MysqlDb():
         self._conn = mysql.connector.connect(host=host, user=user, password=passwd, database=db_name)
     
     def __get_cursor(self, dictionary: bool = False):
-        return self._conn.cursor(dictionary=dictionary)      
+        return self._conn.cursor(dictionary=dictionary)          
 
     def __del__(self):
         self.close()
@@ -41,7 +41,7 @@ class MysqlDb():
             return 0
     
     def select(self, stm: str) -> list:        
-        cursor = self.__get_cursor()
+        cursor = self.__get_cursor(dictionary=True)
 
         result = None
         item_list = []
@@ -52,11 +52,8 @@ class MysqlDb():
             log.error('Could NOT execute the SQL SELECT Statement: {}'.format(err))            
         else:            
             result = cursor.fetchall()
-        
-        for item in result:
-            item_list.append(item[0])
-        
-        return item_list
+                        
+        return result
     
     def delete(self, stm: str) -> list:        
         cursor = self.__get_cursor()

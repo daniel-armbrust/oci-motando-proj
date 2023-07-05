@@ -303,7 +303,7 @@ class Workflow():
         classifiedad_id = json_msg.get('classifiedad_id') 
         msg_receipt = json_msg.get('receipt')    
 
-        select_stm = f'''
+        select_sqlstm = f'''
             SELECT url FROM classifiedad_images WHERE classifiedad_id = {classifiedad_id}
         '''        
 
@@ -315,7 +315,7 @@ class Workflow():
         delete_img_list = []
 
         # Obtém todas as novas imagens do anúncio.
-        new_img_list = mysql_db.select(select_stm)   
+        new_img_list = mysql_db.select(select_sqlstm)   
         mysql_db.close()        
 
         queue = Queue(queue_id=self._queue_id, region_id=self._region_id, env=self._env)

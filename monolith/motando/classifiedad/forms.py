@@ -206,16 +206,16 @@ class ClassifiedAdLeaveMsgForm(forms.Form):
         widget=forms.EmailInput(
             attrs={'class': 'form-control'}
         )
-    )
+    )  
 
-    telephone = forms.CharField(label='Telefone', max_length=40, required=False,
+    telephone = forms.CharField(label='Telefone', required=True,
         widget=forms.TextInput(
             attrs={'class': 'form-control'}
         )
-    )
+    )  
 
     message = forms.CharField(label='Digite a sua mensagem', required=True, max_length=4000,
         widget=forms.Textarea(
-            attrs={'class': 'form-control', 'style': 'height: 100px; resize: none', 'rows': 10}
+            attrs={'class': 'form-control', 'style': 'height: 85px; resize: none', 'rows': 10}
         )
-    )  
+    )

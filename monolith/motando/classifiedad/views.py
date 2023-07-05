@@ -21,7 +21,7 @@ from storage import ClassifiedAdTmpImageStorage
 from .forms import ClassifiedAdForm, ClassifiedAdLeaveMsgForm
 from .models import ClassifiedAd, ClassifiedAdImage
 from .queue import ClassifiedAdQueue
-from account.models import UserProfile
+from account.models import User, UserProfile
 
 
 class AllClassifiedAdView(View):
@@ -232,12 +232,18 @@ class ClassifiedAdDetailView(View):
         try:
             classifiedad = ClassifiedAd.objects.filter(model__brand__brand=brand_str, 
                 model__model=model_str, model_year=model_year, id=classifiedad_id, 
-                status='PUBLISHED').get()
-            print(classifiedad)
+                status='PUBLISHED').get()            
         except ClassifiedAd.DoesNotExist:
             raise Http404
         
-        form = ClassifiedAdLeaveMsgForm()
+        if request.user.is_anonymous:
+            form = ClassifiedAdLeaveMsgForm()
+        else:    
+            user = User.objects.get(email=request.user)
+            fullname = user.full_name
+            email = user.email
+
+            form = ClassifiedAdLeaveMsgForm(initial={'full_name': fullname, 'email': email})
 
         return render(request, 'classifiedad/desktop_details_classifiedad.html', {
             'classifiedad': classifiedad, 'form': form})

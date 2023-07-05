@@ -89,7 +89,7 @@
                     </div>                    
                 </div>     
                 <div class="col-4">         
-                    <div class="bg-white shadow">
+                    <div class="bg-white shadow rounded-bottom">
                         <div class="row">
                             <div class="col">
                                <h2 class="h2 fw-bold rounded-top my-background-purple text-white p-3 text-center"> 
@@ -103,13 +103,13 @@
                             <div class="row">
                                 <div class="col">                                
                                     <div class="form-group text-left ml-2 mr-3">
-                                        <label for="{{ form.full_name.auto_id }}" class="form-label">{{ form.full_name.label }}</label>
-                                        {{ form.full_name }}                                        
-                                        <small class="form-text text-muted">Digite o seu nome completo</small>
+                                        <label for="{{ form.full_name.auto_id }}" class="form-label">{{ form.full_name.label }}</label>                                       
+                                         {{ form.full_name }}                                        
+                                         <small class="form-text text-muted">Digite o seu nome completo</small>                                                                               
                                     </div>                        
                                 </div>    
                             </div>
-                            <div class="row pt-2">
+                            <div class="row pt-3">
                                 <div class="col">                                
                                     <div class="form-group text-left ml-2 mr-3">
                                         <label for="{{ form.email.auto_id }}" class="form-label">{{ form.email.label }}</label>
@@ -117,16 +117,16 @@
                                         <small class="form-text text-muted">Digite o seu e-mail</small>
                                     </div>                        
                                 </div>    
-                            </div>
-                            <div class="row pt-2">
+                            </div>         
+                            <div class="row pt-3">
                                 <div class="col">                                
                                     <div class="form-group text-left ml-2 mr-3">
                                         <label for="{{ form.telephone.auto_id }}" class="form-label">{{ form.telephone.label }}</label>
-                                        {{ form.telephone }}                                        
-                                        <small class="form-text text-muted">Digite seu telefone para contato</small>
-                                    </div>                                               
+                                        {{ form.telephone }}
+                                        <small class="form-text text-muted">Digite o seu Telefone</small>
+                                    </div>                        
                                 </div>    
-                            </div>
+                            </div>                        
                             <div class="row pt-4">
                                 <div class="col"> 
                                     <div class="form-floating">
@@ -160,7 +160,7 @@
             </div>
             <div class="row">
                 <div class="col-8">           
-                    <div class="bg-white shadow">
+                    <div class="bg-white shadow rounded-bottom">
                         <div class="row">
                             <div class="col">
                                 <h3 class="h5 fw-bold rounded-top my-background-purple text-white p-3">
@@ -177,10 +177,8 @@
                             </div>   
                         </div>                       
                     </div>    
-
                     <br>
-
-                    <div class="bg-white shadow">
+                    <div class="bg-white shadow rounded-bottom">
                         <div class="row">
                             <div class="col">
                                 <h3 class="h5 fw-bold rounded-top my-background-purple text-white p-3">
@@ -308,7 +306,7 @@
 
                 </div>
                 <div class="col-4 pt-1">   
-                    <div class="bg-white shadow">
+                    <div class="bg-white shadow rounded">
                         <div class="row p-3">
                             <div class="col pt-2">                            
                                 <img src="{% static 'img/pessoa.png' %}" 
@@ -322,7 +320,7 @@
                         </div>
                     </div>
                     <br>
-                    <div class="bg-white shadow">
+                    <div class="bg-white shadow rounded">
                         <div class="row p-3">
                             <div class="col pt-2 text-center">                            
                                 <p class="h5 pb-2">Compartilhe este anúncio</p>                                
@@ -358,18 +356,30 @@
       {% include "include/desktop_footer.html" %}
 {% endblock %}
 {% block body_scripts %}
-     <script type="text/javascript" src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>        
-     <script type="text/javascript" src="{% static 'js/classified-ad-leavemsg.js' %}"></script> 
+     <script type="text/javascript" src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script> 
+     <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script> 
+     <script type="text/javascript" src="{% static 'js/classifiedad-chat.js' %}"></script> 
      <script type="text/javascript">        
          $(document).ready(function(){
-                $('#id_btn_sendmsg').click(function() {
-                    const csrf_value = $('input[name=csrfmiddlewaretoken]').val();     
-                    const fullName = $('#{{ form.full_name.auto_id }}').val();                 
-                    const email =  $('#{{ form.email.auto_id }}').val();     
-                    const telephone =  $('#{{ form.telephone.auto_id }}').val();  
-                    const message = $('#{{ form.message.auto_id }}').val();  
+                $('#id_btn_sendmsg').click(function() { 
+                    const userFromFullname = $('#{{ form.full_name.auto_id }}').val();                      
+                    const userFromEmail = $('#{{ form.email.auto_id }}').val();   
+                    const userFromTelephone = $('#{{ form.telephone.auto_id }}').val();   
+                    const userFromMessage = $('#{{ form.message.auto_id }}').val();  
+                    const userToEmail = '{{ classifiedad.user.email }}';
+                    const classifiedadId = '{{ classifiedad.id }}';
+                    const chatMsgUrl = 'http://127.0.0.1:8001/api/chats/messages/classifiedad';
+                                        
+                    CLASSIFIEDAD_MSG.init([
+                        userFromFullname, 
+                        userFromEmail, 
+                        userFromTelephone, 
+                        userFromMessage, 
+                        userToEmail, 
+                        classifiedadId, 
+                        chatMsgUrl
+                    ]);
 
-                    CLASSIFIEDAD_MSG.init([csrf_value, {{ classifiedad.user.id }}, fullName, email, telephone, message]);
                     CLASSIFIEDAD_MSG.sendUserMessage();
                 });        
          });

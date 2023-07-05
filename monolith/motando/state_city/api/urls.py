@@ -9,8 +9,8 @@ from . import views
 app_name = 'state_city'
 
 urlpatterns = [
-    path('estado', views.StateListView.as_view(), name='state_list'),
-    path('estado/<int:pk>', views.StateDetailView.as_view(), name='state_detail'),
-    path('estado/<int:state_id>/cidade', views.StateCityListView.as_view(), name='state-city_list'),
-    path('estado/<int:state_id>/cidade/<int:city_id>', views.StateCityDetailView.as_view(), name='state-city_detail')
+    path('states', views.StateListView.as_view(), name='state_list'),
+    path('states/<int:pk>', views.StateDetailView.as_view(), name='state_detail'),
+    path('states/<int:state_id>/cities', views.StateCityListView.as_view(), name='state-city_list'),
+    path('states/<int:state_id>/cities/<int:city_id>', views.StateCityDetailView.as_view(), name='state-city_detail')
 ]
