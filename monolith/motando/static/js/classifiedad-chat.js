@@ -41,6 +41,10 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
                     $('#id_ajax_loading').toggleClass('d-block d-none');                                     
                 },
                 success: function(jsonResp) {
+                    $('#id_modal_title').html('Sucesso');
+                    $('#id_modal_message').html('Sua mensagem foi enviada com sucesso!');
+                    $('#id_modal').modal('show');
+                    
                     $('#id_full_name').attr('readonly', false);
                     $('#id_full_name').val('');
                     
@@ -51,13 +55,18 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
                     $('#id_telephone').val('');
 
                     $('#id_message').attr('readonly', false);   
-                    $('#id_message').val('');   
-
-                    alert('Sua mensagem foi enviada com sucesso!');
+                    $('#id_message').val('');                   
                 },
                 error: function(xhr, textStatus, errorThrown) {                    
                     console.error(textStatus);
-                    alert('Não foi possível enviar a sua mensagem! Tente novamente mais tarde.');
+                    $('#id_modal_title').html('Erro');
+                    $('#id_modal_message').html('Não foi possível enviar a sua mensagem! Tente novamente mais tarde.');
+                    $('#id_modal').modal('show');
+                    
+                    $('#id_full_name').attr('readonly', false);
+                    $('#id_email').attr('readonly', false);
+                    $('#id_telephone').attr('readonly', false);
+                    $('#id_message').attr('readonly', false);
                 }
             });
         }
