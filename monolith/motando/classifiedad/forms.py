@@ -196,7 +196,7 @@ class ClassifiedAdForm(forms.ModelForm):
 
 
 class ClassifiedAdLeaveMsgForm(forms.Form):
-    full_name = forms.CharField(label='Nome', max_length=500, required=True,
+    fullname = forms.CharField(label='Nome', max_length=500, required=True,
         widget=forms.TextInput(
             attrs={'class': 'form-control'}
         )

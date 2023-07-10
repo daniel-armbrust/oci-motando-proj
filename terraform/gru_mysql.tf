@@ -2,6 +2,7 @@
 # gru_mysql.tf
 #
 
+/*
 resource "random_password" "password" {
     length = 12
     special = true
@@ -34,3 +35,5 @@ resource "oci_mysql_mysql_db_system" "gru_mysql_motando" {
         window_start_time = "sun 01:00"
     }
 }
+
+*/

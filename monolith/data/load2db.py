@@ -165,13 +165,13 @@ def main():
     
     for line in f.readlines():
         line = line.rstrip('\n')
-        (full_name, email, password,) = line.split(';')
+        (fullname, email, password,) = line.split(';')
 
         telephone = get_telephone()
         state = random.choices(State.objects.all(), k=1)[0]
         city = random.choices(StateCity.objects.filter(state__id=state.id).all(), k=1)[0]
         
-        user = User.objects.create_user(full_name=full_name, email=email, 
+        user = User.objects.create_user(fullname=fullname, email=email, 
             password=password)        
         
         UserProfile(user=user, state=state, city=city, telephone=telephone).save()

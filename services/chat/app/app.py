@@ -8,6 +8,7 @@ import logging as log
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
 
 from modules.ocilog import OciLogHandler
 from modules.models import MessageIn, MessageOut
@@ -33,18 +34,38 @@ app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['GET', 'POST'])
 
 
-@app.post('/api/chats/messages/classifiedad', response_model=MessageOut, status_code=200)
-async def public_message(message: MessageIn, resp: Response) -> MessageOut:
-    """Function for send a specified message to the end user. It is public
-    because this endpoint is protected by an API Gateway with some RATE LIMIT
-    rules.    
+@app.get('/api/chats/messages', response_model=None, status_code=200)
+async def read_message(email_to: Optional[str] = None, email_from: Optional[str] = None, resp: Response = None):
+    """ """
+    chat =  Chat()
+
+    if email_to:
+        messages = chat.read_messages(email_to=email_to)
+    elif email_from:
+        messages = chat.read_messages(email_from=email_from)
+    else:
+        resp.status_code = 400
+        return {'status' : 'fail', 'message' : 'Unable to read Chat messages.'}
+
+    if messages:        
+        print('ooooooooooo')
+    else:
+         resp.status_code = 404
+         return {'status' : 'fail', 'message' : 'No message found.'}
+
+
+@app.post('/api/chats/messages', response_model=MessageOut, status_code=200)
+async def new_message(message: MessageIn, resp: Response) -> MessageOut:
+    """Function for send a specified message to some user. 
+
     """
     chat = Chat()
-    status = chat.send_pubmsg(message)
+    status = chat.new_message(message)
 
     if status:
         return {'status': 'success', 'message': 'The message was successful send.'}
     else:
-        resp.status_code = 422        
-        return {'status' : 'error', 'message' : 'Unable to process new Chat message.'}
-       
+        resp.status_code = 422   
+        return {'status' : 'fail', 'message' : 'Unable to process new Chat message.'}
+
+

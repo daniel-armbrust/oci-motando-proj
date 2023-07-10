@@ -23,8 +23,8 @@ urlpatterns = [
 
     path('', include('home.urls', namespace='home')),
     path('account/', include('account.urls', namespace='account')),
-
     path('classifiedad/', include('classifiedad.urls', namespace='classifiedad')),
+    path('chat/', include('chat.urls', namespace='chat')),
 
     # API Token
     re_path(r'^api/token/$', TokenObtainPairView.as_view(), name='token_obtain_pair'),

@@ -22,10 +22,20 @@ class NoSql():
         
         self.__client.base_client.timeout = None
     
-    def query(self, data):
-        pass
+    def query(self, sqlstm: str):
+        query_details = oci.nosql.models.QueryDetails(
+            compartment_id=self._compartment_id, 
+            statement=sqlstm
+        )
 
-    def put(self, data):
+        resp = self.__client.query(query_details=query_details)       
+        
+        if resp.status == 200 and resp.data.items:
+            return resp.data.items
+        else:
+            return None
+
+    def put(self, data: dict) -> bool:
         update_details = oci.nosql.models.UpdateRowDetails(
             compartment_id=self._compartment_id, 
             option=oci.nosql.models.UpdateRowDetails.OPTION_IF_ABSENT,

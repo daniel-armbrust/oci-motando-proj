@@ -240,10 +240,10 @@ class ClassifiedAdDetailView(View):
             form = ClassifiedAdLeaveMsgForm()
         else:    
             user = User.objects.get(email=request.user)
-            fullname = user.full_name
+            fullname = user.fullname
             email = user.email
 
-            form = ClassifiedAdLeaveMsgForm(initial={'full_name': fullname, 'email': email})
+            form = ClassifiedAdLeaveMsgForm(initial={'fullname': fullname, 'email': email})
 
         return render(request, 'classifiedad/desktop_details_classifiedad.html', {
             'classifiedad': classifiedad, 'form': form})

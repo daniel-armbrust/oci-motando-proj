@@ -14,7 +14,9 @@
       </div>
       <div class="row">
          <div class="col d-flex justify-content-center">
-             <p class="text-center"> Cadastrado desde 
+             <p class="text-center"> 
+               {{ user_profile.user.fullname }} <br>
+                Cadastrado desde 
                 {{ user_profile.user.created|date:"d"}} de {{ user_profile.user.created|date:"F"}}/{{ user_profile.user.created|date:"Y"}}
              </p> 
          </div>
@@ -47,10 +49,10 @@
       </div>
       <div class="row">
          <div class="col m-2">
-               <a class="text-decoration-none screen-wait-class" href="">
-                  <i class="fas fa-comments"></i> Chat de Propostas
-               </a>
-         </div>
+            <a class="text-decoration-none screen-wait-class" href="{% url 'chat:home' %}">
+               <i class="fas fa-comments"></i> Chat de Propostas
+            </a>
+         </div>        
       </div>
       <div class="row">
          <div class="col m-2">

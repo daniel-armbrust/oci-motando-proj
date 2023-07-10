@@ -11,17 +11,17 @@ from motorcycle.models import MotorcycleBrand, MotorcycleBrandModel
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, full_name=None):
+    def create_user(self, email, password=None, fullname=None):
         """
         Creates and saves a User with the given email and password.
         """
         if not email:
             raise ValueError('Users must have an email address')
 
-        if not full_name:
+        if not fullname:
             raise ValueError('Users must have a name')
 
-        user = self.model(email=self.normalize_email(email), full_name=full_name)
+        user = self.model(email=self.normalize_email(email), fullname=fullname)
 
         user.set_password(password)
         user.save(using=self._db)
@@ -54,7 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     email = models.EmailField(max_length=255, unique=True)
-    full_name = models.CharField(max_length=500, blank=False, null=False)
+    fullname = models.CharField(max_length=500, blank=False, null=False)
     is_active = models.BooleanField(default=True) # TODO: email for activation
     staff = models.BooleanField(default=False) # a admin user; non super-user
     admin = models.BooleanField(default=False) # a superuser
@@ -62,14 +62,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name'] # Email & Password are required by default.
+    REQUIRED_FIELDS = ['fullname'] # Email & Password are required by default.
 
     def __str__(self):
         return self.email
 
-    def get_full_name(self):
+    def get_fullname(self):
         # The user is identified by their email address
-        return self.email
+        return self.fullname
 
     def get_short_name(self):
         # The user is identified by their email address

@@ -9,16 +9,14 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
             const userFromFullname = _args[0];           
             const userFromEmail = _args[1];
             const userFromTelephone = _args[2];
-            const userFromMessage = _args[3];
-            const userToEmail = _args[4];  
-            const classifiedadId = _args[5];  
-            const chatMsgUrl = _args[6];   
+            const userFromMessage = _args[3];            
+            const classifiedadId = _args[4];  
+            const chatMsgUrl = _args[5];   
             
             const jsonData = JSON.stringify({     
                 fullname_from: userFromFullname,                                                    
                 email_from: userFromEmail,
-                telephone_from: userFromTelephone,
-                email_to: userToEmail,
+                telephone_from: userFromTelephone,               
                 classifiedad_id: classifiedadId,
                 message: userFromMessage
             });
@@ -29,9 +27,8 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
                 dataType: 'json', 
                 contentType: 'application/json',
                 data: jsonData,                
-                beforeSend: function() {
-                    $('#id_meus_anuncios').html('');
-                    $('#id_full_name').attr('readonly', true);
+                beforeSend: function() {                    
+                    $('#id_fullname').attr('readonly', true);
                     $('#id_email').attr('readonly', true);
                     $('#id_telephone').attr('readonly', true);
                     $('#id_message').attr('readonly', true);
@@ -45,8 +42,8 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
                     $('#id_modal_message').html('Sua mensagem foi enviada com sucesso!');
                     $('#id_modal').modal('show');
                     
-                    $('#id_full_name').attr('readonly', false);
-                    $('#id_full_name').val('');
+                    $('#id_fullname').attr('readonly', false);
+                    $('#id_fullname').val('');
                     
                     $('#id_email').attr('readonly', false);
                     $('#id_email').val('');
@@ -59,11 +56,12 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
                 },
                 error: function(xhr, textStatus, errorThrown) {                    
                     console.error(textStatus);
+
                     $('#id_modal_title').html('Erro');
                     $('#id_modal_message').html('Não foi possível enviar a sua mensagem! Tente novamente mais tarde.');
                     $('#id_modal').modal('show');
                     
-                    $('#id_full_name').attr('readonly', false);
+                    $('#id_fullname').attr('readonly', false);
                     $('#id_email').attr('readonly', false);
                     $('#id_telephone').attr('readonly', false);
                     $('#id_message').attr('readonly', false);
@@ -72,3 +70,17 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
         }
     };
 }());
+
+$(document).ready(function() {    
+
+    $('#id_form input[name=chat_options]').on('change', function() {
+       let chatOption = $("#id_form input[type='radio']:checked").val();
+
+       switch(chatOption) {
+          case 'selling': 
+             alert('aaaaaaaa');
+             break;
+       }
+    });        
+
+});  

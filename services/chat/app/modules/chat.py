@@ -31,69 +31,76 @@ class Chat():
        if self._mysql_db:
           self._mysql_db.close()
     
-   def _get_user_data(self, email: str) -> list:      
-      select_sqlstm = f'''
-          SELECT id, email, full_name FROM account_user 
-              WHERE email = "{email}" AND is_active = 1 LIMIT 1; 
-      '''     
-
+   def _get_user_data(self, email: str = None, classifiedad_id: int = None) -> list:  
+      if classifiedad_id:
+         select_sqlstm = f'''
+             SELECT account_user.id, account_user.email, account_user.fullname, account_userprofile.telephone 
+                 FROM account_user
+             INNER JOIN account_userprofile ON account_userprofile.user_id = account_user.id
+             INNER JOIN classifiedad ON classifiedad.user_id = account_user.id
+             WHERE (classifiedad.id = {classifiedad_id} AND classifiedad.status = "PUBLISHED") 
+                 AND account_user.is_active = 1 LIMIT 1;
+         '''
+      elif email:
+         select_sqlstm = f'''
+             SELECT account_user.id, account_user.email, account_user.fullname, account_userprofile.telephone 
+                 FROM account_user
+             INNER JOIN account_userprofile ON account_userprofile.user_id = account_user.id
+             INNER JOIN classifiedad ON classifiedad.user_id = account_user.id
+             WHERE account_user.email = "{email}" AND account_user.is_active = 1 LIMIT 1;
+         '''
+      else:
+         return None
+          
       user_data = self._mysql_db.select(select_sqlstm)         
 
       return user_data
-   
-   def _validate_classifiedad(self, user_id: int, classifiedad_id: int) -> bool:
-      """Checks if the specified classified ad exists and if it's published.
 
-      """
-      select_sqlstm = f'''
-          SELECT id FROM classifiedad 
-              WHERE id = {classifiedad_id} AND status = 'PUBLISHED' 
-                  AND user_id = {user_id} LIMIT 1; 
-      '''  
+   def read_messages(self, email_to: str = None, email_from: str = None):
+      if email_to:
+         select_sqlstm = f'''
+             SELECT id, user_from_fullname, user_from_email, user_from_telephone, messages 
+                 FROM motando_chats WHERE user_to_email = "{email_to}" 
+         '''
+      
+      result = self._nosql.query(select_sqlstm)
+    
+      return result
 
-      classifiedad_data = self._mysql_db.select(select_sqlstm)     
+   def new_message(self, message: MessageIn) -> bool:      
+      # Get the owner of the classifiedad.
+      user_to_props = self._get_user_data(classifiedad_id=message.classifiedad_id)    
+      
+      try:                 
+         user_to = user_to_props[0]         
+      except (IndexError, TypeError):               
+         return False      
+      
+      # Check if the user that is trying to send a message exists.
+      user_from_props = self._get_user_data(email=message.email_from)
       
       try:
-         classifiedad_id = classifiedad_data[0].get('id')
-      except IndexError:
-         return False
-      else:
-         return True
-   
-   def send_pubmsg(self, message: MessageIn) -> bool:      
-      result_user_to = self._get_user_data(email=message.email_to)    
-                       
-      try:                 
-         user_to = result_user_to[0]         
+         user_from = user_from_props[0]         
       except IndexError:               
-         return False      
-    
-      to_id = user_to.get('id')
-      to_email = user_to.get('email')
-      from_email = message.email_from
-
-      if to_email == from_email:
-         return False
+         user_from = {'id': None, 'fullname': message.fullname_from, 
+                      'email': message.email_from, 'telephone': message.telephone_from}
       
-      valid_classifiedad = self._validate_classifiedad(user_id=to_id, classifiedad_id=message.classifiedad_id)
-
-      if not valid_classifiedad:
-          return False
+      datetime_now = datetime.now()      
       
       nosql_data = {
-         'id_from': None,
-         'fullname_from': message.fullname_from,
-         'email_from': from_email,
-         'telephone_from': message.telephone_from,
-         'id_to': to_id,
-         'fullname_to': user_to.get('full_name'),         
+         'user_from_id': user_from.get('id', None),
+         'user_from_fullname': user_from.get('fullname', None),
+         'user_from_email': user_from.get('email', None),
+         'user_from_telephone': user_from.get('telephone', None),
+         'user_to_id': user_to.get('id'),
+         'user_to_fullname': user_to.get('fullname'),
+         'user_to_email': user_to.get('email'),
+         'user_to_telephone': user_to.get('telephone'),
          'classifiedad_id': message.classifiedad_id,
-         'message': message.message,
-         'date_created': datetime.now()
-      }            
+         'messages': [{'message': message.message, 'date_create': datetime_now}],
+         'date_created': datetime_now      
+      }     
 
       put_status = self._nosql.put(nosql_data)
  
       return put_status
-      
-    

@@ -103,8 +103,8 @@
                             <div class="row">
                                 <div class="col">                                
                                     <div class="form-group text-left ml-2 mr-3">
-                                        <label for="{{ form.full_name.auto_id }}" class="form-label">{{ form.full_name.label }}</label>                                       
-                                         {{ form.full_name }}                                        
+                                        <label for="{{ form.fullname.auto_id }}" class="form-label">{{ form.fullname.label }}</label>                                       
+                                         {{ form.fullname }}                                        
                                          <small class="form-text text-muted">Digite o seu nome completo</small>                                                                               
                                     </div>                        
                                 </div>    
@@ -327,7 +327,7 @@
                             <div class="col pt-2">                            
                                 <img src="{% static 'img/pessoa.png' %}" 
                                      alt="Pessoa" class="img-fluid img-thumbnail float-start me-3" style="max-width: 25%;">                           
-                                <h3 class="h5 fw-bold"> {{ classifiedad.user.full_name }} </h3>
+                                <h3 class="h5 fw-bold"> {{ classifiedad.user.fullname }} </h3>
                                 <p class="small">
                                     {{ classifiedad.user.userprofile.city.city }} / {{ classifiedad.user.userprofile.state.state }} <br>
                                     Cadastrado desde: {{ classifiedad.user.created|date:"d/F/Y" }}                                     
@@ -378,20 +378,18 @@
      <script type="text/javascript">        
          $(document).ready(function(){
                 $('#id_btn_sendmsg').click(function() { 
-                    const userFromFullname = $('#{{ form.full_name.auto_id }}').val();                      
+                    const userFromFullname = $('#{{ form.fullname.auto_id }}').val();                      
                     const userFromEmail = $('#{{ form.email.auto_id }}').val();   
                     const userFromTelephone = $('#{{ form.telephone.auto_id }}').val();   
-                    const userFromMessage = $('#{{ form.message.auto_id }}').val();  
-                    const userToEmail = '{{ classifiedad.user.email }}';
+                    const userFromMessage = $('#{{ form.message.auto_id }}').val();                      
                     const classifiedadId = '{{ classifiedad.id }}';
-                    const chatMsgUrl = 'http://127.0.0.1:8001/api/chats/messages/classifiedad';
+                    const chatMsgUrl = 'http://127.0.0.1:8001/api/chats/messages';
                                         
                     CLASSIFIEDAD_MSG.init([
                         userFromFullname, 
                         userFromEmail, 
                         userFromTelephone, 
-                        userFromMessage, 
-                        userToEmail, 
+                        userFromMessage,                         
                         classifiedadId, 
                         chatMsgUrl
                     ]);
