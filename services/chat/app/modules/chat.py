@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 import logging as log
 
-from .models import MessageIn
+from .models import NewMessageIn
 from .nosql import NoSql
 from .db import MysqlDb
 
@@ -56,18 +56,35 @@ class Chat():
 
       return user_data
 
-   def read_messages(self, email_to: str = None, email_from: str = None):
-      if email_to:
+   def read_messages(self, user_to_id: str = None, user_from_id: str = None):
+      if user_to_id:
          select_sqlstm = f'''
-             SELECT id, user_from_fullname, user_from_email, user_from_telephone, messages 
-                 FROM motando_chats WHERE user_to_email = "{email_to}" 
-         '''
-      
+             SELECT id, classifiedad_id, user_from_fullname, user_from_email, 
+                    user_from_telephone, messages 
+             FROM motando_chats WHERE user_to_id = {user_to_id}
+         '''      
+
+      elif user_from_id:
+         select_sqlstm = f'''
+             SELECT id, classifiedad_id, user_from_fullname, user_from_email, 
+                    user_from_telephone, messages 
+             FROM motando_chats WHERE user_from_id = {user_from_id}
+         '''        
+
+      else:
+         return None     
+            
       result = self._nosql.query(select_sqlstm)
+
+
+
+      if result:
+         for message_data in result:
+            print(message_data)
     
       return result
 
-   def new_message(self, message: MessageIn) -> bool:      
+   def new_message(self, message: NewMessageIn) -> bool:      
       # Get the owner of the classifiedad.
       user_to_props = self._get_user_data(classifiedad_id=message.classifiedad_id)    
       
@@ -77,30 +94,37 @@ class Chat():
          return False      
       
       # Check if the user that is trying to send a message exists.
-      user_from_props = self._get_user_data(email=message.email_from)
+      user_from_props = self._get_user_data(email=message.user_from_email)
       
       try:
          user_from = user_from_props[0]         
       except IndexError:               
-         user_from = {'id': None, 'fullname': message.fullname_from, 
-                      'email': message.email_from, 'telephone': message.telephone_from}
+         user_from = {'id': None, 'fullname': message.user_from_fullname, 
+                      'email': message.user_from_email, 'telephone': message.user_from_telephone}
       
       datetime_now = datetime.now()      
       
       nosql_data = {
          'user_from_id': user_from.get('id', None),
-         'user_from_fullname': user_from.get('fullname', None),
-         'user_from_email': user_from.get('email', None),
+         'user_from_fullname': user_from.get('fullname'),
+         'user_from_email': user_from.get('email'),
          'user_from_telephone': user_from.get('telephone', None),
          'user_to_id': user_to.get('id'),
          'user_to_fullname': user_to.get('fullname'),
          'user_to_email': user_to.get('email'),
          'user_to_telephone': user_to.get('telephone'),
          'classifiedad_id': message.classifiedad_id,
-         'messages': [{'message': message.message, 'date_create': datetime_now}],
-         'date_created': datetime_now      
+         'messages': [
+            {
+               'from': user_from.get('fullname'), 
+               'text': message.message, 
+               'timestamp': datetime_now
+            }
+         ]        
       }     
 
+      # TODO: check if exists messages from USER_FROM to this specific 
+      # classifiedad.
       put_status = self._nosql.put(nosql_data)
  
       return put_status

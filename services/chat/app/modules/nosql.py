@@ -45,7 +45,7 @@ class NoSql():
         try:
             resp = self.__client.update_row(table_name_or_id=self._table_id, 
                 update_row_details=update_details)
-        except oci.exceptions.TransientServiceError as e:
+        except Exception as e:
             log.error(f'Could not PUT data into NoSQL table: {e}')
             return False
 

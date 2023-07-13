@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 
 from modules.ocilog import OciLogHandler
-from modules.models import MessageIn, MessageOut
+from modules.models import NewMessageIn, NewMessageOut, MessagesOut
 from modules.chat import Chat
 
 # Globals
@@ -34,28 +34,70 @@ app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['GET', 'POST'])
 
 
-@app.get('/api/chats/messages', response_model=None, status_code=200)
-async def read_message(email_to: Optional[str] = None, email_from: Optional[str] = None, resp: Response = None):
-    """ """
-    chat =  Chat()
+@app.get('/api/chats/messages/user/to/{user_to_id}', status_code=200)
+async def read_messages_to(user_to_id: int, resp: Response):
+    """Read messages intended for YOU (selling a motorcycle).
 
-    if email_to:
-        messages = chat.read_messages(email_to=email_to)
-    elif email_from:
-        messages = chat.read_messages(email_from=email_from)
-    else:
-        resp.status_code = 400
-        return {'status' : 'fail', 'message' : 'Unable to read Chat messages.'}
+    """
+    chat = Chat()
 
-    if messages:        
-        print('ooooooooooo')
+    messages = chat.read_messages(user_to_id=user_to_id)
+
+    if messages:            
+        messages_list = []
+
+        for data in messages:             
+            messages_list.append(data.get('messages')[0])
+                
+        messages_resp = MessagesOut(
+            status = 'success', 
+            classifiedad_id = data.get('classifiedad_id'),
+            user_from_fullname = data.get('user_from_fullname'),
+            user_from_email = data.get('user_from_email'),
+            user_from_telephone = data.get('user_from_telephone'),
+            data = messages_list
+        )
+
+        return messages_resp
+                 
     else:
          resp.status_code = 404
          return {'status' : 'fail', 'message' : 'No message found.'}
 
 
-@app.post('/api/chats/messages', response_model=MessageOut, status_code=200)
-async def new_message(message: MessageIn, resp: Response) -> MessageOut:
+@app.get('/api/chats/messages/user/from/{user_from_id}', status_code=200)
+async def read_messages_from(user_from_id: int, resp: Response):
+    """Read messages sent by you (buying a motorcycle).
+    
+    """
+    chat = Chat()
+
+    messages = chat.read_messages(user_from_id=user_from_id)
+
+    if messages:        
+        messages_list = []
+
+        for data in messages:             
+            messages_list.append(data.get('messages')[0])
+                
+        messages_resp = MessagesOut(
+            status = 'success', 
+            classifiedad_id = data.get('classifiedad_id'),
+            user_from_fullname = data.get('user_from_fullname'),
+            user_from_email = data.get('user_from_email'),
+            user_from_telephone = data.get('user_from_telephone'),
+            data = messages_list
+        )
+
+        return messages_resp
+                 
+    else:
+         resp.status_code = 404
+         return {'status' : 'fail', 'message' : 'No message found.'}
+
+
+@app.post('/api/chats/messages', response_model=NewMessageOut, status_code=200)
+async def new_message(message: NewMessageIn, resp: Response) -> NewMessageOut:
     """Function for send a specified message to some user. 
 
     """

@@ -30,6 +30,7 @@
                <div class="col-9">
                   <br>
                   <form id="id_form" autocomplete="off">
+                     <input type="hidden" name="id_user_id" id="id_user_id" value="{{ user_profile.user.id }}">
                      {% csrf_token %}       
                      <div class="shadow rounded bg-white border p-3"  style="min-height: 663px;">
                          <div class="row">
@@ -89,6 +90,22 @@
                        </div>
                      </div>
                   </form>
+                  <div class="modal" tabindex="-1" id="id_modal">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="id_modal_title"></h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <p id="id_modal_message"></p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>                                      
+                        </div>
+                      </div>
+                    </div>
+                </div> 
                </div> <!-- right panel -->      
             </div>
        </div>
@@ -101,8 +118,5 @@
 {% endblock %}
 {% block body_scripts %}
    <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script> 
-   <script type="text/javascript" src="{% static 'js/classifiedad-chat.js' %}"></script> 
-   <script type="text/javascript">   
-       
-   </script>
+   <script type="text/javascript" src="{% static 'js/classifiedad-chat.js' %}"></script>    
 {% endblock %}
