@@ -57,7 +57,8 @@ class Chat():
       return user_data
    
    def _exists_message(self, email: str, classifiedad_id: int) -> int:
-      """
+      """Check if the e-mail was send a message in the past. Returns the row ID 
+      on success.
 
       """
       select_sqlstm = f'''
