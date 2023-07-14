@@ -55,6 +55,22 @@ class Chat():
       user_data = self._mysql_db.select(select_sqlstm)         
 
       return user_data
+   
+   def _exists_message(self, email: str, classifiedad_id: int) -> int:
+      """
+
+      """
+      select_sqlstm = f'''
+          SELECT id FROM motando_chats 
+              WHERE user_from_email = "{email}" AND classifiedad_id = {classifiedad_id}
+      '''      
+
+      result = self._nosql.query(select_sqlstm)
+
+      if result:
+         return result[0]['id']
+      else:
+         return None
 
    def read_messages(self, user_to_id: str = None, user_from_id: str = None):
       if user_to_id:
@@ -76,8 +92,6 @@ class Chat():
             
       result = self._nosql.query(select_sqlstm)
 
-
-
       if result:
          for message_data in result:
             print(message_data)
@@ -85,12 +99,12 @@ class Chat():
       return result
 
    def new_message(self, message: NewMessageIn) -> bool:      
-      # Get the owner of the classifiedad.
+      # Get details from the owner of the classifiedad.
       user_to_props = self._get_user_data(classifiedad_id=message.classifiedad_id)    
       
       try:                 
          user_to = user_to_props[0]         
-      except (IndexError, TypeError):               
+      except (IndexError, TypeError,):               
          return False      
       
       # Check if the user that is trying to send a message exists.
@@ -103,28 +117,48 @@ class Chat():
                       'email': message.user_from_email, 'telephone': message.user_from_telephone}
       
       datetime_now = datetime.now()      
-      
-      nosql_data = {
-         'user_from_id': user_from.get('id', None),
-         'user_from_fullname': user_from.get('fullname'),
-         'user_from_email': user_from.get('email'),
-         'user_from_telephone': user_from.get('telephone', None),
-         'user_to_id': user_to.get('id'),
-         'user_to_fullname': user_to.get('fullname'),
-         'user_to_email': user_to.get('email'),
-         'user_to_telephone': user_to.get('telephone'),
-         'classifiedad_id': message.classifiedad_id,
-         'messages': [
-            {
-               'from': user_from.get('fullname'), 
-               'text': message.message, 
-               'timestamp': datetime_now
-            }
-         ]        
-      }     
 
-      # TODO: check if exists messages from USER_FROM to this specific 
-      # classifiedad.
-      put_status = self._nosql.put(nosql_data)
- 
-      return put_status
+      # Check if this user already sent a message before.
+      chat_id = self._exists_message(email=user_from.get('email'), classifiedad_id=message.classifiedad_id)  
+
+      if chat_id:
+         user_fullname = user_from.get('fullname')
+
+         update_sqlstm = f'''
+             UPDATE motando_chats j ADD j.messages 
+                {{
+                    "from": "{user_fullname}", 
+                    "text": "{message.message}",
+                    "timestamp": "{datetime_now}"
+                }}
+             WHERE id = {chat_id} AND classifiedad_id = {message.classifiedad_id}
+         '''         
+
+         updated_rows = self._nosql.query(update_sqlstm)         
+         
+         if updated_rows and (updated_rows[0]['NumRowsUpdated'] > 0):
+            return  True
+
+      else:
+         put_data = {
+            'user_from_id': user_from.get('id', None),
+            'user_from_fullname': user_from.get('fullname'),
+            'user_from_email': user_from.get('email'),
+            'user_from_telephone': user_from.get('telephone', None),
+            'user_to_id': user_to.get('id'),
+            'user_to_fullname': user_to.get('fullname'),        
+            'user_to_email': user_to.get('email'),        
+            'user_to_telephone': user_to.get('telephone'),        
+            'classifiedad_id': message.classifiedad_id,
+            'messages': [
+               {
+                  'from': user_from.get('fullname'), 
+                  'text': message.message, 
+                  'timestamp': datetime_now
+               }
+            ]        
+         }     
+
+         oper_status = self._nosql.put(put_data)
+
+         return oper_status

@@ -22,8 +22,8 @@ resource "oci_nosql_table" "nosql_table_chats" {
     EOS
 
     table_limits {
-        max_read_units = 1
-        max_write_units = 1
+        max_read_units = 5
+        max_write_units = 5
         max_storage_in_gbs = 1
     }
 }
