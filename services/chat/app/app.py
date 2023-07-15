@@ -41,25 +41,10 @@ async def read_messages_to(user_to_id: int, resp: Response):
     """
     chat = Chat()
 
-    messages = chat.read_messages(user_to_id=user_to_id)
+    chat_messages = chat.read_messages(user_to_id=user_to_id)
 
-    if messages:            
-        messages_list = []
-
-        for data in messages:             
-            messages_list.append(data.get('messages')[0])
-                
-        messages_resp = MessagesOut(
-            status = 'success', 
-            classifiedad_id = data.get('classifiedad_id'),
-            user_from_fullname = data.get('user_from_fullname'),
-            user_from_email = data.get('user_from_email'),
-            user_from_telephone = data.get('user_from_telephone'),
-            data = messages_list
-        )
-
-        return messages_resp
-                 
+    if chat_messages:             
+         return MessagesOut(status = 'success', data = chat_messages)    
     else:
          resp.status_code = 404
          return {'status' : 'fail', 'message' : 'No message found.'}
@@ -72,30 +57,15 @@ async def read_messages_from(user_from_id: int, resp: Response):
     """
     chat = Chat()
 
-    messages = chat.read_messages(user_from_id=user_from_id)
+    chat_messages = chat.read_messages(user_from_id=user_from_id)
 
-    if messages:        
-        messages_list = []
-
-        for data in messages:             
-            messages_list.append(data.get('messages')[0])
-                
-        messages_resp = MessagesOut(
-            status = 'success', 
-            classifiedad_id = data.get('classifiedad_id'),
-            user_from_fullname = data.get('user_from_fullname'),
-            user_from_email = data.get('user_from_email'),
-            user_from_telephone = data.get('user_from_telephone'),
-            data = messages_list
-        )
-
-        return messages_resp
-                 
+    if chat_messages:             
+         return MessagesOut(status = 'success', data = chat_messages)    
     else:
          resp.status_code = 404
          return {'status' : 'fail', 'message' : 'No message found.'}
-
-
+   
+   
 @app.post('/api/chats/messages', response_model=NewMessageOut, status_code=200)
 async def new_message(message: NewMessageIn, resp: Response) -> NewMessageOut:
     """Function for send a specified message to some user. 

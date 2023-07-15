@@ -77,26 +77,21 @@ class Chat():
       if user_to_id:
          select_sqlstm = f'''
              SELECT id, classifiedad_id, user_from_fullname, user_from_email, 
-                    user_from_telephone, messages 
+                 user_from_telephone, user_from_id, user_to_fullname,
+                 user_to_email, user_to_id, messages 
              FROM motando_chats WHERE user_to_id = {user_to_id}
          '''      
 
       elif user_from_id:
          select_sqlstm = f'''
-             SELECT id, classifiedad_id, user_from_fullname, user_from_email, 
-                    user_from_telephone, messages 
-             FROM motando_chats WHERE user_from_id = {user_from_id}
+            SELECT id, classifiedad_id, user_from_fullname, user_from_email, 
+                user_from_telephone, user_from_id, user_to_fullname,
+                user_to_email, user_to_id, messages  
+            FROM motando_chats WHERE user_from_id = {user_from_id}
          '''        
-
-      else:
-         return None     
             
       result = self._nosql.query(select_sqlstm)
 
-      if result:
-         for message_data in result:
-            print(message_data)
-    
       return result
 
    def new_message(self, message: NewMessageIn) -> bool:      
@@ -123,12 +118,10 @@ class Chat():
       chat_id = self._exists_message(email=user_from.get('email'), classifiedad_id=message.classifiedad_id)  
 
       if chat_id:
-         user_fullname = user_from.get('fullname')
-
          update_sqlstm = f'''
              UPDATE motando_chats j ADD j.messages 
                 {{
-                    "from": "{user_fullname}", 
+                    "from": "{user_from.get('fullname')}", 
                     "text": "{message.message}",
                     "timestamp": "{datetime_now}"
                 }}

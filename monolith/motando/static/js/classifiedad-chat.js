@@ -75,22 +75,24 @@ function getSellingMessages() {
     const userId = $('#id_user_id').val();
     const chatMsgUrl = `http://127.0.0.1:8001/api/chats/messages/user/to/${userId}`;    
 
+    $.blockUI({ 
+        message: '<h2>Por favor aguarde ...</h2>',
+        overlayCSS: { backgroundColor: '#dee2e6' } 
+    }); 
+
     $.ajax({
         url: chatMsgUrl,
         type: 'GET', 
         dataType: 'json', 
         contentType: 'application/json',       
-        beforeSend: function() {                                
-            $('#id_ajax_loading').toggleClass('d-none d-block');        
+        beforeSend: function() {                                                    
         },
         complete: function () {
-            $('#id_ajax_loading').toggleClass('d-block d-none');                                     
+            $.unblockUI();                                    
         },
-        success: function(jsonResp) {         
+        success: function(jsonResp) {                  
 
-            $('#id_chat_painel').removeClass('d-none');
-
-            id_chat_history
+            //id_chat_history
 
         },
         error: function(xhr, textStatus, errorThrown) {                    
@@ -105,23 +107,27 @@ function getSellingMessages() {
             $('#id_telephone').attr('readonly', false);
             $('#id_message').attr('readonly', false);
         }
-    });    
+    });       
 }
 
 function getBuyingMessages() {
     const userId = $('#id_user_id').val();
     const chatMsgUrl = `http://127.0.0.1:8001/api/chats/messages/user/from/${userId}`;    
+    
+    $.blockUI({ 
+        message: '<h2>Por favor aguarde ...</h2>',
+        overlayCSS: { backgroundColor: '#dee2e6' } 
+    }); 
 
     $.ajax({
         url: chatMsgUrl,
         type: 'GET', 
         dataType: 'json', 
         contentType: 'application/json',       
-        beforeSend: function() {                                
-            $('#id_ajax_loading').toggleClass('d-none d-block');        
+        beforeSend: function() {            
         },
         complete: function () {
-            $('#id_ajax_loading').toggleClass('d-block d-none');                                     
+            $.unblockUI(); 
         },
         success: function(jsonResp) {         
             colose.log(jsonResp);
@@ -145,11 +151,12 @@ function getBuyingMessages() {
             $('#id_telephone').attr('readonly', false);
             $('#id_message').attr('readonly', false);
         }
-    });    
+    });       
 }
 
-$(document).ready(function() {    
-    $('#id_form input[name=chat_options]').on('change', function() {
+$(document).ready(function() {           
+   
+    $('#id_form input[name=chat_options]').on('change', function() {        
        let chatOption = $("#id_form input[type='radio']:checked").val();
 
        switch(chatOption) {

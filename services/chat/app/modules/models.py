@@ -3,7 +3,7 @@
 #
 
 from pydantic import BaseModel, EmailStr, Field
-from typing import List
+from typing import List, Union
 
 # All JSON responses follow the JSend specification:
 # https://github.com/omniti-labs/jsend
@@ -22,11 +22,5 @@ class NewMessageOut(BaseModel):
 
 
 class MessagesOut(BaseModel):
-    status: str
-    classifiedad_id: int
-    chat_id: int
-    user_from_fullname: str = Field(max_length=200)
-    user_from_email: EmailStr
-    user_from_id: int    
-    user_to_fullname: str = Field(max_length=200)
+    status: str      
     data: List[dict]  
