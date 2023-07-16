@@ -47,7 +47,7 @@ async def read_messages_to(user_to_id: int, resp: Response):
          return MessagesOut(status = 'success', data = chat_messages)    
     else:
          resp.status_code = 404
-         return {'status' : 'fail', 'message' : 'No message found.'}
+         return {'status' : 'fail', 'message' : 'No message(s) found.'}
 
 
 @app.get('/api/chats/messages/user/from/{user_from_id}', status_code=200)
@@ -63,7 +63,7 @@ async def read_messages_from(user_from_id: int, resp: Response):
          return MessagesOut(status = 'success', data = chat_messages)    
     else:
          resp.status_code = 404
-         return {'status' : 'fail', 'message' : 'No message found.'}
+         return {'status' : 'fail', 'message' : 'No message(s) found.'}
    
    
 @app.post('/api/chats/messages', response_model=NewMessageOut, status_code=200)

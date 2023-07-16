@@ -91,9 +91,14 @@ function getSellingMessages() {
             $.unblockUI();                                    
         },
         success: function(jsonResp) {                  
+           
+            $('#id_chat_painel').removeClass('d-none');                      
+
+            for (let i = 0 ; i < jsonResp.data.length ; i++) {
+                console.log(jsonResp.data[i].id);
+            }
 
             //id_chat_history
-
         },
         error: function(xhr, textStatus, errorThrown) {                    
             console.error(textStatus);

@@ -102,7 +102,7 @@ class UserProfile(models.Model):
         ('F', 'Feminino'),
     )
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user')
     subscribe_offer = models.BooleanField(default=False)
     state = models.ForeignKey(State, on_delete=models.DO_NOTHING, null=False, 
         blank=False)

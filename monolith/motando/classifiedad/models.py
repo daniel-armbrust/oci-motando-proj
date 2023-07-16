@@ -86,7 +86,8 @@ class ClassifiedAdImage(models.Model):
         db_table = 'classifiedad_images'
 
     def __str__(self):
-        return self.classifiedad.model.model
+        #return self.classifiedad.model.model
+        return '%s' % (self.url,)
 
 
 

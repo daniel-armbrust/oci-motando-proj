@@ -34,5 +34,6 @@ urlpatterns = [
     # API
     path('api/brasil/', include('state_city.api.urls', namespace='api_state-city')),
     path('api/motorcycles/', include('motorcycle.api.urls', namespace='api_motorcycles')),
+    path('api/classifiedads/', include('classifiedad.api.urls', namespace='api_classifiedad')),
     path('api/chats/', include('chat.api.urls', namespace='api_chats')),
 ]
