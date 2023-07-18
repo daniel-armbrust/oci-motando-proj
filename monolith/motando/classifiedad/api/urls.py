@@ -9,5 +9,5 @@ from . import views
 app_name = 'classifiedad'
 
 urlpatterns = [
-    path('<int:classifiedad_id>', views.ClassifiedAdReadApiView.as_view(), name='classifiedad_read'),   
+    path('<int:classifiedad_id>', views.ClassifiedAdApiView.as_view(), name='classifiedad_read'),   
 ]

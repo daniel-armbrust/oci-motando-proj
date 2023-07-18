@@ -2,16 +2,31 @@
 # classifiedad/api/view.py
 #
 
-from rest_framework import generics
+import logging as log
+
+from rest_framework import views, status
+from rest_framework.response import Response
 
 from classifiedad.models import ClassifiedAd
 from classifiedad.api.serializers import ClassifiedAdSerializer
 
 
-class ClassifiedAdReadApiView(generics.ListAPIView):    
-    serializer_class = ClassifiedAdSerializer
+class ClassifiedAdApiView(views.APIView):
+    def get(self, request, classifiedad_id, format=None):
+        try:
+            classifiedad = ClassifiedAd.objects.get(id=classifiedad_id)
+        except ClassifiedAd.DoesNotExist:
+            return Response(
+                data={'status' : 'fail', 'message' :'No ClassifiedAd found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-    def get_queryset(self):
-        classifiedad_id = self.kwargs['classifiedad_id']
+        log.info('OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK')
 
-        return ClassifiedAd.objects.filter(id=classifiedad_id)
+        serializer = ClassifiedAdSerializer(classifiedad)              
+
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )
+
