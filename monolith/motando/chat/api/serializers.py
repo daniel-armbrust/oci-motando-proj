@@ -63,3 +63,14 @@ class NewChatSerializer(serializers.Serializer):
                             messages=[new_message]).save()
             
         return validated_data    
+
+
+class ChatMessagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chat
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        
+        return representation

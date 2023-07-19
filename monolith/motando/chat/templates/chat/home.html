@@ -29,8 +29,7 @@
                </div> 
                <div class="col-9">
                   <br>
-                  <form id="id_form" autocomplete="off">
-                     <input type="hidden" name="id_user_id" id="id_user_id" value="{{ user_profile.user.id }}">
+                  <form id="id_form" autocomplete="off">                     
                      {% csrf_token %}       
                      <div class="shadow rounded bg-white border p-3"  style="min-height: 663px;">
                          <div class="row">
@@ -118,5 +117,11 @@
 {% endblock %}
 {% block body_scripts %}
    <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script> 
-   <script type="text/javascript" src="{% static 'js/classifiedad-chat.js' %}"></script>    
+   <script type="text/javascript" src="{% static 'js/classifiedad-chat.js' %}"></script> 
+   <script type="text/javascript">
+        const USER_ID = {{ user_profile.user.id }};
+        //const SELLING_URL = "http://{{ request.META.HTTP_HOST }}{% url 'api_chat:selling' user_id=user_profile.user.id %}";
+        const SELLING_URL = "http://127.0.0.1:8000/api/chats/users/10/messages/selling";
+        const BUYING_URL = "http://{{ request.META.HTTP_HOST }}{% url 'api_chat:buying' user_id=user_profile.user.id %}";
+   </script>   
 {% endblock %}

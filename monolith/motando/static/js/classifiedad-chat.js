@@ -71,96 +71,60 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
     };
 }());
 
-function getSellingMessages() {    
-    const userId = $('#id_user_id').val();
-    const chatMsgUrl = `http://127.0.0.1:8001/api/chats/messages/user/to/${userId}`;    
-
-    $.blockUI({ 
-        message: '<h2>Por favor aguarde ...</h2>',
-        overlayCSS: { backgroundColor: '#dee2e6' } 
-    }); 
-
-    $.ajax({
-        url: chatMsgUrl,
+function ajaxGetRequest(url) {           
+    return $.ajax({
+        url: url,
         type: 'GET', 
         dataType: 'json', 
-        contentType: 'application/json',       
-        beforeSend: function() {                                                    
-        },
-        complete: function () {
-            $.unblockUI();                                    
-        },
-        success: function(jsonResp) {                  
-           
-            $('#id_chat_painel').removeClass('d-none');                      
-
-            for (let i = 0 ; i < jsonResp.data.length ; i++) {
-                console.log(jsonResp.data[i].id);
-            }
-
-            //id_chat_history
-        },
-        error: function(xhr, textStatus, errorThrown) {                    
-            console.error(textStatus);
-            
-            $('#id_modal_title').html('Erro');
-            $('#id_modal_message').html('Não foi possível obter menssagen(s)! Tente novamente mais tarde.');
-            $('#id_modal').modal('show');
-            
-            $('#id_fullname').attr('readonly', false);
-            $('#id_email').attr('readonly', false);
-            $('#id_telephone').attr('readonly', false);
-            $('#id_message').attr('readonly', false);
-        }
-    });       
-}
-
-function getBuyingMessages() {
-    const userId = $('#id_user_id').val();
-    const chatMsgUrl = `http://127.0.0.1:8001/api/chats/messages/user/from/${userId}`;    
-    
-    $.blockUI({ 
-        message: '<h2>Por favor aguarde ...</h2>',
-        overlayCSS: { backgroundColor: '#dee2e6' } 
-    }); 
-
-    $.ajax({
-        url: chatMsgUrl,
-        type: 'GET', 
-        dataType: 'json', 
-        contentType: 'application/json',       
+        contentType: 'application/json; charset=utf-8',              
+        async: false,
         beforeSend: function() {            
+            $.blockUI({ 
+                message: '<h2>Por favor aguarde ...</h2>',
+                overlayCSS: { backgroundColor: '#dee2e6' } 
+            });
         },
-        complete: function () {
+        complete: function() {
             $.unblockUI(); 
         },
-        success: function(jsonResp) {         
-            colose.log(jsonResp);
+        success: function(data) { 
+            return data;
         },
-        error: function(xhr, textStatus, errorThrown) {                   
-            console.error(textStatus);
-
-            if (xhr.status == 404) {
-                $('#id_modal_title').html('Informação');
-                $('#id_modal_message').html('No momento você não possui nenhuma mensagem.');
-            }
-            else {
-                $('#id_modal_title').html('Erro');
-                $('#id_modal_message').html('Não foi possível obter as sua(s) menssagen(s)! Tente novamente mais tarde.');
-            }
-           
-            $('#id_modal').modal('show');
-            
-            $('#id_fullname').attr('readonly', false);
-            $('#id_email').attr('readonly', false);
-            $('#id_telephone').attr('readonly', false);
-            $('#id_message').attr('readonly', false);
+        error: function(xhr, textStatus, errorThrown) {                    
+            console.error(textStatus);            
         }
-    });       
+    });
 }
 
-$(document).ready(function() {           
-   
+function getSellingMessages() {    
+    const data = ajaxGetRequest(SELLING_URL);
+    const jsonResp = data.responseJSON;    
+
+    if (jsonResp.status === 'success') {
+
+    }
+    else {
+        $('#id_modal_title').html('Informação');
+        $('#id_modal_message').html('No momento você não possui nenhuma mensagem.');        
+        $('#id_modal').modal('show');
+    }    
+}
+
+function getBuyingMessages() {    
+    const data = ajaxGetRequest(SELLING_URL);
+    const jsonResp = data.responseJSON;    
+
+    if (jsonResp.status === 'success') {
+
+    }
+    else {
+        $('#id_modal_title').html('Informação');
+        $('#id_modal_message').html('No momento você não possui nenhuma mensagem.');        
+        $('#id_modal').modal('show');
+    }    
+}
+
+$(document).ready(function() {              
     $('#id_form input[name=chat_options]').on('change', function() {        
        let chatOption = $("#id_form input[type='radio']:checked").val();
 

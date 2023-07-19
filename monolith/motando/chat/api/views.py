@@ -5,7 +5,8 @@
 from rest_framework import views,  status
 from rest_framework.response import Response
 
-from chat.api.serializers import NewChatSerializer
+from chat.api.serializers import NewChatSerializer, ChatMessagesSerializer
+from chat.models import Chat
 
 
 class ChatApiView(views.APIView):   
@@ -32,9 +33,29 @@ class ChatApiView(views.APIView):
 
 class ChatBuyingApiView(views.APIView):
     def get(self, request, user_id):
-        pass
+        try:
+            chat = Chat.objects.get(user_from__id=user_id)
+        except Chat.DoesNotExist:
+            return Response(data={'status': 'fail', 'message': 'No Chat Message(s) found.'},
+                            status=status.HTTP_404_NOT_FOUND)
 
+        serializer = ChatMessagesSerializer(chat)
+
+        return Response(data={'status' : 'success', 'data': [serializer.data]},
+                        status=status.HTTP_200_OK)
+                
 
 class ChatSellingApiView(views.APIView):
     def get(self, request, user_id):
-        pass
+        try:
+            chat = Chat.objects.get(user_to__id=user_id)
+        except Chat.DoesNotExist:
+            return Response(data={'status': 'fail', 'message': 'No Chat Message(s) found.'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ChatMessagesSerializer(chat)
+
+        return Response(data={'status' : 'success', 'data': [serializer.data]},
+                        status=status.HTTP_200_OK)
+           
+        
