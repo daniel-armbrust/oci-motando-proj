@@ -20,7 +20,7 @@ class MotorcycleBrand(models.Model):
 class MotorcycleBrandModel(models.Model):
     model = models.CharField(max_length=50, null=False)
     image_url = models.URLField(max_length=255, default=None, null=True, blank=False)
-    brand = models.ForeignKey(MotorcycleBrand, on_delete=models.CASCADE, related_name='brand_models')
+    brand = models.ForeignKey(MotorcycleBrand, on_delete=models.DO_NOTHING, related_name='brand_models')
 
     class Meta:
         db_table = 'motorcycle_brand_models'
@@ -32,7 +32,7 @@ class MotorcycleBrandModel(models.Model):
 class MotorcycleBrandModelVersion(models.Model):
     version = models.CharField(max_length=100)
     image_url = models.URLField(max_length=255, default=None, null=True, blank=False)
-    model = models.ForeignKey(MotorcycleBrandModel, on_delete=models.CASCADE, related_name='model_versions')
+    model = models.ForeignKey(MotorcycleBrandModel, on_delete=models.DO_NOTHING, related_name='model_versions')
 
     class Meta:
         db_table = 'motorcycle_brand_models_versions'

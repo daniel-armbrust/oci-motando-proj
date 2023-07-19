@@ -2,48 +2,80 @@
 # state_city/api/views.py
 #
 
-from rest_framework import generics, exceptions
+from rest_framework import views, status
+from rest_framework.response import Response
 
 from state_city.models import State, StateCity
 from state_city.api.serializers import StateSerializer, StateCitySerializer
 
 
-class StateListView(generics.ListAPIView):
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
+class BrazilStateListApiView(views.APIView):
+    def get(self, request):
+        state = State.objects.all()
 
-
-class StateDetailView(generics.RetrieveAPIView):
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
+        if not state.exists():
+            return Response(
+                data={'status' : 'fail', 'message' :'No Motorcycle Brand Model found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            ) 
         
+        serializer = StateSerializer(state, many=True)
 
-class StateCityListView(generics.ListAPIView):
-    queryset = StateCity.objects.all()
-    serializer_class = StateCitySerializer
-
-    def get_queryset(self):
-        state_id = self.kwargs.get('state_id', None)
-        
-        cities = StateCity.objects.filter(state__id=state_id)
-
-        if len(cities) > 0:
-            return cities
-        else:
-            raise exceptions.NotFound()
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )
 
 
-class StateCityDetailView(generics.RetrieveAPIView):
-    queryset = StateCity.objects.all()
-    serializer_class = StateCitySerializer
-
-    def get_object(self):
-        state_id = self.kwargs.get('state_id', None)
-        city_id = self.kwargs.get('city_id', None)
-
+class BrazilStateApiView(views.APIView):
+    def get(self, request, state_id):
         try:
-            city = StateCity.objects.get(state__id=state_id, id=city_id)
-        except StateCity.DoesNotExist:
-            raise exceptions.NotFound
+            state = State.objects.get(id=state_id)
+        except State.DoesNotExist:
+            return Response(
+                data={'status' : 'fail', 'message' :'No Brazil State found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
         
-        return city
+        serializer = StateSerializer(state)
+
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )
+
+
+class BrazilStateCityListApiView(views.APIView):
+    def get(self, request, state_id):
+        state_city = StateCity.objects.filter(state__id=state_id)
+
+        if not state_city.exists():
+            return Response(
+                data={'status' : 'fail', 'message' :'No Brazil State City found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        serializer = StateCitySerializer(state_city, many=True)
+
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )
+
+
+class BrazilStateCityApiView(views.APIView):
+    def get(self, request, state_id, city_id):
+        try:
+            state_city = StateCity.objects.get(state__id=state_id, id=city_id)
+        except StateCity.DoesNotExist:
+            return Response(
+                data={'status' : 'fail', 'message' :'No Brazil State City found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        serializer = StateCitySerializer(state_city)
+
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )

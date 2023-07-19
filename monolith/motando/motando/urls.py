@@ -32,7 +32,7 @@ urlpatterns = [
     re_path(r'^api/token/verify/$', TokenVerifyView.as_view(), name='token_verify'),
 
     # API
-    path('api/brasil/', include('state_city.api.urls', namespace='api_state-city')),
+    path('api/brazil/', include('state_city.api.urls', namespace='api_state-city')),
     path('api/motorcycles/', include('motorcycle.api.urls', namespace='api_motorcycle')),
     path('api/classifiedads/', include('classifiedad.api.urls', namespace='api_classifiedad')),
     path('api/chats/', include('chat.api.urls', namespace='api_chat')),

@@ -9,15 +9,15 @@ from . import views
 app_name = 'motorcycle'
 
 urlpatterns = [
-    path('brands', views.MotorcycleBrandListView.as_view(), name='brand_list'),
-    path('brands/<int:pk>', views.MotorcycleBrandDetailView.as_view(), name='brand_detail'),
+    path('brands', views.MotorcycleBrandListApiView.as_view(), name='brand_list'),
+    path('brands/<int:brand_id>', views.MotorcycleBrandApiView.as_view(), name='brand'),
 
-    path('brands/<int:brand_id>/models', views.MotorcycleBrandModelListView.as_view(), name='brand-model_list'),
-    path('brands/<int:brand_id>/models/<int:model_id>', views.MotorcycleBrandModelDetailView.as_view(), 
-        name='brand-model_detail'),
+    path('brands/<int:brand_id>/models', views.MotorcycleBrandModelListApiView.as_view(), name='brand_model_list'),
+    path('brands/<int:brand_id>/models/<int:model_id>', views.MotorcycleBrandModelApiView.as_view(),
+         name='brand_model'),
 
-    path('brands/<int:brand_id>/models/<int:model_id>/versions', views.MotorcycleModelVersionListView.as_view(), 
-        name='brand-model-version_list'),
-    path('brands/<int:brand_id>/models/<int:model_id>/versions/<int:version_id>', 
-        views.MotorcycleModelVersionDetailView.as_view(), name='brand-model-version_detail')
+    path('brands/<int:brand_id>/models/<int:model_id>/versions', views.MotorcycleBrandModelVersionListApiView.as_view(), 
+         name='brand_model_version_list'),
+    path('brands/<int:brand_id>/models/<int:model_id>/versions/<int:version_id>', views.MotorcycleBrandModelVersionApiView.as_view(), 
+         name='brand_model_version')
 ]

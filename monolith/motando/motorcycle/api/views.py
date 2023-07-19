@@ -2,82 +2,119 @@
 # motorcycle/api/views.py
 #
 
-from rest_framework import generics, exceptions
+from rest_framework import views, status
+from rest_framework.response import Response
 
 from motorcycle.models import MotorcycleBrand, MotorcycleBrandModel, MotorcycleBrandModelVersion
 from motorcycle.api.serializers import MotorcycleBrandSerializer, MotorcycleBrandModelSerializer, MotorcycleBrandModelVersionSerializer
 
 
-class MotorcycleBrandListView(generics.ListAPIView):
-    queryset = MotorcycleBrand.objects.all()
-    serializer_class = MotorcycleBrandSerializer
+class MotorcycleBrandListApiView(views.APIView):
+    def get(self, request):
+        motorcycle_brand = MotorcycleBrand.objects.all()
+
+        if not motorcycle_brand.exists():
+            return Response(
+                data={'status' : 'fail', 'message' :'No Motorcycle Brand found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            ) 
+
+        serializer = MotorcycleBrandSerializer(motorcycle_brand, many=True)
+        
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )
 
 
-class MotorcycleBrandDetailView(generics.RetrieveAPIView):
-    queryset = MotorcycleBrand.objects.all()
-    serializer_class = MotorcycleBrandSerializer
-
-
-class MotorcycleBrandModelListView(generics.ListAPIView):
-    queryset = MotorcycleBrandModel.objects.all()
-    serializer_class = MotorcycleBrandModelSerializer
-
-    def get_queryset(self):
-        brand_id = self.kwargs.get('brand_id', None)
-
-        brands = MotorcycleBrandModel.objects.filter(brand__id=brand_id)
-
-        if len(brands):
-            return brands
-        else:
-            raise exceptions.NotFound()
-
-
-class MotorcycleBrandModelDetailView(generics.RetrieveAPIView):
-    queryset = MotorcycleBrandModel.objects.all()
-    serializer_class = MotorcycleBrandModelSerializer
-
-    def get_object(self):
-        brand_id = self.kwargs.get('brand_id', None)
-        model_id = self.kwargs.get('model_id', None)
-
+class MotorcycleBrandApiView(views.APIView):
+    def get(self, request, brand_id):
         try:
-            modelo = MotorcycleBrandModel.objects.get(brand__id=brand_id, id=model_id)
+            motorcycle_brand = MotorcycleBrand.objects.get(id=brand_id)
+        except MotorcycleBrand.DoesNotExist:
+            return Response(
+                data={'status' : 'fail', 'message' :'No Motorcycle Brand found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )   
+
+        serializer = MotorcycleBrandSerializer(motorcycle_brand)
+
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )
+    
+
+class MotorcycleBrandModelListApiView(views.APIView):
+    def get(self, request, brand_id):
+        motorcycle_brand_model = MotorcycleBrandModel.objects.filter(brand__id=brand_id)
+        
+        if not motorcycle_brand_model.exists():
+            return Response(
+                data={'status' : 'fail', 'message' :'No Motorcycle Brand Model found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )   
+        
+        serializer = MotorcycleBrandModelSerializer(motorcycle_brand_model, many=True)
+
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )
+
+
+class MotorcycleBrandModelApiView(views.APIView):
+    def get(self, request, brand_id, model_id):
+        try:
+            motorcycle_brand_model = MotorcycleBrandModel.objects.get(brand__id=brand_id, id=model_id)
         except MotorcycleBrandModel.DoesNotExist:
-            raise exceptions.NotFound()
+            return Response(
+                data={'status' : 'fail', 'message' :'No Motorcycle Brand Model found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+    
+        serializer = MotorcycleBrandModelSerializer(motorcycle_brand_model)
+
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )
+
+
+class MotorcycleBrandModelVersionListApiView(views.APIView):
+    def get(self, request, brand_id, model_id):
+        motorcycle_brand_model_version = MotorcycleBrandModelVersion.objects.filter(model__id=model_id, 
+                                                                                    model__brand__id=brand_id)
+                                                                                            
+        if not motorcycle_brand_model_version.exists():
+            return Response(
+                data={'status' : 'fail', 'message' :'No Motorcycle Brand Model found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )   
         
-        return modelo
+        serializer = MotorcycleBrandModelVersionSerializer(motorcycle_brand_model_version, many=True)
+
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )
 
 
-class MotorcycleModelVersionListView(generics.ListAPIView):
-    queryset = MotorcycleBrandModelVersion.objects.all()
-    serializer_class = MotorcycleBrandModelVersionSerializer
-
-    def get_queryset(self):
-        brand_id = self.kwargs.get('brand_id', None)
-        model_id = self.kwargs.get('model_id', None)
-
-        versions = MotorcycleBrandModelVersion.objects.filter(model__brand__id=brand_id, model__id=model_id)
-
-        if len(versions) > 0:
-            return versions
-        else:
-            raise exceptions.NotFound()
-
-
-class MotorcycleModelVersionDetailView(generics.RetrieveAPIView):
-    queryset = MotorcycleBrandModelVersion.objects.all()
-    serializer_class = MotorcycleBrandModelVersionSerializer
-
-    def get_object(self):
-        brand_id = self.kwargs.get('brand_id', None)
-        model_id = self.kwargs.get('model_id', None)
-        version_id = self.kwargs.get('version_id', None)
-
+class MotorcycleBrandModelVersionApiView(views.APIView):
+    def get(self, request, brand_id, model_id, version_id):
         try:
-            version = MotorcycleBrandModelVersion.objects.get(model__brand__id=brand_id, 
-                model__id=model_id, id=version_id)
+            motorcycle_brand_model_version = MotorcycleBrandModelVersion.objects.get(model__id=model_id,
+                                                                                     model__brand__id=brand_id,
+                                                                                     id=version_id)
         except MotorcycleBrandModelVersion.DoesNotExist:
-            raise exceptions.NotFound()
+            return Response(
+                data={'status' : 'fail', 'message' :'No Motorcycle Brand Model Version found.'}, 
+                status=status.HTTP_404_NOT_FOUND
+            ) 
         
-        return version
+        serializer = MotorcycleBrandModelVersionSerializer(motorcycle_brand_model_version)
+
+        return Response(
+            data={'status' : 'success', 'data': [serializer.data]},
+            status=status.HTTP_200_OK
+        )

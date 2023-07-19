@@ -5,7 +5,6 @@
 from rest_framework import serializers
 
 from classifiedad.models import ClassifiedAd, ClassifiedAdImage
-from motorcycle.models import MotorcycleBrand, MotorcycleBrandModel
 
 
 class ClassifiedAdImageSerializer(serializers.ModelSerializer):

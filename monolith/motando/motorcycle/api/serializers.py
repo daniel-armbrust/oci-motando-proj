@@ -16,8 +16,8 @@ class MotorcycleBrandSerializer(serializers.ModelSerializer):
 class MotorcycleBrandModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = MotorcycleBrandModel
-        fields = ('id', 'model', 'brand',)
-
+        fields = ('id', 'model',)    
+      
 
 class MotorcycleBrandModelVersionSerializer(serializers.ModelSerializer):
      class Meta:
