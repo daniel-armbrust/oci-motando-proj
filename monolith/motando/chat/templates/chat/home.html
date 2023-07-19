@@ -31,7 +31,7 @@
                   <br>
                   <form id="id_form" autocomplete="off">                     
                      {% csrf_token %}       
-                     <div class="shadow rounded bg-white border p-3"  style="min-height: 663px;">
+                     <div class="shadow rounded bg-white border p-3"  style="height: 688px;">
                          <div class="row">
                            <div class="col">
                                  <h2 class="h4 fw-bold"> Chat de Propostas </h2>  
@@ -76,9 +76,10 @@
                            </div>                            
                            <div class="col-8">
                                <p class="fw-bold rounded-top my-background-purple text-white p-3 text-left text-uppercase" 
-                                  id="id_chat_fullname_from"> 
+                                  id="id_chat_from_fullname"> 
                                </p>  
-                               <div style="overflow-y: scroll; overflow-x: hidden; height: 312px;">                                  
+                               <div style="overflow-y: scroll; overflow-x: hidden; height: 312px;"
+                                    id="id_chat_messages">                                  
                                </div>
                                <br>
                                <div class="input-group mb-3">
@@ -120,8 +121,7 @@
    <script type="text/javascript" src="{% static 'js/classifiedad-chat.js' %}"></script> 
    <script type="text/javascript">
         const USER_ID = {{ user_profile.user.id }};
-        //const SELLING_URL = "http://{{ request.META.HTTP_HOST }}{% url 'api_chat:selling' user_id=user_profile.user.id %}";
-        const SELLING_URL = "http://127.0.0.1:8000/api/chats/users/10/messages/selling";
+        const SELLING_URL = "http://{{ request.META.HTTP_HOST }}{% url 'api_chat:selling' user_id=user_profile.user.id %}";        
         const BUYING_URL = "http://{{ request.META.HTTP_HOST }}{% url 'api_chat:buying' user_id=user_profile.user.id %}";
    </script>   
 {% endblock %}

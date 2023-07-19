@@ -1,6 +1,6 @@
 {% load static %}
 <br>
-<div class="shadow rounded bg-white border p-3">
+<div class="shadow rounded bg-white border p-3" style="max-height: 700px;">
       <div class="row">
          <div class="col d-flex justify-content-center">
                <img src="{% static 'img/pessoa.png' %}" alt="Pessoa" 
@@ -58,6 +58,13 @@
          <div class="col m-2">
                <a class="text-decoration-none screen-wait-class" href="{% url 'account:profile' %}">
                   <i class="fas fa-user-cog"></i> Minha Conta
+               </a>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col m-2">
+               <a class="text-decoration-none screen-wait-class" href="{% url 'account:password_security' %}">
+                  <i class="fa-solid fa-key"></i> Senha e Segurança                   
                </a>
          </div>
       </div>

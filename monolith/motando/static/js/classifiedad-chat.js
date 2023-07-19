@@ -96,32 +96,72 @@ function ajaxGetRequest(url) {
     });
 }
 
+function buildChatPanel(jsonResp) {
+    let [htmlChatHistory, htmlChatMessages, chatDateTime, chatDateTimeStr] = ['', '', '', ''];
+    let [price, brPrice] = [0, 0];   
+
+    if (jsonResp.status === 'success') {
+        $('#id_chat_painel').removeClass('d-none');
+
+        for (let idxData = 0 ; idxData < jsonResp.data.length ; idxData++) {
+            price = parseFloat(jsonResp.data[idxData].price);
+            brPrice = price.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
+
+            htmlChatHistory = `
+               <div class="row"><div class="col m-2">
+                   <a href="#" class="text-decoration-none">
+                     <p class="fst-italic">${jsonResp.data[idxData].user_from_fullname}</p>
+                     <p><span class="fw-bolder fst-italic">Anúncio:</span> 
+                        ${jsonResp.data[idxData].motorcycle} - ${brPrice}
+                     </p></a><hr></div></div>`;
+            
+            $('#id_chat_history').append(htmlChatHistory);
+            $('#id_chat_from_fullname').html(jsonResp.data[idxData].user_from_fullname);
+
+            for (let idxMessages = 0 ; idxMessages < jsonResp.data[idxData].messages.length ; idxMessages++) {
+                chatDateTime = new Date(jsonResp.data[idxData].messages[idxMessages].timestamp);
+                chatDateTimeStr = `${chatDateTime.toLocaleDateString()} - ${chatDateTime.toLocaleTimeString('pt-BR')}`;
+
+                htmlChatMessages = `
+                    <div class="row"><div class="col">
+                        <div style="background-color: #C6C6C6;" class="p-3 border rounded">
+                           <p class="fw-bold fst-italic">
+                               ${jsonResp.data[idxData].messages[idxMessages].from}
+                               <span class="text-right small">(${chatDateTimeStr})</span>
+                           </p><p class="fst-italic">${jsonResp.data[idxData].messages[idxMessages].text}</p>
+                    </div></div></div><br>`;
+
+                $('#id_chat_messages').append(htmlChatMessages);
+            }
+        }         
+    }
+    else {
+        $('#id_modal_title').html('Informação');
+        $('#id_modal_message').html('No momento você não possui nenhuma mensagem.');        
+        $('#id_modal').modal('show');
+    }
+}
+
 function getSellingMessages() {    
     const data = ajaxGetRequest(SELLING_URL);
     const jsonResp = data.responseJSON;    
+   
+    $('#id_chat_painel').addClass('d-none'); 
+    $('#id_chat_history').empty(); 
+    $('#id_chat_messages').empty();     
 
-    if (jsonResp.status === 'success') {
-
-    }
-    else {
-        $('#id_modal_title').html('Informação');
-        $('#id_modal_message').html('No momento você não possui nenhuma mensagem.');        
-        $('#id_modal').modal('show');
-    }    
+    buildChatPanel(jsonResp);
 }
 
 function getBuyingMessages() {    
-    const data = ajaxGetRequest(SELLING_URL);
+    const data = ajaxGetRequest(BUYING_URL);
     const jsonResp = data.responseJSON;    
 
-    if (jsonResp.status === 'success') {
+    $('#id_chat_painel').addClass('d-none'); 
+    $('#id_chat_history').empty(); 
+    $('#id_chat_messages').empty();     
 
-    }
-    else {
-        $('#id_modal_title').html('Informação');
-        $('#id_modal_message').html('No momento você não possui nenhuma mensagem.');        
-        $('#id_modal').modal('show');
-    }    
+    buildChatPanel(jsonResp);  
 }
 
 $(document).ready(function() {              

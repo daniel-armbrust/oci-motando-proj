@@ -31,24 +31,24 @@
                      <br>
                      <form id="id_form" autocomplete="off" method="post" action="{% url 'account:profile' %}">
                         {% csrf_token %}       
-                        <div class="shadow rounded bg-white border p-3">
+                        <div class="shadow rounded bg-white border p-3" style="min-height: 700px;">
                             <div class="row">
-                            <div class="col">
+                                <div class="col">
                                     <h2 class="h4 fw-bold"> Dados do Usuário </h2>                                 
-                            </div>
+                                </div>
                             </div>                                              
                             <div class="row pt-2 p-2">
                                 <div class="col-5">           
                                     <label for="id_fullname" class="form-label my-text-purple">Nome <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control my-btn-outline" id="id_fullname" style="box-shadow: none; background-color: white;" 
-                                        value="{{ user_profile.user.full_name }}" readonly="readonly">         
+                                           value="{{ user_profile.user.fullname }}" readonly="readonly">         
                                 </div>                            
                             </div>
                             <div class="row pt-2 p-2">
                                 <div class="col-5">           
                                     <label for="id_email" class="form-label my-text-purple">E-mail <span class="text-danger">*</span></label>
                                     <input type="email" class="form-control my-btn-outline" id="id_email" style="box-shadow: none; background-color: white;" 
-                                        value="{{ user_profile.user.email }}" readonly="readonly">         
+                                           value="{{ user_profile.user.email }}" readonly="readonly">         
                                 </div>                        
                                 <div class="col-6">           
                                     <br>                                
@@ -244,25 +244,6 @@
                                     <label class="form-check-label" for="id_show_telephone_classifiedad"> &nbsp;
                                         Disponível no Anúncio  
                                     </label>   
-                                </div>
-                            </div>
-                            <div class="row pt-4">
-                                <div class="col">
-                                    <h2 class="h4"> Alterar Senha </h2>                                 
-                                </div>                            
-                            </div> 
-                            <div class="row pt-2 p-2">
-                                <div class="col">
-                                    <label for="id_senha_atual" class="form-label my-text-purple">Senha atual <span class="text-danger">*</span> </label>
-                                    <input type="password" class="form-control my-btn-outline" id="id_senha_atual" style="box-shadow: none;"> 
-                                </div>
-                                <div class="col">
-                                    <label for="id_senha_nova" class="form-label my-text-purple">Nova Senha <span class="text-danger">*</span> </label>
-                                    <input type="password" class="form-control my-btn-outline" id="id_senha_nova" style="box-shadow: none;"> 
-                                </div>
-                                <div class="col">
-                                    <label for="id_confirm_senha_nova" class="form-label my-text-purple">Confirmação da Nova Senha <span class="text-danger">*</span> </label>
-                                    <input type="password" class="form-control my-btn-outline" id="id_confirm_senha_nova" style="box-shadow: none;"> 
                                 </div>
                             </div>
                             <div class="row pt-4">

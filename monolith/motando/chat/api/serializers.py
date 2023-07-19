@@ -27,7 +27,7 @@ class NewChatSerializer(serializers.Serializer):
             raise serializers.ValidationError({'status': 'fail', 'message': 'Unable to create new Chat message.'})
        
         new_message = {
-            'from': validated_data.get('email_from'), 
+            'from': validated_data.get('fullname_from'), 
             'text': validated_data.get('message'),
             'timestamp': datetime.now().isoformat()
         }
@@ -72,5 +72,14 @@ class ChatMessagesSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
+
+        model_version = instance.classifiedad.model_version.version
+
+        if model_version:
+            representation['motorcycle'] = f'{instance.classifiedad.model.brand.brand} - {instance.classifiedad.model.model} ({model_version})'
+        else:
+            representation['motorcycle'] = f'{instance.classifiedad.model.brand.brand} - {instance.classifiedad.model.model}'
+
+        representation['price'] = instance.classifiedad.price
         
         return representation

@@ -4,6 +4,8 @@
 
 from rest_framework import views,  status
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 from chat.api.serializers import NewChatSerializer, ChatMessagesSerializer
 from chat.models import Chat
@@ -32,9 +34,17 @@ class ChatApiView(views.APIView):
 
 
 class ChatBuyingApiView(views.APIView):
-    def get(self, request, user_id):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id):        
+        if request.user.id != user_id:
+            return Response(data={'status': 'fail', 'message': 'You cannot view messages that are not yours.'},
+                            status=status.HTTP_403_FORBIDDEN)        
         try:
-            chat = Chat.objects.get(user_from__id=user_id)
+            chat = Chat.objects.get(user_from__id=user_id, 
+                                    user_from__is_active=True,
+                                    classifiedad__status='PUBLISHED')
         except Chat.DoesNotExist:
             return Response(data={'status': 'fail', 'message': 'No Chat Message(s) found.'},
                             status=status.HTTP_404_NOT_FOUND)
@@ -46,9 +56,18 @@ class ChatBuyingApiView(views.APIView):
                 
 
 class ChatSellingApiView(views.APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, user_id):
+        if request.user.id != user_id:
+            return Response(data={'status': 'fail', 'message': 'You cannot view messages that are not yours.'},
+                            status=status.HTTP_403_FORBIDDEN)        
+        
         try:
-            chat = Chat.objects.get(user_to__id=user_id)
+            chat = Chat.objects.get(user_to__id=user_id,
+                                    user_to__is_active=True,
+                                    classifiedad__status='PUBLISHED')
         except Chat.DoesNotExist:
             return Response(data={'status': 'fail', 'message': 'No Chat Message(s) found.'},
                             status=status.HTTP_404_NOT_FOUND)

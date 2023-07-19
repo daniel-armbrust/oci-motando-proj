@@ -19,9 +19,7 @@ class ClassifiedAdApiView(views.APIView):
             return Response(
                 data={'status' : 'fail', 'message' :'No ClassifiedAd found.'}, 
                 status=status.HTTP_404_NOT_FOUND
-            )
-
-        log.info('OKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK')
+            )      
 
         serializer = ClassifiedAdSerializer(classifiedad)              
 

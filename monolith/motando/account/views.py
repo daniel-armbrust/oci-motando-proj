@@ -5,10 +5,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth import authenticate
 from django.views import View
 
-from .models import UserProfile
-from .forms import LoginForm, UserRegistrationForm, UserProfileForm
+from .models import User, UserProfile
+from .forms import LoginForm, UserRegistrationForm, UserProfileForm, PasswordSecurityForm
 
 
 def user_login(request):
@@ -100,3 +101,33 @@ class UserProfileView(View):
             messages.error(request, 'Erro ao atualizar dados do usuário.')
                 
         return redirect('account:profile')
+    
+
+class UserPasswordSecurityView(View):
+    def get(self, request):        
+        user_profile = get_object_or_404(UserProfile, user=request.user)
+        
+        form = PasswordSecurityForm()
+
+        return render(request, 'account/user/password_security.html', 
+                      {'form': form, 'user_profile': user_profile})
+
+    def post(self, request):
+        form = PasswordSecurityForm(request.POST)     
+     
+        if form.is_valid():
+            user = authenticate(username=request.user, 
+                                password=form.cleaned_data.get('current_password'))
+            
+            if user:
+                user.set_password(form.cleaned_data.get('new_password'))
+                user.save()
+
+                messages.success(request, 'A senha foi alterada com sucesso.')
+            else:
+                messages.error(request, 'A senha atual não confere!')
+        else:
+            messages.error(request, 'A alteração da senha falhou!')        
+
+        return redirect('account:password_security')
+

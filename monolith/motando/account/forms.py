@@ -2,13 +2,15 @@
 # account/forms.py
 #
 
+import re
+
 from django import forms
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
-from .models import UserProfile
+from .models import User, UserProfile
 from state_city.models import State, StateCity
-from motorcycle.models import MotorcycleBrand, MotorcycleBrandModel
+from motorcycle.models import MotorcycleBrandModel
   
 
 class LoginForm(forms.Form):
@@ -22,7 +24,7 @@ class LoginForm(forms.Form):
 
 
 class UserRegistrationForm(forms.ModelForm):
-    full_name = forms.CharField(max_length=500, required=True,
+    fullname = forms.CharField(max_length=500, required=True,
         widget=forms.TextInput(attrs={'class': 'form-control my-btn-outline', 'style': 'box-shadow: none;'})
     )
 
@@ -44,7 +46,7 @@ class UserRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = get_user_model()
-        fields = ('email', 'full_name',)
+        fields = ('email', 'fullname',)
 
     def clean_password_confirm(self):
         cleaned_data = self.cleaned_data
@@ -173,7 +175,7 @@ class UserProfileForm(forms.ModelForm):
         widget=forms.CheckboxInput(
             attrs={'class': 'form-check-input', 'id': 'id_show_telephone_classifiedad'}
         )
-    )
+    )  
 
     class Meta:
         model = UserProfile
@@ -183,7 +185,7 @@ class UserProfileForm(forms.ModelForm):
             'has_motorcycle', 'motorcycle_brand_wanted', 'motorcycle_wanted_year',
             'motorcycle_brand_model_wanted', 'authz_whatsapp', 'authz_sms',
             'show_telephone_classifiedad', 'subscribe_offer',)
-    
+            
     def clean(self):
         cleaned_data = super(UserProfileForm, self).clean()
 
@@ -196,7 +198,7 @@ class UserProfileForm(forms.ModelForm):
         cleaned_data['state'] = state
         cleaned_data['city'] = city
 
-        # Mantém somente os números do telefone.
+        # Keep just the telephone numbers.
         telephone_str = cleaned_data.get('telephone')
         telephone = ''.join([elem for elem in telephone_str if elem.isdigit()])
         cleaned_data['telephone'] = telephone
@@ -217,3 +219,27 @@ class UserProfileForm(forms.ModelForm):
 
         cleaned_data['motorcycle_brand_wanted'] = motorcycle_brand
         cleaned_data['motorcycle_brand_model_wanted'] = motorcycle_brand_model
+
+
+class PasswordSecurityForm(forms.Form):
+    current_password = forms.CharField(label='Senha atual', max_length=30, required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control my-btn-outline'})
+    )
+
+    new_password = forms.CharField(label='Nova Senha', max_length=30, required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control my-btn-outline'})
+    )
+
+    new_password_confirm = forms.CharField(label='Confirmação da Nova Senha', max_length=30, required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control my-btn-outline'})
+    ) 
+
+    def clean_new_password_confirm(self):
+        cleaned_data = self.cleaned_data
+
+        if not re.fullmatch(r'[A-Za-z0-9@#$%^&+=]{8,16}', cleaned_data['new_password']):            
+            raise forms.ValidationError('A senha exige uma complexidade mínima.')
+        elif cleaned_data['new_password'] != cleaned_data['new_password_confirm']:            
+            raise forms.ValidationError('As senhas não são iguais.')            
+
+        return cleaned_data['new_password_confirm']
