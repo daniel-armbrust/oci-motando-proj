@@ -14,9 +14,9 @@ urlpatterns = [
     path('login', views.user_login, name='login'),
     path('logout', login_required(views.user_logout), name='logout'),
 
-    path('registro', TemplateView.as_view(template_name='account/register/choices.html'), name='choices'),
+    path('registro', TemplateView.as_view(template_name='account/choices.html'), name='choices'),
     path('new/user', views.NewUserView.as_view(), name='new_user'),
-    path('new/user/success', TemplateView.as_view(template_name='account/register/confirmation.html'), 
+    path('new/user/success', TemplateView.as_view(template_name='account/confirmation.html'), 
          name='new_user_success'),
 
     path('user/home', login_required(views.UserProfileHomeView.as_view()), name='home'),

@@ -1,11 +1,11 @@
-{% extends "include/desktop_base.html" %}
+{% extends "default_layout/base.html" %}
+{% spaceless %} 
 {% block title %} Detalhes do Anúncio {% endblock %}
 {% load static %}   
 {% block head %}
    {{ block.super }}      
 {% endblock %}
-{% block body %}
-   {% spaceless %} 
+{% block body %}  
    {{ block.super }}
    {% load humanize %}
     <section>
@@ -365,11 +365,7 @@
             </div>
     </section>
     <br>
-    <br>
-    {% endspaceless %} 
-{% endblock %}
-{% block footer %}
-      {% include "include/desktop_footer.html" %}
+    <br>    
 {% endblock %}
 {% block body_scripts %}
      <script type="text/javascript" src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script> 
@@ -399,3 +395,4 @@
          });
      </script> 
 {% endblock %}
+{% endspaceless %} 

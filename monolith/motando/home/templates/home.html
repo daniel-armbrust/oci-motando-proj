@@ -1,4 +1,5 @@
-{% extends "include/desktop_base.html" %}
+{% extends "default_layout/base.html" %}
+{% spaceless %}
 {% block title %} Home {% endblock %}
 {% load static %}   
 {% block head %}
@@ -6,12 +7,10 @@
    <link rel="stylesheet" href="{% static 'vendor/owlcarousel/owl.carousel.min.css' %}">
    <link rel="stylesheet" href="{% static 'vendor/owlcarousel/owl.theme.default.min.css' %}">
 {% endblock %}
-{% block body %}
-   {% spaceless %}
+{% block body %}   
    {{ block.super }}
    <section id="id_section_bike_search">
         <div class="container">
-
                 <div class="row">
                     <div class="col-3 d-flex justify-content-start">
                         <a href="{% url 'home:main_page' %}">
@@ -399,15 +398,14 @@
             </div>
         </div>
     </section>
-
     <br>
-    {% endspaceless %}
 {% endblock %}
 {% block footer %}
-   {% include "include/desktop_footer.html" %}
+   {% include "footer.html" %}
 {% endblock %}
 {% block body_scripts %}
     <script type="text/javascript" src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>    
     <script type="text/javascript" src="{% static 'js/commons.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/home.js' %}"></script>   
 {% endblock %}
+{% endspaceless %}

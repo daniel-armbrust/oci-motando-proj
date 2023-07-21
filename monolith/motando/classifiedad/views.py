@@ -37,7 +37,7 @@ class AllClassifiedAdView(View):
 
         total_published = classifiedad.count()
 
-        return render(request, 'classifiedad/desktop_all_classifiedad.html', {
+        return render(request, 'classifiedad/all.html', {
             'classifiedad_page': classifiedad_page, 'total_published': total_published})
 
 
@@ -58,16 +58,16 @@ class HomeClassifiedAdView(View):
         page_number = request.GET.get('p')
         classifiedad_page = paginator.get_page(page_number)
 
-        return render(request, 'classifiedad/my/classifiedad.html', {'user_profile': user_profile,
-            'classifiedad_page': classifiedad_page, 'total_published': total_published, 
-            'total_not_published': total_not_published})
+        return render(request, 'classifiedad/home.html', {
+            'user_profile': user_profile, 'classifiedad_page': classifiedad_page, 
+            'total_published': total_published, 'total_not_published': total_not_published})
 
 
 class NewClassifiedAdView(View):
     def get(self, request):
         form = ClassifiedAdForm()
 
-        return render(request, 'classifiedad/form_classifiedad.html', {'form': form})
+        return render(request, 'classifiedad/form.html', {'form': form})
 
     def post(self, request):               
         form = ClassifiedAdForm(request.POST)        
@@ -108,7 +108,7 @@ class NewClassifiedAdView(View):
         else:        
             messages.error(request, 'Erro ao criar novo Anúncio.')
 
-            return render(request, 'classifiedad/form_classifiedad.html', {'form': form})
+            return render(request, 'classifiedad/form.html', {'form': form})
 
 
 class EditClassifiedAdView(View):
@@ -174,7 +174,7 @@ class EditClassifiedAdView(View):
         
         messages.error(request, 'Erro ao atualizar o Anúncio.')
 
-        return render(request, 'classifiedad/form_classifiedad.html', {'form': form})
+        return render(request, 'classifiedad/form.html', {'form': form})
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -245,7 +245,7 @@ class ClassifiedAdDetailView(View):
 
             form = ClassifiedAdLeaveMsgForm(initial={'fullname': fullname, 'email': email})
 
-        return render(request, 'classifiedad/desktop_details_classifiedad.html', {
+        return render(request, 'classifiedad/details.html', {
             'classifiedad': classifiedad, 'form': form})
 
 

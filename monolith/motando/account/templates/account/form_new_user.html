@@ -1,4 +1,5 @@
-{% extends "account/base.html" %}
+{% extends "default_layout/base.html" %}
+{% spaceless %}
 {% load static %}
 {% block title %} Cadastro Particular {% endblock %}
 {% block body %}
@@ -24,7 +25,7 @@
                     </p>
                 </div>
             </div>            
-            {% include "account/include/messages.html" %}            
+            {% include "messages.html" %}            
             <div class="row">
                 <div class="col-3"></div>
                 <div class="col-6">
@@ -35,9 +36,9 @@
                                 <div class="row pt-2 p-2">
                                     <div class="col">
                                         <label for="id_full_name" class="form-label my-text-purple">Nome: &nbsp;<span class="text-danger">*</span> </label>
-                                        {{ user_form.full_name }}                                        
-                                        {% for full_name_error in user_form.full_name.errors %}      
-                                            <div class="text-danger pt-1"> &nbsp;&bull; {{ full_name_error }} </div>
+                                        {{ user_form.fullname }}                                        
+                                        {% for fullname_error in user_form.fullname.errors %}      
+                                            <div class="text-danger pt-1"> &nbsp;&bull; {{ fullname_error }} </div>
                                         {% endfor %}
                                         <div class="invalid-feedback">
                                             É necessário informar o seu Nome completo.
@@ -148,6 +149,7 @@
                 </div>
                 <div class="col-3"></div>
             </div>
+            <!--
             <div class="modal fade" id="id_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                  aria-labelledby="id_static_backdrop_label" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -165,13 +167,11 @@
                   </div>
                 </div>
             </div>
+            //-->
         </div>
     </section>
     <br>
     <br>
-{% endblock %}
-{% block footer %}
-   {% include "account/include/footer.html" %}
 {% endblock %}
 {% block body_scripts %}    
     <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script>
@@ -206,3 +206,4 @@
         });
    </script> 
 {% endblock %}
+{% endspaceless %}

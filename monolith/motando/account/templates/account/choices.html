@@ -1,8 +1,9 @@
-{% extends "account/base.html" %}
+{% extends "default_layout/base.html" %}
+{% spaceless %}
 {% load static %}
 {% block title %} Particular ou Lojista {% endblock %}
 {% block body %}
-    {% include "account/include/navbar.html" %}    
+    {{ block.super }}    
         <section>
             <div class="container">
                 <div class="row">
@@ -34,6 +35,6 @@
             </div>
         </section>
         <br>
-        <br>
-        {% include "account/include/footer.html" %}    
+        <br>           
 {% endblock %} 
+{% endspaceless %}

@@ -1,8 +1,9 @@
-{% extends "account/base.html" %}
+{% extends "default_layout/base.html" %}
+{% spaceless %}
 {% load static %}
 {% block title %} E-mail Confirmação {% endblock %}
 {% block body %}
-   {% include "account/include/navbar.html" %}
+    {{ block.super }}
     <section>
         <div class="container">
             <div class="row">
@@ -33,6 +34,4 @@
     </section>
     <br><br><br><br>
 {% endblock %}
-{% block footer %}
-   {% include "account/include/footer.html" %}
-{% endblock %}
+{% endspaceless %}

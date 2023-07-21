@@ -1,11 +1,11 @@
-{% extends "include/desktop_base.html" %}
+{% extends "default_layout/base.html" %}
+{% spaceless %} 
 {% block title %} Todos os Anúncios {% endblock %}
 {% load static %}   
 {% block head %}
    {{ block.super }}      
 {% endblock %}
-{% block body %}
-   {% spaceless %} 
+{% block body %}   
    {{ block.super }}
    {% load humanize %}
     <section>
@@ -649,11 +649,8 @@
                 </div>              
         </div>
     </section>
-    <br><br><br>
-   {% endspaceless %} 
-{% endblock %}
-{% block footer %}
-      {% include "include/desktop_footer.html" %}
+    <br><br><br>   
 {% endblock %}
 {% block body_scripts %}   
 {% endblock %}
+{% endspaceless %} 

@@ -14,8 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path, include, re_path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from django.urls import path, include
 
 urlpatterns = [
     # Admin Site
@@ -24,15 +23,10 @@ urlpatterns = [
     path('', include('home.urls', namespace='home')),
     path('account/', include('account.urls', namespace='account')),
     path('classifiedad/', include('classifiedad.urls', namespace='classifiedad')),
-    path('chat/', include('chat.urls', namespace='chat')),
-
-    # API Token
-    re_path(r'^api/token/$', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    re_path(r'^api/token/refresh/$', TokenRefreshView.as_view(), name='token_refresh'),
-    re_path(r'^api/token/verify/$', TokenVerifyView.as_view(), name='token_verify'),
+    path('chat/', include('chat.urls', namespace='chat')),   
 
     # API
-    path('api/brazil/', include('state_city.api.urls', namespace='api_state-city')),
+    path('api/brazil/', include('state_city.api.urls', namespace='api_state_city')),
     path('api/motorcycles/', include('motorcycle.api.urls', namespace='api_motorcycle')),
     path('api/classifiedads/', include('classifiedad.api.urls', namespace='api_classifiedad')),
     path('api/chats/', include('chat.api.urls', namespace='api_chat')),

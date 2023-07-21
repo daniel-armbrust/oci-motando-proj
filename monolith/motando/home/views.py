@@ -8,6 +8,6 @@ from django.views import View
 
 class MainPageView(View):
     def get(self, request):
-        return render(request, 'desktop_home.html', {})
+        return render(request, 'home.html', {})
  
 

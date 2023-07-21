@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.views import View
 
-from .models import User, UserProfile
+from .models import UserProfile
 from .forms import LoginForm, UserRegistrationForm, UserProfileForm, PasswordSecurityForm
 
 
@@ -39,7 +39,6 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-
     return redirect('home:main_page')
 
 
@@ -48,7 +47,7 @@ class NewUserView(View):
         user_form = UserRegistrationForm()
         user_profile_form = UserProfileForm()
 
-        return render(request, 'account/register/form_new_user.html', {'user_form': user_form,
+        return render(request, 'account/form_new_user.html', {'user_form': user_form,
             'user_profile_form': user_profile_form})
 
     def post(self, request):
@@ -68,7 +67,7 @@ class NewUserView(View):
         else:
             messages.error(request, 'Erro ao realizar o cadastro.')
 
-        return render(request, 'account/register/form_new_user.html', {'user_form': user_form,
+        return render(request, 'account/form_new_user.html', {'user_form': user_form,
             'user_profile_form': user_profile_form})
 
 
@@ -76,7 +75,7 @@ class UserProfileHomeView(View):
     def get(self, request):
         user_profile = get_object_or_404(UserProfile, user=request.user)
 
-        return render(request, 'account/user/home.html', {'user_profile': user_profile})
+        return render(request, 'account/home.html', {'user_profile': user_profile})
 
 
 class UserProfileView(View):
@@ -85,7 +84,7 @@ class UserProfileView(View):
 
         user_profile_form = UserProfileForm(instance=user_profile)        
 
-        return render(request, 'account/user/profile.html', {'user_profile_form': user_profile_form,
+        return render(request, 'account/profile.html', {'user_profile_form': user_profile_form,
             'user_profile': user_profile})
     
     def post(self, request):
@@ -109,7 +108,7 @@ class UserPasswordSecurityView(View):
         
         form = PasswordSecurityForm()
 
-        return render(request, 'account/user/password_security.html', 
+        return render(request, 'account/password_security.html', 
                       {'form': form, 'user_profile': user_profile})
 
     def post(self, request):
