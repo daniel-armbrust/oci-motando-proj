@@ -13,9 +13,9 @@ from chat.models import Chat
 
 class ChatApiView(views.APIView):   
     def post(self, request):
-        if request.data.get('email_from') ==  request.data.get('email_to'):
-            return Response({'status': 'fail', 'message': 'Unable to create new Chat message.'},
-                            status=status.HTTP_400_BAD_REQUEST) 
+        #if request.data.get('email_from') ==  request.data.get('email_to'):
+        #    return Response({'status': 'fail', 'message': 'Unable to create new Chat message.'},
+        #                    status=status.HTTP_400_BAD_REQUEST) 
       
         serializer = NewChatSerializer(data=request.data)
        
@@ -27,7 +27,7 @@ class ChatApiView(views.APIView):
         
         else:        
             return Response({'status' : 'fail', 'message' : 'Unable to process new Chat message.', 
-                             'data':[serializer.errors]}, status=status.HTTP_400_BAD_REQUEST)
+                             'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
       
     def delete(self, request, chat_id):
         pass
@@ -51,7 +51,7 @@ class ChatBuyingApiView(views.APIView):
 
         serializer = ChatMessagesSerializer(chat)
 
-        return Response(data={'status' : 'success', 'data': [serializer.data]},
+        return Response(data={'status' : 'success', 'data': serializer.data},
                         status=status.HTTP_200_OK)
                 
 
@@ -64,17 +64,15 @@ class ChatSellingApiView(views.APIView):
             return Response(data={'status': 'fail', 'message': 'You cannot view messages that are not yours.'},
                             status=status.HTTP_403_FORBIDDEN)        
         
-        try:
-            chat = Chat.objects.get(user_to__id=user_id,
-                                    user_to__is_active=True,
-                                    classifiedad__status='PUBLISHED')
-        except Chat.DoesNotExist:
+        chat = Chat.objects.filter(user_to__id=user_id, user_to__is_active=True)
+
+        if not chat.exists():
             return Response(data={'status': 'fail', 'message': 'No Chat Message(s) found.'},
                             status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ChatMessagesSerializer(chat, many=True)
 
-        serializer = ChatMessagesSerializer(chat)
-
-        return Response(data={'status' : 'success', 'data': [serializer.data]},
+        return Response(data={'status' : 'success', 'data': serializer.data},
                         status=status.HTTP_200_OK)
            
         

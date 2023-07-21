@@ -1,5 +1,5 @@
 //
-// js/anuncio.js
+// js/classifiedad.js
 //
 
 function confirmDelAnuncioImg(imgFilename, jfilerIndex) {
@@ -14,7 +14,7 @@ function confirmDelAnuncioImg(imgFilename, jfilerIndex) {
     }                   
 }
 
-function addAnuncioImg(respJsonImgFilename, OriginalFilename) {
+function addClassifiedadImg(respJsonImgFilename, OriginalFilename) {
     const strImgList = $('#id_img_lista').val();
 
     let elemts = new Array();
@@ -62,59 +62,81 @@ function submitAnuncio() {
     return true;              
 }    
 
-$(document).ready(function() {       
+function ordeningLocalStorage() {
+    if (localStorage.length <= 0)
+       return;
 
-    const IMG_UPLOAD_URL = '/particular/novo/anuncio/imagem';
+    let arrTmp = new Array();
+    let i = 0;
+ 
+    while (i <= localStorage.length) {
+        let item = localStorage.getItem(i);
+        
+        if (item !== null) 
+           arrTmp.push(item);      
+
+        i++;        
+    }
+
+    localStorage.clear();
+                
+    for (let i = 0 ; i < arrTmp.length ; i++)
+       localStorage.setItem(i, arrTmp[i]);
+}
+
+function returnBrPrice(price) {
+    const brPrice = price.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
+    return brPrice;
+}
+
+$(document).ready(function() {           
 
     $('#id_preco').maskMoney({symbol:'R$ ', thousands:'.', decimal:',', symbolStay: true});
 
-    $('#id_moto_marca').empty();
-    $('#id_moto_marca').append('<option value="">Selecione a Marca</option>'); 
+    getMotorcycleBrand('id_motorcycle_brand');
 
-    getMotoMarca();
+    $('#id_motorcycle_brand_model').empty();
+    $('#id_motorcycle_brand_model').append('<option value="">Selecione o Modelo</option>');         
 
-    $('#id_moto_modelo').empty();
-    $('#id_moto_modelo').append('<option value="">Selecione o Modelo</option>');                
-    
-    $('#id_moto_marca').on('change', function() {        
-        let marcaId = this.value;
-
-        if (marcaId) {
-            getMotoModelo(marcaId); 
+    $('#id_motorcycle_brand').on('change', function() {        
+        brandId = this.value;
+     
+        if (brandId) {            
+            getMotorcycleBrandModel('id_motorcycle_brand_model', brandId); 
         }           
         else {
-            $('#id_moto_modelo').prop('disabled', true); 
-            $('#id_moto_modelo').empty();
-            $('#id_moto_modelo').append('<option value="">Selecione o Modelo</option>');            
+            $('#id_motorcycle_brand_model').prop('disabled', true); 
+            $('#id_motorcycle_brand_model').empty();
+            $('#id_motorcycle_brand_model').append('<option value="" id="id_option_motorcycle_brand_model_version_empty">Selecione o Modelo</option>');            
         }
-    });  
+    });            
 
-    $('#id_zero_km').click(function() {
-          let zeroKm = $('#id_zero_km').prop('checked');
+    $('#id_is_new').click(function() {
+          let isNew = $('#id_is_new').prop('checked');
 
-          if (zeroKm) {
-             $('#id_km').prop('readonly', true)
-             $('#id_km').val(0);
+          if (isNew) {
+             $('#id_mileage').prop('readonly', true)
+             $('#id_mileage').val(0);
           }                   
           else {
-             $('#id_km').prop('readonly', false)
-             $('#id_km').val('');
+             $('#id_mileage').prop('readonly', false)
+             $('#id_mileage').val('');
           }                   
     });    
 
-    const preco = parseFloat($('#id_preco').val());
+    const price = parseFloat($('#id_price').val());
 
-    if (preco) {
-       const brPreco = preco.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
+    if (price) {
+       const brPrice = price.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
 
-       $('#id_preco').val(brPreco);
+       $('#id_price').val(brPreco);
     }       
 
-    $('#id_anuncio_form').submit(function(e) {         
+    $('#id_form_classifiedad').submit(function(e) {         
+      
+        const CLASSIFIEDAD_IMG_LIST = $('#id_classifiedad_images').val();   
 
-        const anuncioImgList = $('#id_img_lista').val();        
-
-        if (anuncioImgList.length <= 0) {
+        if (CLASSIFIEDAD_IMG_LIST.length <= 0) {
             alert('Seu anúncio necessita de imagen(s) para ser publicado!');
             e.preventDefault();
         }
@@ -212,7 +234,7 @@ $(document).ready(function() {
                 let filerKit = inputEl.prop('jFiler');                     
                 let OriginalFilename = filerKit.files_list[id].file.name;  
                 
-                addAnuncioImg(data, OriginalFilename);                                                    
+                addClassifiedadImg(data, OriginalFilename);                                                    
             },
             error: function(el){
                 let parent = el.find('.jFiler-jProgressBar').parent();

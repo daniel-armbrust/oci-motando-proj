@@ -14,9 +14,9 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
             const chatMsgUrl = _args[5];   
             
             const jsonData = JSON.stringify({     
-                user_from_fullname: userFromFullname,                                                    
-                user_from_email: userFromEmail,
-                user_from_telephone: userFromTelephone,               
+                fullname_from: userFromFullname,                                                    
+                email_from: userFromEmail,
+                telephone_from: userFromTelephone,               
                 classifiedad_id: classifiedadId,
                 message: userFromMessage
             });

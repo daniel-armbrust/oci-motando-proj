@@ -374,20 +374,20 @@
      <script type="text/javascript">        
          $(document).ready(function(){
                 $('#id_btn_sendmsg').click(function() { 
-                    const userFromFullname = $('#{{ form.fullname.auto_id }}').val();                      
-                    const userFromEmail = $('#{{ form.email.auto_id }}').val();   
-                    const userFromTelephone = $('#{{ form.telephone.auto_id }}').val();   
-                    const userFromMessage = $('#{{ form.message.auto_id }}').val();                      
-                    const classifiedadId = '{{ classifiedad.id }}';
-                    const chatMsgUrl = 'http://127.0.0.1:8001/api/chats/messages';
-                                        
+                    const USER_FROM_FULLNAME = $('#{{ form.fullname.auto_id }}').val();                      
+                    const USER_FROM_EMAIL = $('#{{ form.email.auto_id }}').val();   
+                    const USER_FROM_TELEPHONE = $('#{{ form.telephone.auto_id }}').val();   
+                    const USER_FROM_MESSAGE = $('#{{ form.message.auto_id }}').val();                      
+                    const CLASSIFIEDAD_ID = '{{ classifiedad.id }}';
+                    const CHAT_MSG_URL = `${MOTANDO_URL_PREFIX}{% url 'api_chat:messages' %}`;
+                                                            
                     CLASSIFIEDAD_MSG.init([
-                        userFromFullname, 
-                        userFromEmail, 
-                        userFromTelephone, 
-                        userFromMessage,                         
-                        classifiedadId, 
-                        chatMsgUrl
+                        USER_FROM_FULLNAME, 
+                        USER_FROM_EMAIL, 
+                        USER_FROM_TELEPHONE, 
+                        USER_FROM_MESSAGE,                         
+                        CLASSIFIEDAD_ID, 
+                        CHAT_MSG_URL
                     ]);
 
                     CLASSIFIEDAD_MSG.sendUserMessage();

@@ -378,9 +378,10 @@
     <script type="text/javascript" src="{% static 'vendor/jquery.filer/js/jquery.filer.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script>    
     <script type="text/javascript" src="{% static 'vendor/jquery.maskMoney.min.js' %}"></script>    
-    <script type="text/javascript" src="{% static 'js/commons.js' %}"></script>          
+    <script type="text/javascript" src="{% static 'js/motorcycle-state-city.js' %}"></script>          
+    <script type="text/javascript" src="{% static 'js/classifiedad.js' %}"></script>          
     <script type="text/javascript">        
-         const IMG_UPLOAD_URL = '{% url "classifiedad:image_upload" %}';   
+         const IMG_UPLOAD_URL = `${MOTANDO_URL_PREFIX}{% url "classifiedad:image_upload" %}`;   
 
          localStorage.clear();
 
@@ -479,9 +480,9 @@
              }); 
 
              $('#{{ form.is_new.auto_id }}').click(function() {
-                let zeroKm = $('#{{ form.is_new.auto_id }}').prop('checked');
+                let isNew = $('#{{ form.is_new.auto_id }}').prop('checked');
 
-                if (zeroKm) {
+                if (isNew) {
                     $('#{{ form.mileage.auto_id }}').prop('readonly', true)
                     $('#{{ form.mileage.auto_id }}').val(0);
                 }                   

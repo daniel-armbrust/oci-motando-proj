@@ -266,8 +266,7 @@
 {% endblock %}
 {% block body_scripts %}      
     <script type="text/javascript" src="{% static 'vendor/jquery-ui-1.13.2.custom/jquery-ui.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'vendor/jquery.maskedinput.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/commons.js' %}"></script>          
+    <script type="text/javascript" src="{% static 'vendor/jquery.maskedinput.min.js' %}"></script>    
     <script type="text/javascript">
         $(document).ready(function() {
             {% if user_profile_form.motorcycle_brand_wanted.value %}
