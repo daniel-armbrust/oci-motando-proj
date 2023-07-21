@@ -22,7 +22,7 @@ class MotorcycleBrandListApiView(views.APIView):
         serializer = MotorcycleBrandSerializer(motorcycle_brand, many=True)
         
         return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
+            data={'status' : 'success', 'data': serializer.data},
             status=status.HTTP_200_OK
         )
 
@@ -40,7 +40,7 @@ class MotorcycleBrandApiView(views.APIView):
         serializer = MotorcycleBrandSerializer(motorcycle_brand)
 
         return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
+            data={'status' : 'success', 'data': serializer.data},
             status=status.HTTP_200_OK
         )
     
@@ -58,7 +58,7 @@ class MotorcycleBrandModelListApiView(views.APIView):
         serializer = MotorcycleBrandModelSerializer(motorcycle_brand_model, many=True)
 
         return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
+            data={'status' : 'success', 'data': serializer.data},
             status=status.HTTP_200_OK
         )
 
@@ -76,7 +76,7 @@ class MotorcycleBrandModelApiView(views.APIView):
         serializer = MotorcycleBrandModelSerializer(motorcycle_brand_model)
 
         return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
+            data={'status' : 'success', 'data': serializer.data},
             status=status.HTTP_200_OK
         )
 
@@ -95,7 +95,7 @@ class MotorcycleBrandModelVersionListApiView(views.APIView):
         serializer = MotorcycleBrandModelVersionSerializer(motorcycle_brand_model_version, many=True)
 
         return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
+            data={'status' : 'success', 'data': serializer.data},
             status=status.HTTP_200_OK
         )
 
@@ -115,6 +115,6 @@ class MotorcycleBrandModelVersionApiView(views.APIView):
         serializer = MotorcycleBrandModelVersionSerializer(motorcycle_brand_model_version)
 
         return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
+            data={'status' : 'success', 'data': serializer.data},
             status=status.HTTP_200_OK
         )

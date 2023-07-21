@@ -22,7 +22,7 @@ class BrazilStateListApiView(views.APIView):
         serializer = StateSerializer(state, many=True)
 
         return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
+            data={'status' : 'success', 'data': serializer.data},
             status=status.HTTP_200_OK
         )
 
@@ -40,7 +40,7 @@ class BrazilStateApiView(views.APIView):
         serializer = StateSerializer(state)
 
         return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
+            data={'status' : 'success', 'data': serializer.data},
             status=status.HTTP_200_OK
         )
 
@@ -58,7 +58,7 @@ class BrazilStateCityListApiView(views.APIView):
         serializer = StateCitySerializer(state_city, many=True)
 
         return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
+            data={'status' : 'success', 'data': serializer.data},
             status=status.HTTP_200_OK
         )
 
@@ -76,6 +76,6 @@ class BrazilStateCityApiView(views.APIView):
         serializer = StateCitySerializer(state_city)
 
         return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
+            data={'status' : 'success', 'data': serializer.data},
             status=status.HTTP_200_OK
         )

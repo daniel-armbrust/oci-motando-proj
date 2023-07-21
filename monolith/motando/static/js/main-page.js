@@ -1,11 +1,10 @@
 //
-// js/home.js
+// js/main-page.js
 //
 
-$(document).ready(function() {    
-    
+$(document).ready(function() {        
     getMotorcycleBrand('id_motorcycle_brand');
-    getBrazilState();   
+    getBrazilState('id_brazil_state');   
 
     var [brandId, modelId, stateId] = [0, 0, 0];
 
