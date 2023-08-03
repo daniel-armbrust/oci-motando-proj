@@ -96,7 +96,7 @@ class NewClassifiedAdView(View):
                 ClassifiedAdImage.objects.bulk_create(bulk_img_list)
 
             xmlrpc_client = xmlrpc.client.ServerProxy(
-                f'http://{settings.CLASSIFIEDAD_TASK_QUEUE_HOSTNAME}:{ settings.CLASSIFIEDAD_TASK_QUEUE_PORT}/'
+                f'http://{settings.CLASSIFIEDAD_TASK_QUEUE_HOST}:{ settings.CLASSIFIEDAD_TASK_QUEUE_PORT}/'
             )
 
             xmlrpc_client.new_classifiedad(new_classifiedad_id)

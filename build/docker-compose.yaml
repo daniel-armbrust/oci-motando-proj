@@ -1,4 +1,4 @@
-name: motando
+version: "3.4"
 services:
     webapp:
         build:
@@ -66,11 +66,3 @@ services:
         expose:
             - "8100"        
         network_mode: "host"
-
-
-
-
-
-            
-
-
