@@ -2,6 +2,7 @@
 # gru_nosql.tf
 #
 
+/*
 resource "oci_nosql_table" "nosql_table_chats" {    
     compartment_id = var.root_compartment
     name = "motando_chats"
@@ -67,3 +68,4 @@ resource "oci_nosql_index" "nosql_index_user-to-id" {
     table_name_or_id = oci_nosql_table.nosql_table_chats.id
     compartment_id = var.root_compartment    
 }
+*/

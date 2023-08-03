@@ -18,7 +18,6 @@ resource "oci_objectstorage_object_lifecycle_policy" "gru_lifecycle-policy_motan
     bucket = oci_objectstorage_bucket.gru_motando-tmpimg.name
     namespace = local.gru_objectstorage_ns
 
-    /*
     rules {
         name = "delete-rule"
         action = "DELETE"
@@ -26,7 +25,6 @@ resource "oci_objectstorage_object_lifecycle_policy" "gru_lifecycle-policy_motan
         time_unit = "DAYS"
         time_amount = 1
     }
-    */
 }
 
 resource "oci_objectstorage_bucket" "gru_motando-img" {

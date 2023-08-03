@@ -1,6 +1,8 @@
 # Motando Project Stuffs
 terraform.tfvars
-motando.env
+secrets.env
+keys/
+ocisecrt/
 
 # Django
 *.log
