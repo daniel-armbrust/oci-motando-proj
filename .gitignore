@@ -1,6 +1,7 @@
 # Motando Project Stuffs
 terraform.tfvars
 secrets.env
+motando.env
 keys/
 ocisecrt/
 

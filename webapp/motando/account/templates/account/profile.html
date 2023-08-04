@@ -266,11 +266,16 @@
 {% endblock %}
 {% block body_scripts %}      
     <script type="text/javascript" src="{% static 'vendor/jquery-ui-1.13.2.custom/jquery-ui.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'vendor/jquery.maskedinput.min.js' %}"></script>    
+    <script type="text/javascript" src="{% static 'vendor/jquery.maskedinput.min.js' %}"></script>  
+    <script type="text/javascript" src="{% static 'js/motorcycle-state-city.js' %}"></script>    
     <script type="text/javascript">
         $(document).ready(function() {
             {% if user_profile_form.motorcycle_brand_wanted.value %}
                getMotorcycleBrand('id_motorcycle_brand', {{ user_profile_form.motorcycle_brand_wanted.value }}); 
+
+               {% if not user_profile_form.motorcycle_brand_model_wanted.value %}
+                   getMotorcycleBrandModel('id_motorcycle_brand_model', {{ user_profile_form.motorcycle_brand_wanted.value }});
+               {% endif %}
             {% else %}
                getMotorcycleBrand('id_motorcycle_brand');
             {% endif %}
@@ -281,9 +286,7 @@
             });
 
             {% if user_profile_form.motorcycle_brand_model_wanted.value %}               
-               getMotorcycleBrandModel('id_motorcycle_brand_model', {{ user_profile_form.motorcycle_brand_wanted.value }}, {{ user_profile_form.motorcycle_brand_model_wanted.value }}); 
-            {% else %}
-               getMotorcycleBrandModel('id_motorcycle_brand_model'); 
+               getMotorcycleBrandModel('id_motorcycle_brand_model', {{ user_profile_form.motorcycle_brand_wanted.value }}, {{ user_profile_form.motorcycle_brand_model_wanted.value }});             
             {% endif %}            
 
             getBrazilState('id_brazil_state', {{ user_profile_form.state.value }});     

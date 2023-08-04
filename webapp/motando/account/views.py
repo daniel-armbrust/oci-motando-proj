@@ -91,8 +91,8 @@ class UserProfileView(View):
         user_profile = get_object_or_404(UserProfile, user=request.user)
 
         user_profile_form = UserProfileForm(request.POST, instance=user_profile)
-
-        if user_profile_form.is_valid():
+           
+        if user_profile_form.is_valid():            
             user_profile_form.save()
                      
             messages.success(request, 'Seus dados foram atualizados com sucesso.')

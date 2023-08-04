@@ -13,7 +13,7 @@ COPY requirements.txt ./
 COPY docker-entrypoint.sh ./
 
 RUN microdnf update -y && \
-    microdnf install -y python3.8 && \
+    microdnf install -y gcc python38-devel python3.8 mysql-devel && \    
     python -m ensurepip && \    
     python -m pip install --no-cache-dir --upgrade pip setuptools && \
     python -m pip install --no-cache-dir -r requirements.txt && \        

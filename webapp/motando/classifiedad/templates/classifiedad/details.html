@@ -327,9 +327,12 @@
                             <div class="col pt-2">                            
                                 <img src="{% static 'img/pessoa.png' %}" 
                                      alt="Pessoa" class="img-fluid img-thumbnail float-start me-3" style="max-width: 25%;">                           
-                                <h3 class="h5 fw-bold"> {{ classifiedad.user.fullname }} </h3>
-                                <p class="small">
-                                    {{ classifiedad.user.userprofile.city.city }} / {{ classifiedad.user.userprofile.state.state }} <br>
+                                <h3 class="h5 fw-bold text-left"> {{ classifiedad.user.fullname }} </h3>
+                                <p class="small text-left">           
+                                    {% if classifiedad.user.user.city %}                         
+                                        {{ classifiedad.user.user.city }}
+                                    {% endif %}
+                                    <br>                                   
                                     Cadastrado desde: {{ classifiedad.user.created|date:"d/F/Y" }}                                     
                                 </p>
                             </div> 

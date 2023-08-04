@@ -57,7 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     fullname = models.CharField(max_length=500, blank=False, null=False)
     is_active = models.BooleanField(default=True) # TODO: email for activation
     staff = models.BooleanField(default=False) # a admin user; non super-user
-    admin = models.BooleanField(default=False) # a superuser
+    admin = models.BooleanField(default=False) # a superuser    
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -120,7 +120,7 @@ class UserProfile(models.Model):
         on_delete=models.DO_NOTHING)
     motorcycle_brand_model_wanted = models.ForeignKey(MotorcycleBrandModel, null=True, 
         default=None, on_delete=models.DO_NOTHING)
-    motorcycle_wanted_year = models.PositiveSmallIntegerField(null=True, default=None)
+    motorcycle_wanted_year = models.PositiveSmallIntegerField(null=True, blank=True, default=None)
     authz_whatsapp = models.BooleanField(null=True, default=None)
     authz_sms = models.BooleanField(null=True, default=None)
     show_telephone_classifiedad = models.BooleanField(null=True, default=None)

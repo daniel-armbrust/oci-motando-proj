@@ -8,9 +8,9 @@ from django import forms
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
-from .models import User, UserProfile
+from .models import UserProfile
 from state_city.models import State, StateCity
-from motorcycle.models import MotorcycleBrandModel
+from motorcycle.models import MotorcycleBrand, MotorcycleBrandModel
   
 
 class LoginForm(forms.Form):
@@ -205,17 +205,22 @@ class UserProfileForm(forms.ModelForm):
 
         motorcycle_brand_id = cleaned_data.get('motorcycle_brand_wanted')
         motorcycle_brand_model_id = cleaned_data.get('motorcycle_brand_model_wanted')
-        
-        motorcycle_brand = None
-        motorcycle_brand_model = None
+        motorcycle_wanted_year = cleaned_data.get('motorcycle_wanted_year')                
 
+        try:
+            motorcycle_brand = MotorcycleBrand.objects.filter(
+                id=motorcycle_brand_id).get()
+        except (ValueError, MotorcycleBrand.DoesNotExist,):
+            motorcycle_brand = None
+        
         try:
             motorcycle_brand_model = MotorcycleBrandModel.objects.filter(
                 id=motorcycle_brand_model_id, brand__id=motorcycle_brand_id).get()
         except (ValueError, MotorcycleBrandModel.DoesNotExist,):        
-            pass
-        else:
-            motorcycle_brand = motorcycle_brand_model.brand
+            motorcycle_brand_model = None
+        
+        if not motorcycle_wanted_year:
+            cleaned_data['motorcycle_wanted_year'] = None
 
         cleaned_data['motorcycle_brand_wanted'] = motorcycle_brand
         cleaned_data['motorcycle_brand_model_wanted'] = motorcycle_brand_model

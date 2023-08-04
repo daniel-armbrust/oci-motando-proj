@@ -11,7 +11,7 @@ django-s3-storage==0.14.0
 djangorestframework==3.14.0
 django-storages==1.13.2
 jmespath==1.0.1
-mysql-connector-python==8.1.0
+mysqlclient==2.2.0
 oci==2.109.0
 protobuf==4.21.12
 pycparser==2.21

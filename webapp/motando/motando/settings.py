@@ -107,12 +107,12 @@ WSGI_APPLICATION = 'motando.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE'  : 'mysql.connector.django', 
-        'NAME'    : os.environ.get('MYSQL_DBNAME'),
-        'USER'    : os.environ.get('MYSQL_USER'),
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': os.environ.get('MYSQL_DBNAME'),
+        'USER': os.environ.get('MYSQL_USER'),
         'PASSWORD': os.environ.get('MYSQL_PASSWD'),
-        'HOST'    : os.environ.get('MYSQL_HOST'),
-        'PORT'    : '3306',
+        'HOST': os.environ.get('MYSQL_HOST'),
+        'PORT': '3306',
         'OPTIONS': {
             'init_command': 'SET default_storage_engine=INNODB',
         }
