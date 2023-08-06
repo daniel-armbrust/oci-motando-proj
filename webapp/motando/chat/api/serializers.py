@@ -19,12 +19,12 @@ class NewChatSerializer(serializers.Serializer):
     message = serializers.CharField(max_length=1000)
 
     def create(self, validated_data):
-        classifiedad = ClassifiedAd.objects.filter(id=validated_data.get('classifiedad_id'),
-                                                   status='PUBLISHED')                               
+        try:
+            classifiedad = ClassifiedAd.objects.filter(id=validated_data.get('classifiedad_id'), 
+                                                       status='PUBLISHED').get()
+        except ClassifiedAd.DoesNotExist:
+             raise serializers.ValidationError({'status': 'fail', 'message': 'Unable to create new Chat message.'})
 
-        if not classifiedad.exists():
-            raise serializers.ValidationError({'status': 'fail', 'message': 'Unable to create new Chat message.'})
-       
         new_message = {
             'from': validated_data.get('fullname_from'), 
             'text': validated_data.get('message'),
@@ -32,37 +32,61 @@ class NewChatSerializer(serializers.Serializer):
         }
 
         user_from = User.objects.filter(email=validated_data.get('email_from'))
-       
-        if user_from.exists():            
-            chat = Chat.objects.filter(classifiedad=classifiedad.get(), user_from=user_from.get())
 
-            if chat.exists():
-                messages = chat.get().messages
-                messages.append(new_message)
+        if user_from.exists():
+            chat = Chat.objects.filter(classifiedad=classifiedad, 
+                                       user_from_email=user_from.get().email)
+        else:
+            chat = Chat.objects.filter(classifiedad=classifiedad, 
+                                       user_from_email=validated_data.get('email_from'))   
+        
+        if chat.exists():
+            messages = chat.get().messages
+            messages.append(new_message)
 
-                chat.update(messages=messages)
+            chat.update(messages=messages)
+        else:
+            chat = Chat(classifiedad=classifiedad, user_to=classifiedad.user,
+                        user_from_fullname=validated_data.get('fullname_from'),
+                        user_from_email=validated_data.get('email_from'),
+                        user_from_telephone=validated_data.get('telephone_from'),
+                        messages=[new_message]).save()
 
-            else:                           
-                chat = Chat(classifiedad=classifiedad, user_to=classifiedad.get().user, 
-                            user_from=user_from, messages=[new_message]).save()
-        else:          
-            chat = Chat.objects.filter(classifiedad=classifiedad.get(), 
-                                       user_from_email=validated_data.get('email_from'))
-            if chat.exists():
-                messages = chat.get().messages
-                messages.append(new_message)
+        return validated_data
 
-                chat.update(messages=messages)
 
-            else:
-                chat = Chat(classifiedad=classifiedad.get(), user_to=classifiedad.get().user, 
-                            user_from_fullname=validated_data.get('fullname_from'),
-                            user_from_email=validated_data.get('email_from'),
-                            user_from_telephone=validated_data.get('telephone_from'),
-                            messages=[new_message]).save()
-            
-        return validated_data    
+class ChatSellingParticipantListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chat
 
+        fields = ('id', 'user_from', 'user_from_fullname', 'user_from_email', 
+                  'user_from_telephone',)
+
+
+class ChatSellingMessagesListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chat
+
+        fields = ('id', 'user_from', 'user_from_fullname', 'user_from_email', 
+                  'user_from_telephone', 'messages', 'created',)
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        try:
+            model_version = instance.classifiedad.model_version.version
+        except AttributeError:
+            model_version = ''
+
+        if model_version:
+            representation['motorcycle'] = f'{instance.classifiedad.model.brand.brand} - {instance.classifiedad.model.model} ({model_version})'
+        else:
+            representation['motorcycle'] = f'{instance.classifiedad.model.brand.brand} - {instance.classifiedad.model.model}'
+
+        representation['price'] = instance.classifiedad.price
+        
+        return representation
+        
 
 class ChatMessagesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,7 +96,10 @@ class ChatMessagesSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
-        model_version = instance.classifiedad.model_version.version
+        try:
+            model_version = instance.classifiedad.model_version.version
+        except AttributeError:
+            model_version = ''
 
         if model_version:
             representation['motorcycle'] = f'{instance.classifiedad.model.brand.brand} - {instance.classifiedad.model.model} ({model_version})'

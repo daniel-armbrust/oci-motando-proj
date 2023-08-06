@@ -21,7 +21,8 @@
     <script src="{% static 'vendor/bootstrap-5.2.2/js/bootstrap.bundle.js' %}"></script>
     <script type="text/javascript" src="{% static 'vendor/jquery-3.6.0.min.js' %}"></script>
     <script type="text/javascript">
-        const MOTANDO_URL_PREFIX = "http://{{ request.META.HTTP_HOST }}";        
+        const MOTANDO_URL_PREFIX = "http://{{ request.META.HTTP_HOST }}"; 
+        const ANONYMOUS_USER = {% if user.is_authenticated %} false {% else %} true {% endif %};       
     </script>
     {% block body_scripts %}
     {% endblock %}     

@@ -25,7 +25,7 @@
                         <nav style="--bs-breadcrumb-divider: '>'; background-color: #F7F7F7; border: 0;" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{% url 'home:main_page' %}" class="text-decoration-none">Home</a></li>
-                                <li class="breadcrumb-item"><a href="#" class="text-decoration-none"> Classificados </a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'classifiedad:all' %}" class="text-decoration-none"> Classificados </a></li>
                                 <li class="breadcrumb-item"><a href="#" class="text-decoration-none"> {{ classifiedad.model.brand.brand }} </a></li>
                                 <li class="breadcrumb-item"><a href="#" class="text-decoration-none"> {{ classifiedad.model.model }} </a></li>
                                 <li class="breadcrumb-item active" aria-current="page">
@@ -51,7 +51,7 @@
                                {{ classifiedad.model.brand.brand }} - {{ classifiedad.model.model }} 
                             </strong>
                         </h1>
-                        <p class="pt-2 ms-4">                        
+                        <p class="ms-4">                        
                             <i class="far fa-calendar-alt"></i> {{ classifiedad.fabrication_year }}/{{ classifiedad.model_year }} &nbsp;&nbsp;
                             <i class="fas fa-fill-drip"></i> {{ classifiedad.color|title }} &nbsp;&nbsp;
                             <i class="fas fa-tachometer-alt"></i> {{ classifiedad.mileage|intcomma }} Km &nbsp;&nbsp;
@@ -103,8 +103,14 @@
                             <div class="row">
                                 <div class="col">                                
                                     <div class="form-group text-left ml-2 mr-3">
-                                        <label for="{{ form.fullname.auto_id }}" class="form-label">{{ form.fullname.label }}</label>                                       
-                                         {{ form.fullname }}                                        
+                                        <label for="{{ form.fullname.auto_id }}" class="form-label">{{ form.fullname.label }}</label>                                        
+                                         {% if form.fullname.value|length > 0 %}  
+                                             <input type="text" name="fullname" class="form-control" 
+                                                    maxlength="500" required="" id="id_fullname" value="{{ form.fullname.value }}" readonly>                                   
+                                                                                                                              
+                                         {% else %}
+                                             {{ form.fullname }}                                                                                 
+                                         {% endif %}                                         
                                          <small class="form-text text-muted">Digite o seu nome completo</small>                                                                               
                                     </div>                        
                                 </div>    
@@ -113,7 +119,12 @@
                                 <div class="col">                                
                                     <div class="form-group text-left ml-2 mr-3">
                                         <label for="{{ form.email.auto_id }}" class="form-label">{{ form.email.label }}</label>
-                                        {{ form.email }}
+                                        {% if form.email.value|length > 0 %}  
+                                            <input type="email" name="email" class="form-control" 
+                                                   required="" id="id_email"  value="{{ form.email.value }}" readonly>
+                                        {% else %}
+                                            {{ form.email }}
+                                        {% endif %}                                        
                                         <small class="form-text text-muted">Digite o seu e-mail</small>
                                     </div>                        
                                 </div>    
@@ -122,16 +133,21 @@
                                 <div class="col">                                
                                     <div class="form-group text-left ml-2 mr-3">
                                         <label for="{{ form.telephone.auto_id }}" class="form-label">{{ form.telephone.label }}</label>
-                                        {{ form.telephone }}
+                                        {% if form.email.value|length > 0 %}  
+                                            <input type="text" name="telephone" class="form-control" 
+                                                    required="" id="id_telephone" value="{{ form.telephone.value }}" readonly>
+                                        {% else %}
+                                            {{ form.telephone }}
+                                        {% endif %}  
                                         <small class="form-text text-muted">Digite o seu Telefone</small>
                                     </div>                        
                                 </div>    
                             </div>                        
                             <div class="row pt-4">
                                 <div class="col"> 
-                                    <div class="form-floating">
-                                        {{ form.message }}                                       
-                                        <label for="{{ form.message.auto_id }}">{{ form.message.label }}</label>
+                                    <div class="form-group text-left ml-2 mr-3">
+                                        <label for="{{ form.message.auto_id }}" class="form-label">{{ form.message.label }}</label>
+                                        {{ form.message }}  
                                       </div>
                                 </div>
                             </div>
@@ -321,7 +337,7 @@
                     </div>
 
                 </div>
-                <div class="col-4 pt-1">   
+                <div class="col-4 pt-4">   
                     <div class="bg-white shadow rounded">
                         <div class="row p-3">
                             <div class="col pt-2">                            
@@ -373,9 +389,24 @@
 {% block body_scripts %}
      <script type="text/javascript" src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script> 
      <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script> 
+     <script type="text/javascript" src="{% static 'vendor/jquery.maskedinput.min.js' %}"></script>
      <script type="text/javascript" src="{% static 'js/classifiedad-chat.js' %}"></script> 
      <script type="text/javascript">        
          $(document).ready(function(){
+            $('#{{ form.telephone.auto_id }}').mask('(99) 9999-9999?9').focusout(function (event) {  
+                var target, phone, element;  
+                
+                target = (event.currentTarget) ? event.currentTarget : event.srcElement;                 
+                phone = target.value.replace(/\D/g, '');
+                
+                element = $(target);  
+                element.unmask();  
+
+                if(phone.length > 10)
+                    element.mask('(99) 99999-999?9');  
+                else 
+                    element.mask('(99) 9999-9999?9');                    
+                });
                 $('#id_btn_sendmsg').click(function() { 
                     const USER_FROM_FULLNAME = $('#{{ form.fullname.auto_id }}').val();                      
                     const USER_FROM_EMAIL = $('#{{ form.email.auto_id }}').val();   

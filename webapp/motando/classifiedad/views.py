@@ -237,15 +237,13 @@ class ClassifiedAdDetailView(View):
         
         if request.user.is_anonymous:
             form = ClassifiedAdLeaveMsgForm()
-        else:    
-            user = User.objects.get(email=request.user)
-            fullname = user.fullname
-            email = user.email
-
-            form = ClassifiedAdLeaveMsgForm(initial={'fullname': fullname, 'email': email})
-
-        return render(request, 'classifiedad/details.html', {
-            'classifiedad': classifiedad, 'form': form})
+        else:
+            form = ClassifiedAdLeaveMsgForm(initial={'fullname': request.user.fullname,
+                                                     'email': request.user.email,
+                                                     'telephone': request.user.user.telephone,})
+        
+        return render(request, 'classifiedad/details.html', {'classifiedad': classifiedad, 
+                                                             'form': form})
 
 
 class DeleteClassifiedAdView(View):

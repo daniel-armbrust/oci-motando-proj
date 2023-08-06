@@ -71,7 +71,7 @@
                          <div class="row d-none" id="id_chat_painel">
                            <div class="col-4">
                                <p class="fw-bold rounded-top my-background-purple text-white p-3 text-center"> Histórico de Conversas </p>  
-                               <div style="overflow-y: scroll; overflow-x: hidden;" id="id_chat_history">                                   
+                               <div style="overflow-y: scroll; overflow-x: hidden; height: 300px;" id="id_chat_history">                                   
                                </div>
                            </div>                            
                            <div class="col-8">
@@ -83,8 +83,9 @@
                                </div>
                                <br>
                                <div class="input-group mb-3">
-                                   <input type="text" class="form-control fst-italic" placeholder="Digite uma mensagem" aria-label="Digite uma mensagem" aria-describedby="button-addon2">
-                                   <button class="btn btn-success" type="button" id="button-addon2">&nbsp;&nbsp; Enviar &nbsp;&nbsp;</button>
+                                   <input type="text" class="form-control fst-italic" placeholder="Digite uma mensagem" 
+                                          aria-label="Digite uma mensagem" aria-describedby="button-addon2">
+                                   <button class="btn btn-success" type="button" id="id_button_sendmsg">&nbsp;&nbsp; Enviar &nbsp;&nbsp;</button>
                                </div>                               
                            </div>
                        </div>
@@ -115,10 +116,9 @@
 {% block body_scripts %}
    <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script> 
    <script type="text/javascript" src="{% static 'js/classifiedad-chat.js' %}"></script> 
-   <script type="text/javascript">
-        const USER_ID = {{ user_profile.user.id }};
-        const SELLING_URL = "http://{{ request.META.HTTP_HOST }}{% url 'api_chat:selling' user_id=user_profile.user.id %}";        
-        const BUYING_URL = "http://{{ request.META.HTTP_HOST }}{% url 'api_chat:buying' user_id=user_profile.user.id %}";
+   <script type="text/javascript">        
+        const SELLING_PARTICIPANTS_URL = "{% url 'api_chat:selling_participant_list' %}";        
+        const BUYING_PARTICIPANTS_URL = "{% url 'api_chat:buying_participant_list' %}";
    </script>   
 {% endblock %}
 {% endspaceless %}
