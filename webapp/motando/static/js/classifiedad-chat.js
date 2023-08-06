@@ -64,7 +64,6 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
                         $('#id_fullname').attr('readonly', false);
                         $('#id_email').attr('readonly', false);
                         $('#id_telephone').attr('readonly', false);
-
                     }
                     
                     $('#id_message').val('');                   
@@ -107,7 +106,7 @@ function ajaxGetRequest(url) {
     });
 }
 
-function buildChatPanel(participantsJson, messagesJson) {
+function buildChatPanel(participantsJson, messagesJson, chatType) {
     let [htmlChatHistory, htmlChatMessages, chatDateTime, chatDateTimeStr] = ['', '', '', ''];
     let [price, brPrice] = [0, 0];   
 
@@ -123,8 +122,14 @@ function buildChatPanel(participantsJson, messagesJson) {
             price = parseFloat(messagesJson.data[0].price);
             brPrice = price.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
 
-            participantFullname = participantsJson.data[i].user_from_fullname;
-            participantEmail = participantsJson.data[i].user_from_email;
+            if (chatType === 'selling') {
+                participantFullname = participantsJson.data[i].user_from_fullname;
+                participantEmail = participantsJson.data[i].user_from_email;
+            }
+            else {
+                participantFullname = participantsJson.data[i].user_to_fullname;
+                participantEmail = participantsJson.data[i].user_to_email;
+            }            
            
             if (participantFullname !== null)
                 participantNameEmail = participantFullname;
@@ -133,7 +138,7 @@ function buildChatPanel(participantsJson, messagesJson) {
                 
             htmlChatHistory = `
                <div class="row"><div class="col m-2">
-                   <a href="javascript:void(0);" onclick="getSellingMessages(${participantsJson.data[i].id});" 
+                   <a href="javascript:void(0);" onclick="getChatMessages('${chatType}', ${participantsJson.data[i].id});" 
                       class="text-decoration-none">
                      <p class="fst-italic">${participantNameEmail}</p>
                      <p><span class="fw-bolder fst-italic">Anúncio:</span> 
@@ -172,29 +177,47 @@ function buildChatPanel(participantsJson, messagesJson) {
     }
 }
 
-function getSellingMessages(chatId) { 
+function getChatMessages(chatType, chatId) {
+    let participantsData = null;
+    let messagesUrl = null;
+
     $.blockUI({ 
         message: '<h2>Por favor aguarde ...</h2>',
         overlayCSS: { backgroundColor: '#dee2e6' } 
     });
 
-    const participantsData = ajaxGetRequest(SELLING_PARTICIPANTS_URL);     
-    const participantsJsonResp = participantsData.responseJSON;    
-
     $('#id_chat_painel').addClass('d-none'); 
     $('#id_chat_history').empty(); 
-    $('#id_chat_messages').empty();     
-   
-    if (participantsJsonResp) {
-        if (! chatId)
-           chatId = participantsJsonResp.data[0].id; 
-        
-        const messagesUrl = `/api/chats/${chatId}/messages/selling`;
+    $('#id_chat_messages').empty();
+
+    if (chatType === 'selling')
+        participantsData = ajaxGetRequest(SELLING_PARTICIPANTS_URL);    
+    else 
+        participantsData = ajaxGetRequest(BUYING_PARTICIPANTS_URL);
+
+    const participantsJsonResp = participantsData.responseJSON;    
+    
+    if (participantsJsonResp.status === 'success') {        
+        if (! chatId && chatType === 'selling') {
+            chatId = participantsJsonResp.data[0].id; 
+            messagesUrl = `/api/chats/${chatId}/messages/selling`;
+        }
+        else if (chatType === 'selling') {
+            messagesUrl = `/api/chats/${chatId}/messages/selling`;
+        }
+        else if (! chatId && chatType === 'buying') {
+            chatId = participantsJsonResp.data[0].id; 
+            messagesUrl = `/api/chats/${chatId}/messages/buying`;
+        }
+        else if (chatType === 'buying') {
+            messagesUrl = `/api/chats/${chatId}/messages/buying`;
+        }       
+
         const messagesData = ajaxGetRequest(messagesUrl);
-        const messagesJsonResp = messagesData.responseJSON;   
+        const messagesJsonResp = messagesData.responseJSON;  
         
         if (messagesJsonResp) {
-            buildChatPanel(participantsJsonResp, messagesJsonResp);
+            buildChatPanel(participantsJsonResp, messagesJsonResp, chatType);
         }
         else {
             $('#id_modal_title').html('ERRO');
@@ -206,37 +229,15 @@ function getSellingMessages(chatId) {
         $('#id_modal_title').html('ERRO');
         $('#id_modal_message').html('Não foi possível recuperar suas mensagen(s)! Tente novamente mais tarde.');        
         $('#id_modal').modal('show');    
-    }    
+    }
 
-    $.unblockUI(); 
-}
-
-function getBuyingMessages() {    
-    const data = ajaxGetRequest(BUYING_URL);
-    const jsonResp = data.responseJSON;    
-
-    $('#id_chat_painel').addClass('d-none'); 
-    $('#id_chat_history').empty(); 
-    $('#id_chat_messages').empty();     
-
-    buildChatPanel(jsonResp);  
+    $.unblockUI();        
 }
 
 $(document).ready(function() {              
     $('#id_form input[name=chat_options]').on('change', function() {        
        let chatOption = $("#id_form input[type='radio']:checked").val();
 
-       switch(chatOption) {
-          case 'selling':              
-             getSellingMessages();
-             break; 
-        
-          case 'buying':
-            getBuyingMessages();
-            break;   
-             
-          default:
-            break;
-       }
+       getChatMessages(chatOption);       
     });       
 });  

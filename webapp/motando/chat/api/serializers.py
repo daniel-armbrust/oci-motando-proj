@@ -67,7 +67,7 @@ class ChatSellingMessagesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
 
-        fields = ('id', 'user_from', 'user_from_fullname', 'user_from_email', 
+        fields = ('id', 'user_from_fullname', 'user_from_email', 
                   'user_from_telephone', 'messages', 'created',)
         
     def to_representation(self, instance):
@@ -88,11 +88,28 @@ class ChatSellingMessagesListSerializer(serializers.ModelSerializer):
         return representation
         
 
-class ChatMessagesSerializer(serializers.ModelSerializer):
+class ChatBuyingParticipantListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
-        fields = '__all__'
 
+        fields = ('id',)
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)         
+
+        representation['user_to_fullname'] = instance.user_to.fullname
+        representation['user_to_email'] = instance.user_to.email
+
+        return representation
+
+
+class ChatBuyingMessagesListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chat
+
+        fields = ('id', 'messages', 'created',)        
+        
+        
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
@@ -106,6 +123,8 @@ class ChatMessagesSerializer(serializers.ModelSerializer):
         else:
             representation['motorcycle'] = f'{instance.classifiedad.model.brand.brand} - {instance.classifiedad.model.model}'
 
+        representation['user_to_fullname'] = instance.user_to.fullname
+        representation['user_to_email'] = instance.user_to.email
         representation['price'] = instance.classifiedad.price
         
         return representation
