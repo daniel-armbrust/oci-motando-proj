@@ -7,27 +7,22 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from chat.api.serializers import NewChatSerializer, \
+from chat.api.serializers import PublicMessageSerializer, ChatMessageSerializer, \
     ChatSellingParticipantListSerializer, ChatSellingMessagesListSerializer, \
     ChatBuyingParticipantListSerializer, ChatBuyingMessagesListSerializer
 
 from chat.models import Chat
 
 
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-    def enforce_csrf(self, request):
-        return  # To not perform the csrf check previously happening
-
-
-class ChatApiView(views.APIView):    
-    authentication_classes = (CsrfExemptSessionAuthentication,)
+class PublicChatMessageApiView(views.APIView):    
+    authentication_classes = (SessionAuthentication,)
 
     def post(self, request):
-        if request.data.get('email_from') ==  request.data.get('email_to'):
+        if request.data.get('email_from') == request.data.get('email_to'):
             return Response({'status': 'fail', 'message': 'Unable to create new Chat message.'},
                             status=status.HTTP_400_BAD_REQUEST) 
       
-        serializer = NewChatSerializer(data=request.data)
+        serializer = PublicMessageSerializer(data=request.data)
        
         if serializer.is_valid():
             serializer.save()
@@ -40,9 +35,27 @@ class ChatApiView(views.APIView):
                              'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)     
     
 
+class ChatMessageApiView(views.APIView):    
+    authentication_classes = (SessionAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, chat_id):
+        serializer = ChatMessageSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response({'status': 'success', 'message': 'The message was successful send.'},
+                            status=status.HTTP_200_OK) 
+        
+        else:        
+            return Response({'status' : 'fail', 'message' : 'Unable to process new Chat message.', 
+                             'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)     
+
+
 class ChatBuyingParticipantsListApiView(views.APIView):
-    #authentication_classes = (SessionAuthentication,)
-    #permission_classes = (IsAuthenticated,)
+    authentication_classes = (SessionAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):        
         chat = Chat.objects.filter(user_from_email=request.user.email,                                                          
@@ -59,8 +72,8 @@ class ChatBuyingParticipantsListApiView(views.APIView):
 
 
 class ChatBuyingMessagesListApiView(views.APIView):
-    #authentication_classes = (SessionAuthentication,)
-    #permission_classes = (IsAuthenticated,)
+    authentication_classes = (SessionAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, chat_id):
         chat = Chat.objects.filter(id=chat_id, 

@@ -24,11 +24,13 @@ if APP_ENV == 'PRD':
     SESSION_COOKIE_DOMAIN = 'motando.com.br'
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_DOMAIN = 'motando.com.br'    
+    CSRF_TRUSTED_ORIGINS = [CSRF_COOKIE_DOMAIN]
     DEBUG = False
 else:
     from secrets import token_hex
     SECRET_KEY = token_hex(32)    
     OCI_CONFIG_FILE = '/opt/webapp/ocisecrt/config'
+    CSRF_TRUSTED_ORIGINS = []
     DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -43,10 +45,9 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = False
 CSRF_COOKIE_HTTPONLY = True
-CSRF_USE_SESSIONS = False
+CSRF_USE_SESSIONS = True
 CSRF_COOKIE_AGE = 300
 CSRF_COOKIE_NAME = 'motandocsrf'
-CSRF_HEADER_NAME = 'MOTANDO_CSRFTOKEN'
 CSRF_COOKIE_PATH = '/'
 CSRF_COOKIE_SAMESITE = 'Lax'
 

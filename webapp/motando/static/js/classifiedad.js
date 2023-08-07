@@ -106,4 +106,4 @@ function confirmDeleteImage(imgUrlFilenameDelete, jfilerIndex) {
           }                      
        }               
     }
- }
+}

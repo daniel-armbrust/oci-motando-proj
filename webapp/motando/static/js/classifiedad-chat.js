@@ -34,12 +34,14 @@ var CLASSIFIEDAD_MSG = CLASSIFIEDAD_MSG || (function(){
                 message: userFromMessage                
             });
 
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
             $.ajax({
                 url: chatMsgUrl,
                 type: 'POST', 
                 dataType: 'json', 
                 contentType: 'application/json', 
-                headers: {'MOTANDO_CSRFTOKEN': document.querySelector('[name=csrfmiddlewaretoken]').value},
+                headers: {'X-CSRFToken': csrftoken},
                 data: jsonData,                    
                 beforeSend: function() {                    
                     $('#id_fullname').attr('readonly', true);
@@ -106,6 +108,55 @@ function ajaxGetRequest(url) {
     });
 }
 
+function sendChatMessage() { 
+    const chatId = $('#id_chat_id').val();
+    const url = `/api/chats/${chatId}/messages`;
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const jsonData = JSON.stringify({
+         message: $('#id_chat_message').val(),
+         chat_id: chatId
+    });
+
+    $.ajax({
+        url: url,
+        type: 'POST', 
+        dataType: 'json', 
+        headers: {'X-CSRFToken': csrftoken},
+        data: jsonData,
+        contentType: 'application/json',                      
+        beforeSend: function() {                      
+            $('#id_button_sendmsg').attr('disabled', true);
+            $('#id_chat_message').attr('readonly', true);
+        },
+        complete: function() { 
+            $('#id_button_sendmsg').attr('disabled', false);
+            $('#id_chat_message').attr('readonly', false);                      
+        },
+        success: function(data) { 
+            if (data.status === 'success') {
+                $('#id_modal_title').html('SUCESSO');
+                $('#id_modal_message').html('A sua mensagem foi enviada com sucesso!');        
+                $('#id_modal').modal('show'); 
+
+                $('#id_chat_message').val('');
+            }
+            else {
+                $('#id_modal_title').html('ERRO');
+                $('#id_modal_message').html('Não foi possível enviar a sua mensagen! Tente novamente mais tarde.');        
+                $('#id_modal').modal('show');    
+            }
+        },
+        error: function(xhr, textStatus, errorThrown) {  
+            $('#id_modal_title').html('ERRO');
+            $('#id_modal_message').html('Não foi possível enviar a sua mensagen! Tente novamente mais tarde.');            
+            $('#id_modal').modal('show');    
+
+            console.log(textStatus);            
+        }
+    });
+}
+
 function buildChatPanel(participantsJson, messagesJson, chatType) {
     let [htmlChatHistory, htmlChatMessages, chatDateTime, chatDateTimeStr] = ['', '', '', ''];
     let [price, brPrice] = [0, 0];   
@@ -166,9 +217,16 @@ function buildChatPanel(participantsJson, messagesJson, chatType) {
             $('#id_chat_messages').append(htmlChatMessages);
         }
 
-        if (messagesJson.data[0].user_from === null)
+        $('#id_chat_id').val(messagesJson.data[0].id);
+       
+        if (messagesJson.data[0].user_from === null) {
             $('#id_button_sendmsg').attr('disabled', true);
-            
+            $('#id_chat_message').attr('readonly', true);
+        }   
+        else {
+            $('#id_button_sendmsg').attr('disabled', false);
+            $('#id_chat_message').attr('readonly', false);
+        }
     }
     else {
         $('#id_modal_title').html('Informação');
@@ -226,8 +284,8 @@ function getChatMessages(chatType, chatId) {
         }
     }
     else {
-        $('#id_modal_title').html('ERRO');
-        $('#id_modal_message').html('Não foi possível recuperar suas mensagen(s)! Tente novamente mais tarde.');        
+        $('#id_modal_title').html('Informação');
+        $('#id_modal_message').html('Você não possui mensagen(s).');        
         $('#id_modal').modal('show');    
     }
 
@@ -235,9 +293,18 @@ function getChatMessages(chatType, chatId) {
 }
 
 $(document).ready(function() {              
-    $('#id_form input[name=chat_options]').on('change', function() {        
-       let chatOption = $("#id_form input[type='radio']:checked").val();
+    $('#id_form_id input[name=chat_options]').on('change', function() {        
+       let chatOption = $("#id_form_id input[type='radio']:checked").val();
 
        getChatMessages(chatOption);       
-    });       
+    });    
+    
+    $('#id_button_sendmsg').click(function() {
+        let chatOption = $("#id_form_id input[type='radio']:checked").val();
+
+        sendChatMessage();
+        getChatMessages(chatOption);            
+          
+        $("#id_chat_messages").scrollTop($('#id_chat_messages')[0].scrollHeight);
+    });
 });  

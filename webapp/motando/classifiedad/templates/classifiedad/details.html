@@ -406,14 +406,15 @@
                     element.mask('(99) 99999-999?9');  
                 else 
                     element.mask('(99) 9999-9999?9');                    
-                });
-                $('#id_btn_sendmsg').click(function() { 
+            });
+
+            $('#id_btn_sendmsg').click(function() { 
                     const USER_FROM_FULLNAME = $('#{{ form.fullname.auto_id }}').val();                      
                     const USER_FROM_EMAIL = $('#{{ form.email.auto_id }}').val();   
                     const USER_FROM_TELEPHONE = $('#{{ form.telephone.auto_id }}').val();   
                     const USER_FROM_MESSAGE = $('#{{ form.message.auto_id }}').val();                      
                     const CLASSIFIEDAD_ID = '{{ classifiedad.id }}';
-                    const CHAT_MSG_URL = `${MOTANDO_URL_PREFIX}{% url 'api_chat:messages' %}`;
+                    const CHAT_MSG_URL = `${MOTANDO_URL_PREFIX}{% url 'api_chat:public_message' %}`;
                                                             
                     CLASSIFIEDAD_MSG.init([
                         USER_FROM_FULLNAME, 
@@ -425,8 +426,8 @@
                     ]);
 
                     CLASSIFIEDAD_MSG.sendUserMessage();
-                });        
-         });
+            });        
+        });
      </script> 
 {% endblock %}
 {% endspaceless %} 

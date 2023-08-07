@@ -10,7 +10,7 @@ app_name = 'chat'
 
 urlpatterns = [
     # Public endpoint.
-    path('messages', views.ChatApiView.as_view(), name='messages'),    
+    path('messages', views.PublicChatMessageApiView.as_view(), name='public_message'),    
 
     # Private endpoint (needs authentication).
     path('messages/buying/participants', 
@@ -23,5 +23,7 @@ urlpatterns = [
          views.ChatSellingParticipantsListApiView.as_view(), name='selling_participant_list'),  
 
     path('<int:chat_id>/messages/selling', 
-         views.ChatSellingMessagesListApiView.as_view(), name='selling_messages_list'),    
+         views.ChatSellingMessagesListApiView.as_view(), name='selling_messages_list'),   
+
+    path('<int:chat_id>/messages', views.ChatMessageApiView.as_view(), name='message'),
 ]
