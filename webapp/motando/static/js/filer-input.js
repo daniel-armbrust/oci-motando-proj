@@ -4,6 +4,8 @@
 
 $(document).ready(function() {       
 
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
     $('#filer_input').filer({
         limit: 10,
         maxSize: 5242880,
@@ -84,9 +86,10 @@ $(document).ready(function() {
         },
         uploadFile: {
             url: IMG_UPLOAD_URL,
-            data: {},
+            data: {'csrfmiddlewaretoken': csrftoken},
             type: 'POST',
             enctype: 'multipart/form-data',
+            headers: {'X-CSRFToken': csrftoken},
             synchron: true,
             beforeSend: function(){},
             success: function(data, itemEl, listEl, boxEl, newInputEl, inputEl, id) {  
@@ -135,8 +138,10 @@ $(document).ready(function() {
                         type: 'DELETE',
                         async: false,
                         cache: false,
+                        headers: {'X-CSRFToken': csrftoken},
                         data : {
-                            'filename': bucketUrlFilename
+                            'filename': bucketUrlFilename,
+                            'csrfmiddlewaretoken': csrftoken
                         },
                         success: function() {
                            localStorage.removeItem(i);

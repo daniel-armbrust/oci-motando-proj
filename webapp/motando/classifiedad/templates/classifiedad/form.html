@@ -49,15 +49,13 @@
                 <div class="col-3"></div>
                 <div class="col-6">                        
                     <div class="shadow rounded bg-white border p-3">                         
-                        <form name="form_classifiedad" id="id_form_classifiedad" autocomplete="off" 
-
+                        <form name="form_classifiedad" id="id_form_classifiedad" autocomplete="off"                             
                               {% if classifiedad_id %}
                                   method="post" action="{% url 'classifiedad:edit' classifiedad_id %}" enctype="multipart/form-data">
                               {% else %}
                                   method="post" action="{% url 'classifiedad:new' %}" enctype="multipart/form-data">
-                              {% endif %}                            
-                              
-                              {% csrf_token %}                                                            
+                              {% endif %}                                                
+                              {% csrf_token %} 
                                <div class="row pt-2 p-2">
                                     <div class="col">
                                         <label for="{{ form.brand.auto_id }}" class="form-label my-text-purple">{{ form.brand.label }}&nbsp;<span class="text-danger">*</span></label>

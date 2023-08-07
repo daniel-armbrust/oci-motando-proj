@@ -14,8 +14,6 @@ from django.views import View
 from django.contrib import messages
 from django.db.models import Q
 from django.core.paginator import Paginator
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 from django.conf import settings
 
 from storage import ClassifiedAdTmpImageStorage
@@ -176,7 +174,6 @@ class EditClassifiedAdView(View):
         return render(request, 'classifiedad/form.html', {'form': form})
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class ClassifiedAdTmpImageUploadView(View):
     def post(self, request):
         allowed_mimetype = ('image/jpeg', 'image/png', 'image/webp',)
