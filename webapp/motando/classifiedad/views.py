@@ -7,6 +7,7 @@ from secrets import token_hex
 from datetime import datetime
 import pathlib
 import xmlrpc.client
+import logging as log
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, QueryDict, Http404
@@ -19,7 +20,7 @@ from django.conf import settings
 from storage import ClassifiedAdTmpImageStorage
 from .forms import ClassifiedAdForm, ClassifiedAdLeaveMsgForm
 from .models import ClassifiedAd, ClassifiedAdImage
-from account.models import User, UserProfile
+from account.models import UserProfile
 
 
 class AllClassifiedAdView(View):
@@ -44,7 +45,9 @@ class HomeClassifiedAdView(View):
         user_profile = get_object_or_404(UserProfile, user=request.user)
 
         classifiedad_list = ClassifiedAd.objects.filter(Q(user_id=request.user),
-            Q(status='PUBLISHED') | Q(status='NEW') | Q(status='MOVE') | Q(status='UPDATE')).all()
+            Q(status='PUBLISHED') | Q(status='NEW') | Q(status='MOVE') \
+                | Q(status='UPDATE')).all().order_by('-updated')
+        
         paginator = Paginator(classifiedad_list, 4)
 
         total_published = ClassifiedAd.objects.filter(user_id=request.user, 
@@ -91,16 +94,21 @@ class NewClassifiedAdView(View):
                 classifiedad_img = ClassifiedAdImage(classifiedad_id=new_classifiedad_id, url=img_url)
                 bulk_img_list.append(classifiedad_img)                
             else:
+                # TODO: check the create operation.
                 ClassifiedAdImage.objects.bulk_create(bulk_img_list)
 
             xmlrpc_client = xmlrpc.client.ServerProxy(
-                f'http://{settings.CLASSIFIEDAD_TASK_QUEUE_HOST}:{ settings.CLASSIFIEDAD_TASK_QUEUE_PORT}/'
+                f'http://{settings.CLASSIFIEDAD_TASK_QUEUE_HOST}:{settings.CLASSIFIEDAD_TASK_QUEUE_PORT}/'
             )
-
-            xmlrpc_client.new_classifiedad(new_classifiedad_id)
-
-            messages.success(request, 'Anúncio cadastrado com sucesso.')
-
+           
+            try:
+                xmlrpc_client.new_classifiedad(new_classifiedad_id)
+            except Exception as e:
+                log.error(str(e))
+                messages.error(request, 'Erro ao atualizar o Anúncio.')
+            else:
+                messages.success(request, 'Anúncio cadastrado com sucesso.')
+            
             return redirect('classifiedad:home')
         else:        
             messages.error(request, 'Erro ao criar novo Anúncio.')
@@ -121,7 +129,7 @@ class EditClassifiedAdView(View):
 
         image_list = classifiedad.images.all()
 
-        return render(request, 'classifiedad/form_classifiedad.html', 
+        return render(request, 'classifiedad/form.html', 
             {'classifiedad_id': classifiedad_id, 'image_list': image_list, 'form': form})
 
     def post(self, request, classifiedad_id=None):
@@ -133,37 +141,39 @@ class EditClassifiedAdView(View):
         
         form = ClassifiedAdForm(data=request.POST, instance=classifiedad)
         new_image_list = request.POST.getlist('image_list[]', None)  
-
-        # Valida se o formulário é válido e se o mesmo possui imagens do anúncio.
+        
+        # Check if the form is valid and had images.
         if form.is_valid() and (isinstance(new_image_list, list) and len(new_image_list) > 0):               
-            old_img_list = [old_img_url.url for old_img_url in classifiedad.images.all()]
-
-            queue_client = ClassifiedAdQueue(queue_id=settings.QUEUE_ID, region_id=settings.OCI_REGION, 
-                env=settings.APP_ENV)                
-            queue_client.classifiedad_id = classifiedad_id
-            queue_client.classifiedad_status = 'UPDATE'
-            put_status = queue_client.put_list(msg_list=old_img_list)
-
-            if not put_status:
-                return HttpResponse(status=500)
+            old_img_list = [old_img_url.url for old_img_url in classifiedad.images.all()]           
 
             form.save() 
 
-            # Excluí imagens antigas. 
+            # Delete old images.
             ClassifiedAdImage.objects.filter(classifiedad_id=classifiedad_id).delete()
 
-            #  Insere novas imagens. 
+            #  Insert new images.
             bulk_img_list = []
 
             for img_url in new_image_list:
-                # TODO: necessário regex para validar a URL do Object Storage.
+                # TODO: Maybe a regex can be used to validate the Object Storage URL?
                 classifiedad_img = ClassifiedAdImage(classifiedad_id=classifiedad_id, url=img_url)
                 bulk_img_list.append(classifiedad_img)                
             else:
                 ClassifiedAdImage.objects.bulk_create(bulk_img_list)           
 
-            # Define o status do classificado para "EM ATUALIZAÇÃO".
+            # Change the status of classifiedad to updating.
             ClassifiedAd.objects.filter(id=classifiedad_id).update(status='UPDATE')                                   
+
+            xmlrpc_client = xmlrpc.client.ServerProxy(
+                f'http://{settings.CLASSIFIEDAD_TASK_QUEUE_HOST}:{settings.CLASSIFIEDAD_TASK_QUEUE_PORT}/'
+            )
+                       
+            try:
+                xmlrpc_client.update_classifiedad(classifiedad_id, old_img_list)
+            except Exception as e:               
+                log.error(str(e))                
+                messages.error(request, 'Erro ao atualizar o Anúncio.')
+                return redirect('classifiedad:home')
 
             messages.success(request, 'Anúncio atualizado com sucesso.')
 

@@ -14,12 +14,16 @@ import tasks
 # Globals
 OCI_API_SLEEP_SECS = 2
 APP_ENV = os.environ.get('APP_ENV')
-APP_PORT = os.environ.get('APP_PORT', 8100)
+APP_PORT = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_PORT', 8100)
 OCI_LOG_ID = os.environ.get('OCI_LOG_ID')
 
 
 def new_classifiedad(classifiedad_id: int):
     tasks.new_classifiedad.delay(classifiedad_id)
+
+
+def update_classifiedad(classifiedad_id: int, old_img_list: list):   
+   tasks.update_classifiedad.delay(classifiedad_id, old_img_list)
         
 
 def main():
@@ -27,6 +31,7 @@ def main():
 
     xmlrpc_server = SimpleXMLRPCServer(('0.0.0.0', APP_PORT), allow_none=True)
     xmlrpc_server.register_function(new_classifiedad)
+    xmlrpc_server.register_function(update_classifiedad)
     xmlrpc_server.serve_forever()
 
 

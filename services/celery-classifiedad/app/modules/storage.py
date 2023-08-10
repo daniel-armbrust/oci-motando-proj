@@ -9,7 +9,7 @@ import oci
 
 OCI_CONFIG_FILE = os.environ.get('OCI_CONFIG_FILE', '/opt/celery-classifiedad/ocisecrt/config')
 
-class Storage():
+class OciStorage():
     def __init__(self, region_id: str, bucket_ns: str, env: str):
         self.__region_id = region_id
         self.__bucket_ns = bucket_ns
@@ -23,13 +23,11 @@ class Storage():
         
         self.__client.base_client.timeout = None
             
-    def move(self, url_src: str, bucket_src: str, bucket_dst: str):
-        object_name = url_src[url_src.rindex('/') + 1:]
-
+    def move(self, obj_filename: str, bucket_src: str, bucket_dst: str):       
         copy_details = oci.object_storage.models.CopyObjectDetails(
             destination_bucket=bucket_dst, destination_namespace=self.__bucket_ns,
-            destination_object_name=object_name, destination_region=self.__region_id,
-            source_object_name=object_name)
+            destination_object_name=obj_filename, destination_region=self.__region_id,
+            source_object_name=obj_filename)
         
         resp = self.__client.copy_object(bucket_name=bucket_src, namespace_name=self.__bucket_ns,
             copy_object_details=copy_details)
@@ -39,7 +37,8 @@ class Storage():
         if resp.status == 202:
             work_req_id = resp.headers.get('opc-work-request-id')
         else:
-            log.error(f'Error in MOVE file "{url_src}" from bucket "{bucket_src}" to "{bucket_dst}" (Return code = {resp.status}).')
+            log.error(f'Error to MOVE the file "{obj_filename}" from bucket ' + \
+                      f'"{bucket_src}" to "{bucket_dst}" (Return code = {resp.status}).')
         
         return work_req_id
     
@@ -66,5 +65,6 @@ class Storage():
         if resp.status == 204:
             return True
         else:
-            log.error(f'Error to DELETE the file "{obj_filename}" in bucket "{bucket_name}" (Return code = {resp.status}).')
+            log.error(f'Could not DELETE - Object Filename: "{obj_filename}", ' + \
+                      'Bucket: "{bucket_name}", Return code = {resp.status}.')                        
             return False

@@ -11,7 +11,7 @@ from celery import Celery
 from celery.signals import after_setup_logger
 
 from modules.ocilog import OciLogHandler
-from modules.classifiedad import NewClassifiedad
+from modules.classifiedad import Classifiedad
 
 # Globals
 OCI_API_SLEEP_SECS = 2
@@ -33,8 +33,8 @@ BROKER_PASSWD = os.environ.get('BROKER_PASSWD')
 BROKER_VHOST = os.environ.get('BROKER_VHOST')
 OCI_REGION_ID = os.environ.get('OCI_REGION_ID')
 OCI_OS_NAMESPACE = os.environ.get('OCI_OBJSTR_NAMESPACE')
-OCI_BUCKET_SRC = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
-OCI_BUCKET_DST = os.environ.get('OCI_BUCKET_MOTANDO_IMG')
+OCI_BUCKET_IMGTMP = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
+OCI_BUCKET_IMG = os.environ.get('OCI_BUCKET_MOTANDO_IMG')
 
 # Logs to STDOUT and to OCI LOGGING Service.
 stdout_handler = log.StreamHandler(stream=sys.stdout)
@@ -64,35 +64,68 @@ def new_classifiedad(classifiedad_id: int):
     """Task for publish new classifiedad.
     
     """
-    global APP_ENV, OCI_REGION_ID, OCI_OS_NAMESPACE, OCI_BUCKET_SRC, \
-        OCI_BUCKET_DST, OCI_API_SLEEP_SECS, TASK_SLEEP_SECS, APPDB_HOST, \
+    global APP_ENV, OCI_REGION_ID, OCI_OS_NAMESPACE, OCI_BUCKET_IMGTMP, \
+        OCI_BUCKET_IMG, OCI_API_SLEEP_SECS, TASK_SLEEP_SECS, APPDB_HOST, \
         APPDB_USER, APPDB_DBNAME, MAX_LOOP_COUNT
 
-    classifiedad = NewClassifiedad(classifiedad_id=classifiedad_id)
-    
-    classifiedad.env = APP_ENV
-    classifiedad.region_id = OCI_REGION_ID
-    classifiedad.bucket_ns = OCI_OS_NAMESPACE
-    classifiedad.bucket_src = OCI_BUCKET_SRC
-    classifiedad.bucket_dst = OCI_BUCKET_DST    
-    classifiedad.api_sleep = OCI_API_SLEEP_SECS
-    classifiedad.db_host = APPDB_HOST
-    classifiedad.db_user = APPDB_USER
-    classifiedad.db_passwd = APPDB_PASSWD
-    classifiedad.db_name = APPDB_DBNAME
-    
+    classifiedad = Classifiedad(classifiedad_id=classifiedad_id,
+                                env=APP_ENV,
+                                region_id=OCI_REGION_ID,
+                                bucket_ns=OCI_OS_NAMESPACE,
+                                bucket_tmp=OCI_BUCKET_IMGTMP,
+                                bucket_img=OCI_BUCKET_IMG,
+                                api_sleep=OCI_API_SLEEP_SECS,
+                                db_host=APPDB_HOST,
+                                db_user=APPDB_USER,
+                                db_passwd=APPDB_PASSWD,
+                                db_name=APPDB_DBNAME)
+        
     classifiedad.new()
 
     i = 0
     while i < MAX_LOOP_COUNT:
         if classifiedad.done():
-            publish_status = classifiedad.publish()
+            published = classifiedad.publish()
 
-            if not publish_status:
+            if not published:
                 pass            
             break
         
         sleep(TASK_SLEEP_SECS)
         i += 1
     
+
+@app.task
+def update_classifiedad(classifiedad_id: int, old_img_list: list):
+    """Task for update the classifiedad.
     
+    """
+    global APP_ENV, OCI_REGION_ID, OCI_OS_NAMESPACE, OCI_BUCKET_IMGTMP, \
+        OCI_BUCKET_IMG, OCI_API_SLEEP_SECS, TASK_SLEEP_SECS, APPDB_HOST, \
+        APPDB_USER, APPDB_DBNAME, MAX_LOOP_COUNT   
+   
+    classifiedad = Classifiedad(classifiedad_id=classifiedad_id,
+                                env=APP_ENV,
+                                region_id=OCI_REGION_ID,
+                                bucket_ns=OCI_OS_NAMESPACE,
+                                bucket_tmp=OCI_BUCKET_IMGTMP,
+                                bucket_img=OCI_BUCKET_IMG,
+                                api_sleep=OCI_API_SLEEP_SECS,
+                                db_host=APPDB_HOST,
+                                db_user=APPDB_USER,
+                                db_passwd=APPDB_PASSWD,
+                                db_name=APPDB_DBNAME)
+    
+    classifiedad.update(old_img_list)
+
+    i = 0
+    while i < MAX_LOOP_COUNT:
+        if classifiedad.done():
+            published = classifiedad.publish()
+
+            if not published:
+                pass            
+            break
+        
+        sleep(TASK_SLEEP_SECS)
+        i += 1
