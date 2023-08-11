@@ -172,10 +172,9 @@ class EditClassifiedAdView(View):
                 xmlrpc_client.update_classifiedad(classifiedad_id, old_img_list)
             except Exception as e:               
                 log.error(str(e))                
-                messages.error(request, 'Erro ao atualizar o Anúncio.')
-                return redirect('classifiedad:home')
-
-            messages.success(request, 'Anúncio atualizado com sucesso.')
+                messages.error(request, 'Erro ao atualizar o Anúncio.')                
+            else:
+                messages.success(request, 'Anúncio atualizado com sucesso.')            
 
             return redirect('classifiedad:home')
         
@@ -258,7 +257,9 @@ class DeleteClassifiedAdView(View):
         classifiedad_id = request.POST.get('classifiedad_id', None)
 
         try:
-            classified_ad = ClassifiedAd.objects.filter(id=classifiedad_id, user=request.user, status='PUBLISHED').get()
+            classified_ad = ClassifiedAd.objects.filter(id=classifiedad_id, 
+                                                        user=request.user, 
+                                                        status='PUBLISHED').get()
         except ClassifiedAd.DoesNotExist:
             raise Http404
         
@@ -267,21 +268,26 @@ class DeleteClassifiedAdView(View):
         for img in classified_ad.images.all():
             img_list.append(img.url)
         
-        queue_client = ClassifiedAdQueue(queue_id=settings.QUEUE_ID, region_id=settings.OCI_REGION, 
-            env=settings.APP_ENV)                
-        queue_client.classifiedad_id = classifiedad_id
-        queue_client.classifiedad_status = 'DELETE'
-        put_status = queue_client.put_list(msg_list=img_list)
+        deleted = ClassifiedAd.objects.filter(id=classifiedad_id, 
+                                              user=request.user, 
+                                              status='PUBLISHED').update(status='DELETE')
+        
+        if deleted:
+            xmlrpc_client = xmlrpc.client.ServerProxy(
+                f'http://{settings.CLASSIFIEDAD_TASK_QUEUE_HOST}:{settings.CLASSIFIEDAD_TASK_QUEUE_PORT}/'
+            )
+                       
+            try:
+                xmlrpc_client.delete_classifiedad(classifiedad_id)
+            except Exception as e:               
+                log.error(str(e))      
 
-        if put_status is not None:
-            rows = ClassifiedAd.objects.filter(id=classifiedad_id, user=request.user, 
-                status='PUBLISHED').update(status='DELETE')
-            
-            if rows:                       
-                messages.success(request, 'Anúncio excluido com sucesso.')
-            else:
-                messages.error(request, 'Não foi possível excluír este anúncio.')
-            
-            return redirect('classifiedad:home')
-        else:
-            return HttpResponse(status=500)
+                ClassifiedAd.objects.filter(id=classifiedad_id,
+                                            user=request.user, 
+                                            status='DELETE').update(status='PUBLISHED')
+                
+                messages.error(request, 'Erro ao excluír o Anúncio. Tente novamente mais tarde.')                    
+            else:                
+                messages.success(request, 'Anúncio excluido com sucesso.')        
+                
+        return redirect('classifiedad:home')

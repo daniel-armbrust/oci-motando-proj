@@ -129,3 +129,27 @@ def update_classifiedad(classifiedad_id: int, old_img_list: list):
         
         sleep(TASK_SLEEP_SECS)
         i += 1
+
+@app.task
+def delete_classifiedad(classifiedad_id: int):
+    """Task for delete the classifiedad.
+    
+    """
+    global APP_ENV, OCI_REGION_ID, OCI_OS_NAMESPACE, OCI_BUCKET_IMGTMP, \
+        OCI_BUCKET_IMG, OCI_API_SLEEP_SECS, TASK_SLEEP_SECS, APPDB_HOST, \
+        APPDB_USER, APPDB_DBNAME, MAX_LOOP_COUNT   
+    
+    classifiedad = Classifiedad(classifiedad_id=classifiedad_id,
+                                env=APP_ENV,
+                                region_id=OCI_REGION_ID,
+                                bucket_ns=OCI_OS_NAMESPACE,
+                                bucket_tmp=OCI_BUCKET_IMGTMP,
+                                bucket_img=OCI_BUCKET_IMG,
+                                api_sleep=OCI_API_SLEEP_SECS,
+                                db_host=APPDB_HOST,
+                                db_user=APPDB_USER,
+                                db_passwd=APPDB_PASSWD,
+                                db_name=APPDB_DBNAME)
+    
+    classifiedad.delete(classifiedad_id)
+

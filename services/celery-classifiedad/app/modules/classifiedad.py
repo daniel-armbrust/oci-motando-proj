@@ -46,15 +46,20 @@ class ClassifiedadStorage():
         return workreq_status
 
     def delete(self, obj_filename: str, bucket_name: str):
+        deleted = False
+
         try:
             self._oci_storage.delete(obj_filename=obj_filename, 
                                      bucket_name=bucket_name)
         except OciServiceError as e:
             log.warn(f'Could not DELETE the object "{obj_filename}"' + \
                      f' from bucket "{bucket_name}" ({str(e.code)}).')
+        else:
+            deleted = True
 
         time.sleep(self._api_sleep)
 
+        return deleted
 
 class Classifiedad(Database, ClassifiedadStorage):    
     def __init__(self, **kwargs):        
@@ -118,7 +123,7 @@ class Classifiedad(Database, ClassifiedadStorage):
                 log.error(f'No WORK REQUEST ID returned when tried the move operation.')        
     
     def update(self, old_img_list: list):
-        """Check for update.
+        """Update the classifiedad.
         
         """       
         new_img_list = self._get_images_url(classifiedad_status='UPDATE')
@@ -142,18 +147,51 @@ class Classifiedad(Database, ClassifiedadStorage):
                 else:
                     log.error(f'No WORK REQUEST ID returned when tried the move operation.')        
 
+        # Images that will be delete.
+        deleted = False
+
         for img_url in old_img_list:
             if img_url not in new_img_list:
                 img_filename = img_url[img_url.rindex('/') + 1:]
 
                 if f'/{self._bucket_tmp}/' in img_url:
-                    ClassifiedadStorage.delete(self, 
-                                               obj_filename=img_filename, 
-                                               bucket_name=self._bucket_tmp)
+                    deleted = ClassifiedadStorage.delete(self, 
+                                                         obj_filename=img_filename, 
+                                                         bucket_name=self._bucket_tmp)
                 else:
-                    ClassifiedadStorage.delete(self, 
+                    deleted = ClassifiedadStorage.delete(self, 
                                                obj_filename=img_filename, 
                                                bucket_name=self._bucket_img)
+                
+                if not deleted:
+                    log.error(f'Could not delete the image "{img_filename}"' + \
+                              f'from bucket {self._bucket_tmp}.')
+
+
+    def delete(self, classifiedad_id: int):
+        """Delete the classifiedad.
+        
+        """       
+        delete_img_list = self._get_images_url(classifiedad_status='DELETE')
+
+        for img_url in delete_img_list: 
+            img_filename = img_url[img_url.rindex('/') + 1:]
+
+            ClassifiedadStorage.delete(self,
+                                       obj_filename=img_filename,
+                                       bucket_name=self._bucket_img)
+            
+            delete_stm_list = [
+                f'''
+                    DELETE FROM classifiedad_images WHERE classifiedad_id = {classifiedad_id}
+                 ''',
+                f'''
+                    DELETE FROM classifiedad WHERE id = {classifiedad_id}
+                 '''
+            ]
+
+
+
 
     def done(self):   
         """Checks if all work requests are finished.

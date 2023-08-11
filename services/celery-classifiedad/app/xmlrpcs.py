@@ -26,12 +26,16 @@ def update_classifiedad(classifiedad_id: int, old_img_list: list):
    tasks.update_classifiedad.delay(classifiedad_id, old_img_list)
         
 
+def delete_classifiedad(classifiedad_id: int):
+    tasks.delete_classifiedad.delay(classifiedad_id)
+
 def main():
     global APP_PORT
 
     xmlrpc_server = SimpleXMLRPCServer(('0.0.0.0', APP_PORT), allow_none=True)
     xmlrpc_server.register_function(new_classifiedad)
     xmlrpc_server.register_function(update_classifiedad)
+    xmlrpc_server.register_function(delete_classifiedad)
     xmlrpc_server.serve_forever()
 
 
