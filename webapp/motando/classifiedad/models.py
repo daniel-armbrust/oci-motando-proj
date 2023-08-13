@@ -10,36 +10,39 @@ from motorcycle.models import MotorcycleBrandModel, MotorcycleBrandModelVersion
 
 class ClassifiedAd(models.Model):
     MOTORCYCLE_TYPE_CHOICES = (        
-        ('', '',), ('NAKED', 'Naked',), ('SPORT', 'Sport',), ('TOURING', 'Touring',), 
-        ('OFF-ROAD', 'Off-road',), ('SCOOTER', 'Scooter',), ('MOTONETA', 'Motoneta',), 
-        ('CUSTOM', 'Custom',), ('STREET', 'Street',), ('BIGTRAIL', 'Big Trail',), 
-        ('CUSTOM', 'Custom',), ('STREET', 'Street',),
+        ('', '',), ('naked', 'Naked',), ('sport', 'Sport',), ('touring', 'Touring',), 
+        ('offroad', 'Off-road',), ('scooter', 'Scooter',), ('motoneta', 'Motoneta',), 
+        ('custom', 'Custom',), ('street', 'Street',), ('bigtrail', 'Big Trail',),         
     )
 
     ORIGIN_CHOICES = (
-        ('', '',), ('NACIONAL', 'Nacional',), ('IMPORTADA', 'Importada',),
+        ('', '',), ('national', 'Nacional',), ('imported', 'Importada',),
     )
 
     COLOR_CHOICES = (        
-        ('', '',), ('AZUL', 'Azul',), ('VERDE', 'Verde',), 
-        ('VERMELHO', 'Vermelho',), ('PRETO', 'Preto',), ('BRANCO', 'Branco',), 
+        ('', '',), ('blue', 'Azul',), ('green', 'Verde',), 
+        ('red', 'Vermelho',), ('black', 'Preto',), ('white', 'Branco',), 
+        ('silver', 'Prata',), ('yellow', 'Amarelo',), ('purple', 'Roxo',)
     )
 
     BRAKE_SYSTEM_CHOICES = (
-        ('', '',), ('ABS', 'ABS',), ('TAMBOR', 'Tambor',), ('COMBINADO', 'Combinado',),
+        ('', '',), ('abs', 'ABS',), ('tambor', 'Tambor',), 
+        ('combined', 'Combinado',),
     )
 
     IGNITION_SYSTEM_CHOICES = (
-        ('', '',), ('PEDAL', 'Pedal',), ('ELETRICA', 'Elétrica',), ('AMBOS', 'Ambos',),
+        ('', '',), ('pedal', 'Pedal',), ('electric', 'Elétrica',), 
+        ('both', 'Ambos',),
     )
 
     REFRIGERATION_CHOICES = (
-        ('', '',), ('AR', 'Ar',), ('LIQUIDA', 'Líquida',),
+        ('', '',), ('air', 'Ar',), ('liquid', 'Líquida',),
     )
 
     CLASSIFIEDAD_STATUS_CHOICES = (
-        ('NEW', 'Novo',), ('PUBLISHED', 'Publicado',), ('DELETE', 'Excluir',), 
-        ('EXPIRED', 'Expirado',), ('INACTIVE', 'Inativo',), ('UPDATE', 'Atualizar',),
+        ('new', 'Novo',), ('publised', 'Publicado',), 
+        ('delete', 'Excluir',), ('expired', 'Expirado',), 
+        ('inactive', 'Inativo',), ('update', 'Atualizar',),
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=False)
@@ -67,7 +70,7 @@ class ClassifiedAd(models.Model):
     brake_system = models.CharField(max_length=10, choices=BRAKE_SYSTEM_CHOICES, null=True, default=None)
     ignition_system = models.CharField(max_length=10, choices=IGNITION_SYSTEM_CHOICES, null=True, default=None)
     refrigeration = models.CharField(max_length=10, choices=REFRIGERATION_CHOICES, null=True, default=None)
-    status = models.CharField(max_length=10, choices=CLASSIFIEDAD_STATUS_CHOICES, null=False, default='NEW')    
+    status = models.CharField(max_length=10, choices=CLASSIFIEDAD_STATUS_CHOICES, null=False, default='new')    
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -85,8 +88,7 @@ class ClassifiedAdImage(models.Model):
     class Meta:
         db_table = 'classifiedad_images'
 
-    def __str__(self):
-        #return self.classifiedad.model.model
+    def __str__(self):        
         return '%s' % (self.url,)
 
 

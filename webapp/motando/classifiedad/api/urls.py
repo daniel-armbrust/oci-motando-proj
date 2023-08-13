@@ -8,6 +8,6 @@ from . import views
 
 app_name = 'classifiedad'
 
-urlpatterns = [
-    path('<int:classifiedad_id>', views.ClassifiedAdApiView.as_view(), name='classifiedad_read'),   
+urlpatterns = [   
+    path('all', views.ClassifiedAdListApiView.as_view(), name='classifiedad_list'),   
 ]

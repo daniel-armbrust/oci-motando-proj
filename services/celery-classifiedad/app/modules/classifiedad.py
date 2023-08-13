@@ -104,7 +104,7 @@ class Classifiedad(Database, ClassifiedadStorage):
         """Starting publishing a NEW classifiedad.
         
         """
-        img_list = self._get_images_url(classifiedad_status='NEW')
+        img_list = self._get_images_url(classifiedad_status='new')
 
         if not img_list:
             log.warn(f'There are no images to be processed for the classifiedad_id "{self._classifiedad_id}".')
@@ -126,7 +126,7 @@ class Classifiedad(Database, ClassifiedadStorage):
         """Update the classifiedad.
         
         """       
-        new_img_list = self._get_images_url(classifiedad_status='UPDATE')
+        new_img_list = self._get_images_url(classifiedad_status='update')
 
         if not new_img_list:
             log.warn(f'There are no images to be processed for the classifiedad_id "{self._classifiedad_id}".')
@@ -172,7 +172,7 @@ class Classifiedad(Database, ClassifiedadStorage):
         """Delete the classifiedad.
         
         """       
-        delete_img_list = self._get_images_url(classifiedad_status='DELETE')
+        delete_img_list = self._get_images_url(classifiedad_status='delete')
 
         for img_url in delete_img_list: 
             img_filename = img_url[img_url.rindex('/') + 1:]
@@ -242,7 +242,7 @@ class Classifiedad(Database, ClassifiedadStorage):
             datetime_now = time.strftime('%Y-%m-%d %H:%M:%S')
 
             update_sqlstm = f'''
-                UPDATE classifiedad SET status = "PUBLISHED", updated = "{datetime_now}" 
+                UPDATE classifiedad SET status = "published", updated = "{datetime_now}" 
                     WHERE id = {self._classifiedad_id} LIMIT 1
             '''
 

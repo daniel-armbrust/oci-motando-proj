@@ -2,29 +2,29 @@
 # load2db.py
 #
 
-import sys
 import os
 import random
 import pathlib
 from secrets import token_hex
 from datetime import datetime
+import xmlrpc.client
 
 import oci
 
 from django.contrib.auth import get_user_model
 
 from account.models import UserProfile
-from motorcycle.models import MotorcycleBrand, MotorcycleBrandModel, MotorcycleBrandModelVersion
+from motorcycle.models import MotorcycleBrand, MotorcycleBrandModelVersion
 from classifiedad.models import ClassifiedAd, ClassifiedAdImage
 from state_city.models import State, StateCity
-from classifiedad.queue import ClassifiedAdQueue
 
 
 APP_ENV = os.environ.get('APP_ENV')
 OCI_REGION_ID = os.environ.get('OCI_REGION_ID')
 OCI_BUCKET_NAMESPACE = os.environ.get('OCI_OBJSTR_NAMESPACE')
 CLASSIFIEDAD_TMPIMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
-OCI_QUEUE_ID = os.environ.get('OCI_QUEUE_ID')
+CLASSIFIEDAD_TASK_QUEUE_HOST = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_HOST')
+CLASSIFIEDAD_TASK_QUEUE_PORT = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_PORT')
 
 
 def get_motorcycle_brands():
@@ -84,13 +84,13 @@ def create_classifiedad(user=None, max_classifiedad=3):
 
     # Percorre as marcas das motocicletas randomincamente.
     for brand_id, brand_name in random.choices(list(brand_dict.items()), k=3): 
-        print(f'[INFO] Processando MARCA: "{brand_name}"')
+        print(f'[INFO] Processing BRAND: "{brand_name}"')
 
         for motorcycle_data in random.choices(MotorcycleBrandModelVersion.objects.filter(model__brand__id=brand_id), k=1):
             motorcycle_model = motorcycle_data.model
             motorcycle_version = motorcycle_data
 
-            print(f'[INFO] Processando MODELO/VERSAO: "{motorcycle_model}/{motorcycle_version}"')
+            print(f'[INFO] Processing MODEL/VERSION: "{motorcycle_model}/{motorcycle_version}"')
 
             motorcycle_type = random.choices(ClassifiedAd.MOTORCYCLE_TYPE_CHOICES)[0][0]
             motorcycle_origin = random.choices(ClassifiedAd.ORIGIN_CHOICES)[0][0]
@@ -133,7 +133,7 @@ def create_classifiedad(user=None, max_classifiedad=3):
                 os_client.put_object(namespace_name=ns, bucket_name=CLASSIFIEDAD_TMPIMG_BUCKET,
                     object_name=rand_filename, put_object_body=pathlib.Path(f'img/{img}').read_bytes(),
                     content_type='image/jpeg'
-                )
+                )                
 
                 file_url = 'https://objectstorage.%s.oraclecloud.com/n/%s/b/%s/o/%s' % (
                     OCI_REGION_ID, ns, CLASSIFIEDAD_TMPIMG_BUCKET, rand_filename,
@@ -142,19 +142,21 @@ def create_classifiedad(user=None, max_classifiedad=3):
                 image_list.append(file_url)          
 
                 ClassifiedAdImage(url=file_url, classifiedad_id=new_classifiedad_id).save()
+            else:
+                xmlrpc_client = xmlrpc.client.ServerProxy(
+                    f'http://{CLASSIFIEDAD_TASK_QUEUE_HOST}:{CLASSIFIEDAD_TASK_QUEUE_PORT}/'
+                )
 
-                # Queue Task
-                queue_client = ClassifiedAdQueue(queue_id=OCI_QUEUE_ID, region_id=OCI_REGION_ID, env=APP_ENV)                
-                queue_client.classifiedad_id = new_classifiedad_id
-                queue_client.classifiedad_status = 'NEW'
-                queue_client.put_list(msg_list=image_list)
-       
+                try:
+                    xmlrpc_client.new_classifiedad(new_classifiedad_id)
+                except Exception as e:
+                    print(str(e))            
 
-    print('[INFO] Fim ...\n')
+    print('[INFO] End ...\n')
 
 
 def main():
-    """Execução principal.
+    """Main
     
     """
     User = get_user_model()

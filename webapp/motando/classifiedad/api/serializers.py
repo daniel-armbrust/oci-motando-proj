@@ -18,15 +18,17 @@ class ClassifiedAdSerializer(serializers.ModelSerializer):
   
     class Meta:
         model = ClassifiedAd                
-        exclude = ('user',)
+        exclude = ('user', 'status', 'license_plate',)
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
         representation['brand'] = instance.model.brand.brand
         representation['model'] = instance.model.model
-        representation['model_version'] = instance.model_version.version        
-        representation['user_email'] = instance.user.email
-        representation['user_telephone'] = instance.user.user.telephone   
+
+        try:
+            representation['model_version'] = instance.model_version.version        
+        except AttributeError:
+            representation['model_version'] = ""        
 
         return representation

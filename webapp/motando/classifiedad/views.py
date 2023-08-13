@@ -26,9 +26,8 @@ from account.models import UserProfile
 class AllClassifiedAdView(View):
     def get(self, request):
         max_classfiedad = 7
-
-        # TODO: Lazy?
-        classifiedad = ClassifiedAd.objects.filter(status='PUBLISHED').all()
+       
+        classifiedad = ClassifiedAd.objects.filter(status='published').all()
         paginator = Paginator(classifiedad, max_classfiedad)       
 
         page_number = request.GET.get('p')
@@ -37,7 +36,12 @@ class AllClassifiedAdView(View):
         total_published = classifiedad.count()
 
         return render(request, 'classifiedad/all.html', {
-            'classifiedad_page': classifiedad_page, 'total_published': total_published})
+            'classifiedad_page': classifiedad_page, 
+            'total_published': total_published,
+            'motorcycle_colors': ClassifiedAd.COLOR_CHOICES,
+            'motorcycle_brake_system': ClassifiedAd.BRAKE_SYSTEM_CHOICES,
+            'motorcycle_ignition_system': ClassifiedAd.IGNITION_SYSTEM_CHOICES
+        })
 
 
 class HomeClassifiedAdView(View):
@@ -45,16 +49,16 @@ class HomeClassifiedAdView(View):
         user_profile = get_object_or_404(UserProfile, user=request.user)
 
         classifiedad_list = ClassifiedAd.objects.filter(Q(user_id=request.user),
-            Q(status='PUBLISHED') | Q(status='NEW') | Q(status='MOVE') \
-                | Q(status='UPDATE')).all().order_by('-updated')
+            Q(status='published') | Q(status='new') | 
+            Q(status='update')).all().order_by('-updated')
         
         paginator = Paginator(classifiedad_list, 4)
 
         total_published = ClassifiedAd.objects.filter(user_id=request.user, 
-            status='PUBLISHED').count()        
+            status='published').count()        
 
         total_not_published = ClassifiedAd.objects.filter(Q(user_id=request.user), 
-            Q(status='NEW') | Q(status='MOVE') | Q(status='UPDATE')).count()
+            Q(status='new') | Q(status='update')).count()
         
         page_number = request.GET.get('p')
         classifiedad_page = paginator.get_page(page_number)
@@ -120,7 +124,7 @@ class EditClassifiedAdView(View):
     def get(self, request, classifiedad_id=None):
         try:
             classifiedad = ClassifiedAd.objects.filter(id=classifiedad_id, 
-                user=request.user, status='PUBLISHED').get()
+                user=request.user, status='published').get()
         except ClassifiedAd.DoesNotExist:
             raise Http404
         
@@ -135,7 +139,7 @@ class EditClassifiedAdView(View):
     def post(self, request, classifiedad_id=None):
         try:
             classifiedad = ClassifiedAd.objects.filter(id=classifiedad_id, 
-                user=request.user, status='PUBLISHED').get()
+                user=request.user, status='published').get()
         except ClassifiedAd.DoesNotExist:
             raise Http404
         
@@ -162,7 +166,7 @@ class EditClassifiedAdView(View):
                 ClassifiedAdImage.objects.bulk_create(bulk_img_list)           
 
             # Change the status of classifiedad to updating.
-            ClassifiedAd.objects.filter(id=classifiedad_id).update(status='UPDATE')                                   
+            ClassifiedAd.objects.filter(id=classifiedad_id).update(status='update')                                   
 
             xmlrpc_client = xmlrpc.client.ServerProxy(
                 f'http://{settings.CLASSIFIEDAD_TASK_QUEUE_HOST}:{settings.CLASSIFIEDAD_TASK_QUEUE_PORT}/'
@@ -237,7 +241,7 @@ class ClassifiedAdDetailView(View):
         try:
             classifiedad = ClassifiedAd.objects.filter(model__brand__brand=brand_str, 
                 model__model=model_str, model_year=model_year, id=classifiedad_id, 
-                status='PUBLISHED').get()            
+                status='published').get()            
         except ClassifiedAd.DoesNotExist:
             raise Http404
         
@@ -259,7 +263,7 @@ class DeleteClassifiedAdView(View):
         try:
             classified_ad = ClassifiedAd.objects.filter(id=classifiedad_id, 
                                                         user=request.user, 
-                                                        status='PUBLISHED').get()
+                                                        status='published').get()
         except ClassifiedAd.DoesNotExist:
             raise Http404
         
@@ -270,7 +274,7 @@ class DeleteClassifiedAdView(View):
         
         deleted = ClassifiedAd.objects.filter(id=classifiedad_id, 
                                               user=request.user, 
-                                              status='PUBLISHED').update(status='DELETE')
+                                              status='published').update(status='delete')
         
         if deleted:
             xmlrpc_client = xmlrpc.client.ServerProxy(
@@ -284,7 +288,7 @@ class DeleteClassifiedAdView(View):
 
                 ClassifiedAd.objects.filter(id=classifiedad_id,
                                             user=request.user, 
-                                            status='DELETE').update(status='PUBLISHED')
+                                            status='delete').update(status='published')
                 
                 messages.error(request, 'Erro ao excluír o Anúncio. Tente novamente mais tarde.')                    
             else:                

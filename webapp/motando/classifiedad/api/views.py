@@ -2,29 +2,33 @@
 # classifiedad/api/view.py
 #
 
-import logging as log
-
-from rest_framework import views, status
-from rest_framework.response import Response
+from rest_framework import generics
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import PageNumberPagination
 
 from classifiedad.models import ClassifiedAd
 from classifiedad.api.serializers import ClassifiedAdSerializer
 
 
-class ClassifiedAdApiView(views.APIView):
-    def get(self, request, classifiedad_id, format=None):
-        try:
-            classifiedad = ClassifiedAd.objects.get(id=classifiedad_id)
-        except ClassifiedAd.DoesNotExist:
-            return Response(
-                data={'status' : 'fail', 'message' :'No ClassifiedAd found.'}, 
-                status=status.HTTP_404_NOT_FOUND
-            )      
+class ClassifiedAdListApiView(generics.ListAPIView):
+    queryset = ClassifiedAd.objects.filter(status='published').all()
+    serializer_class = ClassifiedAdSerializer
+    filter_backends = [DjangoFilterBackend]        
 
-        serializer = ClassifiedAdSerializer(classifiedad)              
-
-        return Response(
-            data={'status' : 'success', 'data': [serializer.data]},
-            status=status.HTTP_200_OK
-        )
-
+    filterset_fields = [
+        'model__brand', 
+        'model', 
+        'user__user__state', 
+        'user__user__city',
+        'color',
+        'is_new',
+        'doc_ok',
+        'brake_system',
+        'ignition_system',
+        'accept_new_offer',
+        'accept_exchange',
+        'optional_gps',
+        'optional_alarm',
+        'optional_chest',
+        'optional_computer'
+    ]
