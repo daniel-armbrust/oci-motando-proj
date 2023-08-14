@@ -18,7 +18,9 @@ class ClassifiedAdSerializer(serializers.ModelSerializer):
   
     class Meta:
         model = ClassifiedAd                
-        exclude = ('user', 'status', 'license_plate',)
+        
+        fields = ('id', 'fabrication_year', 'model_year', 'sales_phrase',
+                  'mileage', 'is_new', 'color', 'price', 'images',)
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)

@@ -54,7 +54,7 @@
                                                     <label for="id_brand" class="form-label">Marca</label>
                                                     <div class="input-group">                                                                 
                                                         <select name="brand" class="form-select" id="id_brand">
-                                                            <option value="" id="id_option_motorcycle_brand_empty">Todas as Marcas</option>
+                                                            <option value="" id="id_option_motorcycle_brand_empty" selected="selected">Todas as Marcas</option>
                                                         </select>                                               
                                                     </div>
                                             </div>
@@ -64,10 +64,7 @@
                                                     <label for="id_model" class="form-label">Modelo</label>
                                                     <div class="input-group">                                                                 
                                                         <select name="model" class="form-select" id="id_model">                                                            
-                                                            <option value="" id="id_option_motorcycle_brand_model_empty" 
-                                                                    selected="selected">
-                                                                Selecione o Modelo
-                                                            </option>
+                                                            <option value="" id="id_option_motorcycle_brand_model_empty" selected="selected"> Selecione o Modelo </option>
                                                         </select>                                               
                                                     </div>
                                             </div>
@@ -99,7 +96,7 @@
                                               <div class="input-group">                                                                 
                                                     <select name="brazil_state" class="form-select" 
                                                             id="id_brazil_state" selected="selected">
-                                                        <option value="" id="id_option_brazil_state_empty">Todos os Estados</option>
+                                                        <option value="" id="id_option_brazil_state_empty">Selecione a Estado</option>
                                                     </select>                                               
                                               </div>
                                         </div>
@@ -140,9 +137,9 @@
                                     </div>         
                                     <div class="row p-2">
                                         <div class="col">
-                                                <label for="id_cor" class="form-label">Cor:</label>
+                                                <label for="id_motorcycle_color" class="form-label">Cor:</label>
                                                 <div class="input-group">    
-                                                    <select name="brazil_state_city" class="form-select" id="id_brazil_state_city">
+                                                    <select name="motorcycle_color" class="form-select" id="id_motorcycle_color">
                                                        <option value="" 
                                                                id="id_option_brazil_state_city_empty"
                                                                selected="selected">Selecione a Cor
@@ -181,7 +178,7 @@
                                                 <select name="ignition_system" class="form-select" id="id_ignition_system">                                                            
                                                     <option value="" id="id_option_motorcycle_ignition_system" 
                                                             selected="selected">
-                                                        Selecione os Freios
+                                                        Selecione o tipo da partida
                                                     </option>
                                                     {% for ignition_system in motorcycle_ignition_system %}        
                                                            {% if ignition_system.0 %}                                          
@@ -251,37 +248,7 @@
                                                 </label>
                                             </div>                                                                          
                                         </div>                                        
-                                    </div>                                         
-                                    <div class="row p-2">                                        
-                                        <div class="col">                                                     
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="id_optional_gps">
-                                            <label class="form-check-label" for="id_optional_gps">
-                                                GPS
-                                            </label>
-                                        </div>                                                                          
-                                        </div>                                        
-                                    </div>                                    
-                                    <div class="row p-2">                                        
-                                        <div class="col">                                                     
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="id_optional_alarm">
-                                            <label class="form-check-label" for="id_optional_alarm">
-                                                Alarme 
-                                            </label>
-                                        </div>                                                                          
-                                        </div>                                        
-                                    </div>    
-                                    <div class="row p-2">                                        
-                                        <div class="col">                                                     
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="id_optional_chest">
-                                            <label class="form-check-label" for="id_optional_chest">
-                                                Baú / Malas  
-                                            </label>
-                                        </div>                                                                          
-                                        </div>                                        
-                                    </div>                                         
+                                    </div>                                                                             
                                     <div class="row">
                                         <div class="col">
                                             <br>
@@ -396,7 +363,11 @@
     <br><br><br>   
 {% endblock %}
 {% block body_scripts %}   
+    <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script> 
     <script type="text/javascript" src="{% static 'js/motorcycle-state-city.js' %}"></script>   
+    <script type="text/javascript">
+        const API_CLASSIFIEDAD_SEARCH_URL = MOTANDO_URL_PREFIX + "{% url 'api_classifiedad:all' %}";        
+    </script>   
     <script type="text/javascript" src="{% static 'js/classifiedad-all.js' %}"></script>    
 {% endblock %}
 {% endspaceless %} 
