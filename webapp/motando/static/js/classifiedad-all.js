@@ -16,10 +16,22 @@ const urlParamsKeyValue = {
     'accept_new_offer': null
 };
 
-const urlWithParams = new URL('http://127.0.0.1:8000/api/classifiedads/all');
+const urlWithParams = new URL(`${API_CLASSIFIEDAD_SEARCH_URL}`);
 
+function formatReal(price) {
+    price = parseInt(price.replace(/[\D]+/g,''));
+    let tmp = price+'';
+        
+    tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+        
+    if (tmp.length > 6)
+       tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+
+    return tmp;
+}
+   
 function ajaxGetRequest() {   
-    return $.ajax({
+    $.ajax({
         url: urlWithParams.toString(),
         type: 'GET', 
         dataType: 'json', 
@@ -29,15 +41,59 @@ function ajaxGetRequest() {
                 message: '<h2>Por favor aguarde ...</h2>',
                 overlayCSS: { backgroundColor: '#dee2e6' } 
             });          
+
+            $('#id_motorcycle_dashboard').empty();
         },
         complete: function() {    
             $.unblockUI();             
         },
         success: function(data) { 
-            return data;
+            const jsonResp = data.results;
+            const totalMotorcyclesFound = data.count;     
+
+            const colorMap = {'blue': 'Azul', 'green': 'Verde', 'red': 'Vermelho',
+                              'black': 'Preto', 'white': 'Branco', 'silver': 'Prata',
+                              'yellow': 'Amarelo', 'purple': 'Roxo'};
+
+            let motorcycleUrl = '';
+            let motorcycleHtml = '';    
+            let mileage = null; 
+            
+            if (totalMotorcyclesFound <= 0) {
+                motorcycleHtml = '<h2 class="text-dark text-center pt-4 fst-italic">Por enquanto... Não há anúncios para este filtro de consulta!</h2>';           
+            }
+            else {
+                for (let i = 0 ; i < jsonResp.length ; i++) {                    
+                    motorcycleUrl = `/classifiedad/${jsonResp[i].brand}/${jsonResp[i].model}/${jsonResp[i].model_year}/${jsonResp[i].id}`;
+    
+                    motorcycleHtml += `<a href="${motorcycleUrl}" class="text-decoration-none text-dark" target="_blank">` +
+                                      '<div class="card shadow"><div class="row no-gutters">' +
+                                      `<div class="col-auto"><img src="${jsonResp[i].images[0].url}" class="img-fluid rounded" style="max-width: 18rem;" alt="${jsonResp[i].brand} - ${jsonResp[i].model}"></div>` +
+                                      '<div class="col"><div class="card-block">' +
+                                      `<h4 class="card-title pt-3">${jsonResp[i].brand} - ${jsonResp[i].model}</h4>` +
+                                      `<h5 class="h6 text-uppercase">${jsonResp[i].sales_phrase}</h5>` +
+                                      '<hr class="p-1" style="width: 98%;"><p class="h5 pt-2">';
+    
+                    if (jsonResp[i].accept_exchange)
+                        motorcycleHtml += '<i class="fas fa-exchange-alt text-primary"></i><span class="text-primary"> Aceita troca </span>';
+                    else
+                        motorcycleHtml += '<i class="fas fa-exchange-alt text-dark"></i><span class="text-dark"> Não aceita troca </span>';
+                        
+                    motorcycleHtml += `</p><p class="h3 fw-bold text-success"> R$ ${formatReal(jsonResp[i].price)} </p><p class="h6 pt-2 pb-3">`;
+                    motorcycleHtml += `<i class="far fa-calendar-alt"></i> &nbsp; ${jsonResp[i].fabrication_year}/${jsonResp[i].model_year}`;
+                    motorcycleHtml += `&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-fill-drip"></i>&nbsp; ${colorMap[jsonResp[i].color]}<span class="text-capitalize"></span>`;
+                    
+                    mileage = new Intl.NumberFormat('pt-BR', { maximumSignificantDigits: 3 }).format(jsonResp[i].mileage);    
+
+                    motorcycleHtml += `&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-tachometer-alt"></i> &nbsp; ${mileage} KM`;
+                    motorcycleHtml += '</p></div></div></div></div></a><br>';                
+                }   
+            }
+                        
+            $('#id_motorcycle_dashboard').html(motorcycleHtml);
         },
         error: function(xhr, textStatus, errorThrown) {                    
-            console.log(textStatus);            
+            console.error(textStatus);            
         }
     });    
 }
@@ -194,12 +250,24 @@ function OtherDetails() {
 
 $(document).ready(function() {          
     getMotorcycleBrand('id_brand');
-    getBrazilState('id_brazil_state');   
+    getBrazilState('id_brazil_state');
+    ajaxGetRequest();
     
     $('#id_brand').on('change', function() {  
         const brandId = this.value;
-        getMotorcycleBrandModel('id_model', brandId);     
-        brandModelParams();        
+
+        if (brandId > 0) {
+            getMotorcycleBrandModel('id_model', brandId);
+
+            brandModelParams();        
+        }
+        else {
+            $('#id_model').attr('disabled', true);
+            $('#id_model').empty();
+            $('#id_model').append('<option value="" id="id_option_motorcycle_brand_model_empty" selected="selected">Selecione o Modelo</option>');
+            
+            getMotorcycleBrand('id_brand');
+        }        
     });
 
     $('#id_model').on('change', function() {

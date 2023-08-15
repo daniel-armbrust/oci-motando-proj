@@ -99,8 +99,7 @@ function ajaxGetRequest(url) {
         },
         complete: function() {           
         },
-        success: function(data) { 
-            return data;
+        success: function() {             
         },
         error: function(xhr, textStatus, errorThrown) {                    
             console.log(textStatus);            

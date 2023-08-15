@@ -14,7 +14,7 @@ function getMotorcycleBrand(selectId, brandId) {
             $(`#${selectId}`).append('<option value="" id="id_option_motorcycle_brand_empty">Carregando...</option>');          
         },       
         success: function(jsonResp) {
-            $('#id_option_motorcycle_brand_empty').attr('value', '').html('Todas as Marcas');
+            $('#id_option_motorcycle_brand_empty').attr('value', '').html('Selecione a Marca');
             
             if (jsonResp.status === 'success') {                                           
                 jsonResp.data.forEach(brand => {
@@ -49,7 +49,7 @@ function getMotorcycleBrandModel(selectId, brandId, modelId) {
             $(`#${selectId}`).append('<option value="" id="id_option_motorcycle_brand_model_empty">Carregando...</option>');      
         },      
         success: function(jsonResp) {
-            $('#id_option_motorcycle_brand_model_empty').attr('value', '').html('Todos os Modelos');
+            $('#id_option_motorcycle_brand_model_empty').attr('value', '').html('Selecione o Modelo');
                               
             if (jsonResp.status === 'success') {
                 jsonResp.data.forEach(model => {
@@ -84,7 +84,7 @@ function getMotorcycleBrandModelVersion(selectId, brandId, modelId, versionId) {
             $(`#${selectId}`).append('<option value="" id="id_option_motorcycle_brand_model_version_empty">Carregando...</option>');            
         },      
         success: function(jsonResp) {
-            $('#id_option_motorcycle_brand_model_version_empty').attr('value', '').html('Todas as Versões');
+            $('#id_option_motorcycle_brand_model_version_empty').attr('value', '').html('Selecione a Versão');
             
             if (jsonResp.status === 'success') {
                 jsonResp.data.forEach(version => {
@@ -119,7 +119,7 @@ function getBrazilState(selectId, stateId) {
           $(`#${selectId}`).append('<option value="" id="id_option_brazil_state_empty">Carregando...</option>');            
       },      
       success: function(jsonResp) {
-          $('#id_option_brazil_state_empty').attr('value', '').html('Todos os Estados');
+          $('#id_option_brazil_state_empty').attr('value', '').html('Selecione o Estado');
 
           if (jsonResp.status === 'success') {
               jsonResp.data.forEach(state => {
@@ -154,7 +154,7 @@ function getBrazilStateCity(selectId, stateId, cityId) {
           $(`#${selectId}`).append('<option value="" id="id_option_brazil_state_city_empty">Carregando...</option>');            
       },      
       success: function(jsonResp) {
-          $('#id_option_brazil_state_city_empty').attr('value', '').html('Todas as Cidades');
+          $('#id_option_brazil_state_city_empty').attr('value', '').html('Selecione a Cidade');
 
           if (jsonResp.status === 'success') {
              jsonResp.data.forEach(city => {
