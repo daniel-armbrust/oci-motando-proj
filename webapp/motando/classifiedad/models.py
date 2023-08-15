@@ -70,7 +70,8 @@ class ClassifiedAd(models.Model):
     brake_system = models.CharField(max_length=10, choices=BRAKE_SYSTEM_CHOICES, null=True, default=None)
     ignition_system = models.CharField(max_length=10, choices=IGNITION_SYSTEM_CHOICES, null=True, default=None)
     refrigeration = models.CharField(max_length=10, choices=REFRIGERATION_CHOICES, null=True, default=None)
-    status = models.CharField(max_length=10, choices=CLASSIFIEDAD_STATUS_CHOICES, null=False, default='new')    
+    status = models.CharField(max_length=10, choices=CLASSIFIEDAD_STATUS_CHOICES, null=False, default='new')   
+    top_offer = models.BooleanField(null=False, default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

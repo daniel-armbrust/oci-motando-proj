@@ -102,7 +102,7 @@ def create_classifiedad(user=None, max_classifiedad=3):
             year = random.randint(1990, 2023)
             model_year = random.randint(year, 2023)
             mileage = random.randint(100, 200000)
-            price = round(random.uniform(30000.0, 105000.9),2)
+            price = round(random.uniform(30000.0, 105000.9),2)           
 
             sales_phrase = random.choices(sales_phrase_list)[0]
             description = random.choices(description_list)[0]           
@@ -113,7 +113,7 @@ def create_classifiedad(user=None, max_classifiedad=3):
                 description=description, accept_new_offer=bool(random.getrandbits(1)), 
                 accept_exchange=bool(random.getrandbits(1)), doc_ok=bool(random.getrandbits(1)),
                 brake_system=motorcycle_brake, ignition_system=motorcycle_ignition, 
-                refrigeration=motorcycle_refrigeration).save()
+                refrigeration=motorcycle_refrigeration, top_offer=bool(random.getrandbits(1))).save()
             
             new_classifiedad_id = ClassifiedAd.objects.latest('id').id
             

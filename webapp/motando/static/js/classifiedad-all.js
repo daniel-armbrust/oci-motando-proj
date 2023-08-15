@@ -29,10 +29,17 @@ function formatReal(price) {
 
     return tmp;
 }
-   
-function ajaxGetRequest() {   
+
+function getPageNum(url) {
+    return decodeURIComponent((new RegExp('[?|&]page=' + '([^&;]+?)(&|#|;|$)').exec(url) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+}
+  
+function ajaxGetRequest(url) {   
+    if (!url)
+       url = urlWithParams.toString();
+
     $.ajax({
-        url: urlWithParams.toString(),
+        url: url,
         type: 'GET', 
         dataType: 'json', 
         contentType: 'application/json; charset=utf-8',                      
@@ -49,7 +56,7 @@ function ajaxGetRequest() {
         },
         success: function(data) { 
             const jsonResp = data.results;
-            const totalMotorcyclesFound = data.count;     
+            const totalMotorcyclesFound = data.count;               
 
             const colorMap = {'blue': 'Azul', 'green': 'Verde', 'red': 'Vermelho',
                               'black': 'Preto', 'white': 'Branco', 'silver': 'Prata',
@@ -83,14 +90,46 @@ function ajaxGetRequest() {
                     motorcycleHtml += `<i class="far fa-calendar-alt"></i> &nbsp; ${jsonResp[i].fabrication_year}/${jsonResp[i].model_year}`;
                     motorcycleHtml += `&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-fill-drip"></i>&nbsp; ${colorMap[jsonResp[i].color]}<span class="text-capitalize"></span>`;
                     
-                    mileage = new Intl.NumberFormat('pt-BR', { maximumSignificantDigits: 3 }).format(jsonResp[i].mileage);    
+                    mileage = new Intl.NumberFormat('pt-BR', {maximumSignificantDigits: 3}).format(jsonResp[i].mileage);    
 
                     motorcycleHtml += `&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-tachometer-alt"></i> &nbsp; ${mileage} KM`;
                     motorcycleHtml += '</p></div></div></div></div></a><br>';                
-                }   
+                }  
             }
+
+            const totalMotorcyclePerPage = 7; 
+            const maxPageLinks = 14;
+            const nextPagelinksCount = Math.round(totalMotorcyclesFound / totalMotorcyclePerPage);
+            const urlParamsCount = Array.from(urlWithParams.searchParams).length;
+            const activeLinkNumber = getPageNum(url);
+
+            let nextPagelink = null;           
+            let paginationLinks = '';            
+
+            if (urlParamsCount >= 0) 
+                nextPagelink = `${urlWithParams.toString()}?page=`;
+            else
+                nextPagelink = `${urlWithParams.toString()}&page=`;                      
+                           
+            for (let i = 1 ; i <= nextPagelinksCount ; i++) {
+                if (activeLinkNumber == i) {
+                   paginationLinks += `<li class="page-item active"><a class="page-link" onclick="ajaxGetRequest('${nextPagelink}${i}');" href="javascript: void(0);">${i}</a></li>`;                    
+                }
+                else if (i == 1 && activeLinkNumber == null) {                
+                   paginationLinks += `<li class="page-item active"><a class="page-link" onclick="ajaxGetRequest('${nextPagelink}${i}');" href="javascript: void(0);">${i}</a></li>`; 
+                }
+                else {
+                   paginationLinks += `<li class="page-item"><a class="page-link" onclick="ajaxGetRequest('${nextPagelink}${i}');" href="javascript: void(0);">${i}</a></li>`; 
+                }
+            }                    
+
+            motorcycleHtml += '<br><div class="position-relative">' +
+                              '<nav style="background-color: #F7F7F7; border-bottom: 0;" class="position-absolute top-0 start-50 translate-middle-x">' +                              
+                              '<ul class="pagination">' + paginationLinks + '</ul></nav></div>';                              
                         
             $('#id_motorcycle_dashboard').html(motorcycleHtml);
+
+            document.body.scrollTop = document.documentElement.scrollTop = 0;           
         },
         error: function(xhr, textStatus, errorThrown) {                    
             console.error(textStatus);            

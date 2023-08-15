@@ -54,7 +54,7 @@
                         <p class="ms-4">                        
                             <i class="far fa-calendar-alt"></i> {{ classifiedad.fabrication_year }}/{{ classifiedad.model_year }} &nbsp;&nbsp;
                             <i class="fas fa-fill-drip"></i> {{ classifiedad.color|title }} &nbsp;&nbsp;
-                            <i class="fas fa-tachometer-alt"></i> {{ classifiedad.mileage|intcomma }} Km &nbsp;&nbsp;
+                            <i class="fas fa-tachometer-alt"></i> {{ classifiedad.mileage|intcomma }} KM &nbsp;&nbsp;
                             {% if classifiedad.accept_exchange %}
                                 <span class="text-success"><i class="far fa-times-circle"></i> Aceita troca</span> &nbsp;&nbsp;                            
                             {% else %}
@@ -74,11 +74,13 @@
                                     </div>
                                 {% endfor %}                                
                             </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#id_carousel_classifiedad_images" data-bs-slide="prev">
+                            <button class="carousel-control-prev" type="button" 
+                                    data-bs-target="#id_carousel_classifiedad_images" data-bs-slide="prev">
                               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                               <span class="visually-hidden">Previous</span>
                             </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#id_carousel_classifiedad_images" data-bs-slide="next">
+                            <button class="carousel-control-next" type="button" 
+                                    data-bs-target="#id_carousel_classifiedad_images" data-bs-slide="next">
                               <span class="carousel-control-next-icon" aria-hidden="true"></span>
                               <span class="visually-hidden">Next</span>
                             </button>

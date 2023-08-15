@@ -24,19 +24,10 @@ from account.models import UserProfile
 
 
 class AllClassifiedAdView(View):
-    def get(self, request):
-        max_classfiedad = 7
-       
-        classifiedad = ClassifiedAd.objects.filter(status='published').all()
-        paginator = Paginator(classifiedad, max_classfiedad)       
+    def get(self, request):        
+        total_published = ClassifiedAd.objects.filter(status='published').count()
 
-        page_number = request.GET.get('p')
-        classifiedad_page = paginator.get_page(page_number)
-
-        total_published = classifiedad.count()
-
-        return render(request, 'classifiedad/all.html', {
-            'classifiedad_page': classifiedad_page, 
+        return render(request, 'classifiedad/all.html', {           
             'total_published': total_published,
             'motorcycle_colors': ClassifiedAd.COLOR_CHOICES,
             'motorcycle_brake_system': ClassifiedAd.BRAKE_SYSTEM_CHOICES,

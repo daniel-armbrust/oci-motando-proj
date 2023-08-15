@@ -16,7 +16,7 @@ class ClassifiedAdPagination(PageNumberPagination):
     
 
 class ClassifiedAdListApiView(generics.ListAPIView):
-    queryset = ClassifiedAd.objects.filter(status='published').all()
+    queryset = ClassifiedAd.objects.filter(status='published').all().order_by('-top_offer')
     serializer_class = ClassifiedAdSerializer
     pagination_class = ClassifiedAdPagination
     filter_backends = [DjangoFilterBackend]  
