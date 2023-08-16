@@ -23,59 +23,61 @@
                     </div>
                 </div>    
                 <br>
-                <form class="form-encontre-sua-moto " id="id_form_desktop_bike_search">
+                <form class="form-encontre-sua-moto" id="id_form" method="post">
+                    {% csrf_token %} 
+                    <input type="hidden" id="id_search_url" name="search_url" value=""> 
                     <div class="row">
                         <div class="col-12 d-flex justify-content-center" style="color: white; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #4E27B8;">
                             <h2 class="h5 fw-bold p-2" style="color: white; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #4E27B8;">Encontre sua moto</h2>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3 pt-2 purple-border-left">
-                            <label for="id_brand" class="small text-primary">Marca:</label>
+                        <div class="col-3 pt-2 purple-border-left p-3">
+                            <label for="id_brand" class="small text-primary pb-1">Marca:</label>
                             <select class="form-control" id="id_brand" name="motorcycle_brand" disabled>
                                 <option value="" id="id_option_motorcycle_brand_empty" selected="selected">Selecione a Marca</option>                          
                             </select>
                         </div>
-                        <div class="col-3 pt-2">
-                            <label for="id_model" class="small text-primary">Modelo:</label>
+                        <div class="col-3 pt-2 p-3">
+                            <label for="id_model" class="small text-primary pb-1">Modelo:</label>
                             <select class="form-control" id="id_model" name="motorcycle_brand_model" disabled>
                                 <option id="id_option_motorcycle_brand_model_empty" selected="selected" value="">Selecione o Modelo</option>
                             </select>
                         </div>
-                        <div class="col-3 pt-2">
-                            <label for="id_brazil_state" class="small text-primary">Estado:</label>
+                        <div class="col-3 pt-2 p-3">
+                            <label for="id_brazil_state" class="small text-primary pb-1">Estado:</label>
                             <select class="form-control" id="id_brazil_state" name="brazil_state" disabled>
                                 <option id="id_option_brazil_state_empty" selected="selected" value="">Selecione o Estado</option>
                             </select>
                         </div>
-                        <div class="col-3 pt-2 purple-border-right">
-                            <label for="id_brazil_state_city" class="small text-primary">Cidade:</label>
+                        <div class="col-3 pt-2 purple-border-right p-3">
+                            <label for="id_brazil_state_city" class="small text-primary pb-1">Cidade:</label>
                             <select class="form-control" id="id_brazil_state_city" name="brazil_state_city" disabled>
                                 <option id="id_option_brazil_state_city_empty" selected="selected" value="">Selecione a Cidade</option>
                             </select>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6 pt-2 purple-border-left">
-                            <label for="id_model_version" class="small text-primary">Versão:</label>
+                        <div class="col-6 pt-2 purple-border-left p-3">
+                            <label for="id_model_version" class="small text-primary pb-1">Versão:</label>
                             <select class="form-control" id="id_model_version" name="brand_model_version" disabled>
                                 <option id="id_option_motorcycle_brand_model_version_empty" selected="selected" value="">Selecione a Versão</option>
                             </select>
                         </div>
-                        <div class="col-1 pt-2">
-                            <label for="id_year_from" class="small text-primary"> Ano: </label>
+                        <div class="col-1 pt-2 ">
+                            <label for="id_year_from" class="small text-primary pb-1"> Ano: </label>
                             <input type="text" class="form-control" id="id_year_from" name="year_from" placeholder="de">
                         </div>
                         <div class="col-1 pt-2">
-                            <label for="id_year_to" class="small text-primary"> &nbsp; </label>
+                            <label for="id_year_to" class="small text-primary pb-1"> &nbsp; </label>
                             <input type="text" class="form-control" id="id_year_to" name="year_to" placeholder="até">
                         </div>
                         <div class="col-2 pt-2">
-                            <label for="id_price_from" class="small text-primary"> Preço: </label>
+                            <label for="id_price_from" class="small text-primary pb-1"> Preço: </label>
                             <input type="text" class="form-control" id="id_price_from" name="price_from" placeholder="de">
                         </div>
                         <div class="col-2 pt-2 purple-border-right">
-                            <label for="id_price_to" class="small text-primary"> &nbsp; </label>
+                            <label for="id_price_to" class="small text-primary pb-1"> &nbsp; </label>
                             <input type="text" class="form-control" id="id_price_to" name="price_to" placeholder="até">
                         </div>
                     </div>  
@@ -95,9 +97,9 @@
                                 <input type="checkbox" class="custom-control-input" id="id_seller_private" name="seller_private">
                                 <label class="custom-control-label" for="id_seller_private">&nbsp; Somente anúncios particular </label>
                             </div>                           
-                        </div>  
-                        <div class="col d-flex justify-content-center pt-4 purple-border-right">
-                            <button type="submit" class="btn btn-success btn-block btn-lg"> 
+                        </div>                                                                          
+                        <div class="col d-flex justify-content-center pt-4 purple-border-right">                           
+                            <button type="submit" class="btn btn-success btn-block btn-lg" id="id_submit"> 
                                 <i class="fas fa-search"></i>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Buscar moto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             </button>
@@ -110,12 +112,7 @@
                                 &nbsp;Limpar filtros
                             </a>
                         </div>
-                        <div class="col-4 pt-2"></div>              
-                        <div class="col d-flex justify-content-center pt-2 purple-border-right">
-                            <a href="#" class="h5 fw-bold">
-                                Busca Avançada
-                            </a>
-                        </div>
+                        <div class="col-4 pt-2"></div>                                     
                     </div>
                     <div class="row" style="background-color: white;">
                         <div class="col-12 d-flex justify-content-center pb-3" 
@@ -184,7 +181,6 @@
                                         </h4>
                                     </a>
                                 </div>
-
                                 <div>
                                     <a class="text-decoration-none" href="#">
                                         <img src="{% static 'img/noticia-2.jpg' %}" class="img-fluid rounded" 
@@ -193,8 +189,7 @@
                                             Langen Motorcycles revela moto 250cc com motor dois tempos 
                                         </h4>  
                                     </a>
-                                </div>                           
-                                
+                                </div>
                             </div>
                             <div class="owl_carousel-flex-container">
                                 <div>
@@ -206,7 +201,6 @@
                                         </h4> 
                                     </a>
                                 </div>
-
                                 <div>
                                     <a class="text-decoration-none" href="#">
                                         <img src="{% static 'img/noticia-4.jpg' %}" class="img-fluid rounded" 
@@ -216,13 +210,10 @@
                                         </h4>    
                                     </a>
                                 </div>
-
                             </div>
                         </div> <!-- owl-carousel: item -->
-
                         <div class="item">
                             <div class="owl_carousel-flex-container">
-
                                 <div>
                                     <a class="text-decoration-none" href="#">
                                         <img src="{% static 'img/noticia-5.jpg' %}" class="img-fluid rounded" 
@@ -232,7 +223,6 @@
                                         </h4>
                                     </a>
                                 </div>
-
                                 <div>
                                     <a class="text-decoration-none" href="#">
                                         <img src="{% static 'img/noticia-6.jpg' %}" class="img-fluid rounded" 
@@ -241,12 +231,9 @@
                                             MXF Motors apresenta Ferinha 49cc Extreme 2021
                                         </h4>  
                                     </a>
-                                </div>     
-
+                                </div>
                             </div>
-
                             <div class="owl_carousel-flex-container">
-
                                 <div>
                                     <a class="text-decoration-none" href="#">
                                         <img src="{% static 'img/noticia-7.jpg' %}" class="img-fluid rounded" 
@@ -256,7 +243,6 @@
                                         </h4>
                                     </a>
                                 </div>
-
                                 <div>
                                     <a class="text-decoration-none" href="#">
                                         <img src="{% static 'img/noticia-8.jpg' %}" class="img-fluid rounded" 
@@ -265,14 +251,10 @@
                                             Dia Mundial do Rock: quando música e motos se encontram 
                                         </h4>  
                                     </a>
-                                </div>     
-
+                                </div>
                             </div>
-
                         </div> <!-- owl-carousel: item -->
-
                     </div>
-
                 </div>
                 <div class="col-4 d-flex justify-content-center">
                     <a class="text-decoration-none" href="#">
@@ -289,7 +271,10 @@
 {% endblock %}
 {% block body_scripts %}
     <script type="text/javascript" src="{% static 'vendor/owlcarousel/owl.carousel.min.js' %}"></script>    
-    <script type="text/javascript" src="{% static 'js/motorcycle-state-city.js' %}"></script>     
+    <script type="text/javascript" src="{% static 'js/motorcycle-state-city.js' %}"></script> 
+    <script type="text/javascript">
+        const API_CLASSIFIEDAD_SEARCH_URL = MOTANDO_URL_PREFIX + "{% url 'api_classifiedad:all' %}";        
+    </script>       
     <script type="text/javascript" src="{% static 'js/main-page.js' %}"></script>     
 {% endblock %}
 {% endspaceless %}

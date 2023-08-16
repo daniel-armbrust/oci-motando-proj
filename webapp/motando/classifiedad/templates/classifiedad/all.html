@@ -289,7 +289,8 @@
     <script type="text/javascript" src="{% static 'vendor/jquery.blockUI.min.js' %}"></script>     
     <script type="text/javascript" src="{% static 'js/motorcycle-state-city.js' %}"></script>   
     <script type="text/javascript">
-        const API_CLASSIFIEDAD_SEARCH_URL = MOTANDO_URL_PREFIX + "{% url 'api_classifiedad:all' %}";        
+        const API_CLASSIFIEDAD_SEARCH_URL = MOTANDO_URL_PREFIX + "{% url 'api_classifiedad:all' %}"; 
+        const QUERY_PARAMS = '{{ query_params|safe }}';       
     </script>   
     <script type="text/javascript" src="{% static 'js/classifiedad-all.js' %}"></script>    
 {% endblock %}

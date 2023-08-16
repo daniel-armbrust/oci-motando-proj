@@ -24,14 +24,22 @@ from account.models import UserProfile
 
 
 class AllClassifiedAdView(View):
-    def get(self, request):        
+    def get(self, request):               
+        query_params = request.META['QUERY_STRING']
+
+        try:
+           query_params = query_params[query_params.index('=')+1:] 
+        except ValueError:
+            query_params = ''
+
         total_published = ClassifiedAd.objects.filter(status='published').count()
 
         return render(request, 'classifiedad/all.html', {           
             'total_published': total_published,
             'motorcycle_colors': ClassifiedAd.COLOR_CHOICES,
             'motorcycle_brake_system': ClassifiedAd.BRAKE_SYSTEM_CHOICES,
-            'motorcycle_ignition_system': ClassifiedAd.IGNITION_SYSTEM_CHOICES
+            'motorcycle_ignition_system': ClassifiedAd.IGNITION_SYSTEM_CHOICES,
+            'query_params': query_params
         })
 
 

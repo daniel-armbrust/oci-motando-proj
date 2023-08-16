@@ -172,7 +172,7 @@ function brandModelParams() {
     ajaxGetRequest();
 }
 
-function stateCity() {
+function stateCityParams() {
     let stateId = null;
     let cityId = null;
 
@@ -200,7 +200,7 @@ function stateCity() {
     ajaxGetRequest();
 }
 
-function colorBrakeIgnition() {    
+function colorBrakeIgnitionParams() {    
     let colorId = null;
     let brakeSystemId = null;
     let ignitionSystemId = null;
@@ -238,7 +238,7 @@ function colorBrakeIgnition() {
     ajaxGetRequest();
 }    
 
-function OtherDetails() {    
+function OtherDetailsParams() {    
     let isNew = null;
     let docOk = null;
     let acceptExchange = null;
@@ -290,8 +290,16 @@ function OtherDetails() {
 $(document).ready(function() {          
     getMotorcycleBrand('id_brand');
     getBrazilState('id_brazil_state');
-    ajaxGetRequest();
-    
+
+    if (QUERY_PARAMS) {
+        const url = `${API_CLASSIFIEDAD_SEARCH_URL}?${QUERY_PARAMS}`;
+        console.log(url);
+        ajaxGetRequest(url);
+    }
+    else {
+        ajaxGetRequest();
+    }
+
     $('#id_brand').on('change', function() {  
         const brandId = this.value;
 
@@ -314,40 +322,40 @@ $(document).ready(function() {
     });
 
     $('#id_motorcycle_color').on('change', function() {
-        colorBrakeIgnition();
+        colorBrakeIgnitionParams();
     });
 
     $('#id_brake_system').on('change', function() {
-        colorBrakeIgnition();
+        colorBrakeIgnitionParams();
     });
 
     $('#id_ignition_system').on('change', function() {
-        colorBrakeIgnition();
+        colorBrakeIgnitionParams();
     });
 
     $('#id_brazil_state').on('change', function() {     
         const stateId = this.value;
         getBrazilStateCity('id_brazil_state_city', stateId);   
-        stateCity();
+        stateCityParams();
     });
 
     $('#id_brazil_state_city').on('change', function() {
-        stateCity();
+        stateCityParams();
     });
 
     $('#id_is_new').on('change', function() {
-        OtherDetails();
+        OtherDetailsParams();
     });
 
     $('#id_doc_ok').on('change', function() {
-        OtherDetails();
+        OtherDetailsParams();
     });
 
     $('#id_accept_exchange').on('change', function() {
-        OtherDetails();
+        OtherDetailsParams();
     });   
 
     $('#id_accept_new_offer').on('change', function() {
-        OtherDetails();
+        OtherDetailsParams();
     });
 });
