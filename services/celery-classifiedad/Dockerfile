@@ -5,6 +5,7 @@ FROM container-registry.oracle.com/os/oraclelinux:8-slim as base
 
 LABEL maintainer="Daniel Armbrust <darmbrust@gmail.com>"
 
+ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /opt/celery-classifiedad
@@ -23,13 +24,12 @@ RUN adduser -l -d /opt/celery-classifiedad celery
 
 COPY --chown=celery:celery ./app /opt/celery-classifiedad/
 
+USER celery
+EXPOSE 5555
+EXPOSE 8100
+
 # Environment: DEV
 FROM base as envdev
 COPY --chown=celery:celery ./ocisecrt/ /opt/celery-classifiedad/ocisecrt/
-
-USER celery
-
-EXPOSE 5555
-EXPOSE 8100
 
 ENTRYPOINT ["./docker-entrypoint.sh"]

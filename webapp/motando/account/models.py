@@ -55,14 +55,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True)
     fullname = models.CharField(max_length=500, blank=False, null=False)
-    is_active = models.BooleanField(default=True) # TODO: email for activation
-    staff = models.BooleanField(default=False) # a admin user; non super-user
-    admin = models.BooleanField(default=False) # a superuser    
+    is_active = models.BooleanField(default=False) 
+    staff = models.BooleanField(default=False) 
+    admin = models.BooleanField(default=False) 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['fullname'] # Email & Password are required by default.
+    REQUIRED_FIELDS = ['fullname']
 
     def __str__(self):
         return self.email

@@ -5,6 +5,7 @@ FROM container-registry.oracle.com/os/oraclelinux:8-slim as base
 
 LABEL maintainer="Daniel Armbrust <darmbrust@gmail.com>"
 
+ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /opt/webapp
@@ -23,11 +24,11 @@ RUN adduser -l -d /opt/webapp webapp
 
 COPY --chown=webapp:webapp ./motando /opt/webapp/motando/
 
+USER webapp
+EXPOSE 8000
+
 # Environment: DEV
 FROM base as envdev
 COPY --chown=webapp:webapp ./ocisecrt/ /opt/webapp/ocisecrt/
-
-USER webapp
-EXPOSE 8000
 
 ENTRYPOINT ["./docker-entrypoint.sh"]

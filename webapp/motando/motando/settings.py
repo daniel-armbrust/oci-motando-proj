@@ -20,12 +20,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 APP_ENV = os.environ.get('APP_ENV')
 
 if APP_ENV == 'PRD':
+    DEBUG = False
     SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', None)
     SESSION_COOKIE_DOMAIN = 'motando.com.br'
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_DOMAIN = 'motando.com.br'    
     CSRF_TRUSTED_ORIGINS = [CSRF_COOKIE_DOMAIN]
-    DEBUG = False
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True  
 else:
     from secrets import token_hex
     SECRET_KEY = token_hex(32)    
