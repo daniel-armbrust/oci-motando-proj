@@ -40,7 +40,7 @@ resource "oci_containerengine_cluster" "gru_oke_motando" {
             services_cidr = "10.96.0.0/16"
         }
         
-        service_lb_subnet_ids = oci_core_subnet.gru_subnpub_oke_lb.id
+        service_lb_subnet_ids = [oci_core_subnet.gru_subnpub_oke_lb.id]
     }
 
     type = "BASIC_CLUSTER"
@@ -80,4 +80,3 @@ resource "oci_containerengine_node_pool" "gru_oke_motando_np-1" {
 
     ssh_public_key = file("./keys/default.ssh_pubkey")     
 }
-

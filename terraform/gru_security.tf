@@ -47,12 +47,12 @@ resource "oci_core_security_list" "gru_secl-1_subnpub_oke_lb" {
         stateless = false
 
         tcp_options {   
-            max = 80
             min = 80
+            max = 80           
 
             source_port_range {                
-                max = 1024
-                min = 65535
+                min = 1024
+                max = 65535               
             }
         }
     }
@@ -64,12 +64,13 @@ resource "oci_core_security_list" "gru_secl-1_subnpub_oke_lb" {
         stateless = false
 
         tcp_options {   
-            max = 443
             min = 443
+            max = 443            
 
             source_port_range {                
-                max = 1024
-                min = 65535
+                min = 1024
+                max = 65535
+                
             }
         }
     }
@@ -108,13 +109,65 @@ resource "oci_core_security_list" "gru_secl-1_subnpub_oke_kubeapi" {
         source_type = "CIDR_BLOCK"
         stateless = false
 
-        tcp_options {   
-            max = 6443
-            min = 6443
+        tcp_options { 
+            min = 6443  
+            max = 6443           
 
             source_port_range {                
-                max = 1024
-                min = 65535
+                min = 1024
+                max = 65535
+            }
+        }
+    }
+
+    ingress_security_rules {
+        source = "172.16.10.0/24"
+        protocol = "all"
+        source_type = "CIDR_BLOCK"
+        stateless = false
+    }    
+
+    ingress_security_rules {
+        source = "0.0.0.0/0"
+        protocol = "1" # icmp
+        source_type = "CIDR_BLOCK"
+        stateless = false
+
+        icmp_options {            
+            type = "3"
+            code = "4"
+        }
+    }
+}
+
+# SECURITY LIST - SUBNPRV MYSQL
+resource "oci_core_security_list" "gru_secl-1_subnprv_mysql" {
+    provider = oci.gru
+
+    compartment_id = var.root_compartment
+    vcn_id = oci_core_vcn.gru_vcn.id
+    display_name = "secl-1_subnprv_mysql"
+
+    egress_security_rules {
+        destination = "0.0.0.0/0"
+        destination_type = "CIDR_BLOCK"
+        protocol = "all"
+        stateless = false
+    }
+
+    ingress_security_rules {
+        source = "172.16.10.0/24"
+        protocol = "6"
+        source_type = "CIDR_BLOCK"
+        stateless = false
+
+        tcp_options { 
+            min = 3306  
+            max = 3306           
+
+            source_port_range {                
+                min = 1024
+                max = 65535
             }
         }
     }

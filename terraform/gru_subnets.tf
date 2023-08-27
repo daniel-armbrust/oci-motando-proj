@@ -49,3 +49,19 @@ resource "oci_core_subnet" "gru_subnpub_oke_kubeapi" {
     cidr_block = "172.16.40.0/28"
     prohibit_public_ip_on_vnic = false
 }
+
+# SUBNET - MySQL
+resource "oci_core_subnet" "gru_subnprv_mysql" {
+    provider = oci.gru
+
+    compartment_id = var.root_compartment
+    vcn_id = oci_core_vcn.gru_vcn.id
+    dhcp_options_id = oci_core_dhcp_options.gru_dhcp-options.id
+    route_table_id = oci_core_route_table.gru_rtb_subnprv.id
+    security_list_ids = [oci_core_security_list.gru_secl-1_subnprv_mysql.id]
+
+    display_name = "subnprvmysql"
+    dns_label = "subnprvmysql"
+    cidr_block = "172.16.60.0/24"
+    prohibit_public_ip_on_vnic = true
+}
