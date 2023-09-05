@@ -20,6 +20,10 @@ resource "oci_logging_log" "gru_motando-log_webapp" {
     retention_duration = 30 # 30 dias  
 }
 
+output "gru_motando-log_webapp_id" {   
+    value = oci_logging_log.gru_motando-log_webapp.id
+}
+
 resource "oci_logging_log" "gru_motando-log_workflow" {  
     provider = oci.gru
       
@@ -28,4 +32,8 @@ resource "oci_logging_log" "gru_motando-log_workflow" {
     log_type = "CUSTOM"
     is_enabled = true
     retention_duration = 30 # 30 dias  
+}
+
+output "gru_motando-log_workflow_id" {    
+    value = oci_logging_log.gru_motando-log_workflow.id
 }

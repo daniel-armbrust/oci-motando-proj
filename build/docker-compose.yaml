@@ -10,6 +10,7 @@ services:
             APP_ENV: "DEV"
             OCI_REGION_ID: "sa-saopaulo-1"
             OCI_OBJSTR_NAMESPACE: ${OCI_OBJSTR_NAMESPACE}
+            OCI_STATICFILES_BUCKET_NAME: "motando-staticfiles"
             OCI_BUCKET_MOTANDO_IMGTMP: "motando-tmpimg"
             OCI_BUCKET_MOTANDO_IMG: "motando-img"
             OCI_ACCESS_KEY_ID: ${OCI_ACCESS_KEY_ID}

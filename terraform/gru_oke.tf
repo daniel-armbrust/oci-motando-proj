@@ -68,7 +68,7 @@ resource "oci_containerengine_node_pool" "gru_oke_motando_np-1" {
     }
 
     node_shape_config {
-        memory_in_gbs = "8"
+        memory_in_gbs = "6"
         ocpus = "2"
     }
 

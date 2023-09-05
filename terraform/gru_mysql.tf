@@ -4,8 +4,12 @@
 
 resource "random_password" "password" {
     length = 12
-    special = true
-    #override_special = "_%"
+    special = true    
+    min_upper = 1
+    min_lower = 1
+    min_numeric = 1   
+    min_special = 1 
+    override_special = "_%@"
 }
 
 resource "oci_mysql_mysql_db_system" "gru_mysql_motando" {
@@ -26,7 +30,7 @@ resource "oci_mysql_mysql_db_system" "gru_mysql_motando" {
     hostname_label = "grumysqldb1"    
 
     admin_username = "admin"
-    admin_password = random_password.password.result
+    admin_password = random_password.password.result    
 
     backup_policy {
         is_enabled = false        
@@ -35,4 +39,13 @@ resource "oci_mysql_mysql_db_system" "gru_mysql_motando" {
     maintenance {
         window_start_time = "sun 01:00"
     }
+}
+
+output "gru_mysql_motando_hostname" {
+    value = oci_mysql_mysql_db_system.gru_mysql_motando.endpoints[0].hostname
+}
+
+output "gru_mysql_motando_passwd" {
+  value = element(random_password.password[*].result, 1)
+  sensitive = true
 }

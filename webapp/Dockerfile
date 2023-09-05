@@ -27,6 +27,8 @@ COPY --chown=webapp:webapp ./motando /opt/webapp/motando/
 USER webapp
 EXPOSE 8000
 
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
 # Environment: DEV
 FROM base as envdev
 COPY --chown=webapp:webapp ./ocisecrt/ /opt/webapp/ocisecrt/

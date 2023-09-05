@@ -18,8 +18,8 @@ class OciLogHandler(logging.Handler):
         logging.Handler.__init__(self=self)
 
         if env == 'PRD':
-            signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
-            self.__ocilog_client = oci.loggingingestion.LoggingClient(signer=signer)
+            signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()            
+            self.__ocilog_client = oci.loggingingestion.LoggingClient(config={}, signer=signer)           
         else:
             config = oci.config.from_file(file_location=OCI_CONFIG_FILE)
             self.__ocilog_client = oci.loggingingestion.LoggingClient(config=config)

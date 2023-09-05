@@ -2,11 +2,7 @@
 # motando/storage.py
 #
 
-#from datetime import datetime, timedelta
-#from urllib.parse import urlencode
-
 from django.conf import settings
-#from django.utils.encoding import filepath_to_uri
 
 from storages.backends.s3boto3 import S3Boto3Storage
 
@@ -21,4 +17,8 @@ class ClassifiedAdTmpImageStorage(OracleObjectStorage):
     
 class ClassifiedAdImageStorage(OracleObjectStorage):
     bucket_name = settings.CLASSIFIEDAD_IMG_BUCKET
-        
+
+
+class StaticFilesStorage(OracleObjectStorage):
+    bucket_name = settings.STATICFILES_BUCKET
+    custom_domain = f'{settings.OCI_BUCKET_NAMESPACE}.compat.objectstorage.{settings.OCI_REGION}.oraclecloud.com/{settings.STATICFILES_BUCKET}'    

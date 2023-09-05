@@ -19,15 +19,42 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Environment
 APP_ENV = os.environ.get('APP_ENV')
 
+# OCI
+OCI_REGION = os.environ.get('OCI_REGION_ID')
+OCI_BUCKET_NAMESPACE = os.environ.get('OCI_OBJSTR_NAMESPACE')
+CLASSIFIEDAD_TMPIMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
+CLASSIFIEDAD_IMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMG')
+CLASSIFIEDAD_TASK_QUEUE_HOST = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_HOST')
+CLASSIFIEDAD_TASK_QUEUE_PORT = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_PORT', 8100)
+OCI_LOG_ID = os.environ.get('WEBAPP_LOG_ID')
+
+# OCI ObjectStorage Amazon S3 Compatibility API
+# https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm
+AWS_ACCESS_KEY_ID = os.environ.get('OCI_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('OCI_SECRET_ACCESS_KEY')
+S3_REGION_NAME = OCI_REGION
+AWS_S3_CUSTOM_DOMAIN = f'{OCI_BUCKET_NAMESPACE}.compat.objectstorage.{OCI_REGION}.oraclecloud.com'
+AWS_S3_ENDPOINT_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}'
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+
+STATICFILES_BUCKET = os.environ.get('OCI_STATICFILES_BUCKET_NAME')
+STATIC_URL = 'static/'
+STATICFILES_STORAGE = 'storage.StaticFilesStorage'
+
+STATICFILES_DIRS = [BASE_DIR / 'static/']
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '%s/media' % (BASE_DIR,)
+
 if APP_ENV == 'PRD':
     DEBUG = False
     SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', None)
-    SESSION_COOKIE_DOMAIN = 'motando.com.br'
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_DOMAIN = 'motando.com.br'    
-    CSRF_TRUSTED_ORIGINS = [CSRF_COOKIE_DOMAIN]
-    CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True  
+    #SESSION_COOKIE_DOMAIN = 'motando.com.br'
+    #SESSION_COOKIE_SECURE = True
+    #CSRF_COOKIE_DOMAIN = 'motando.com.br'    
+    #CSRF_TRUSTED_ORIGINS = [CSRF_COOKIE_DOMAIN]
+    #CSRF_COOKIE_SECURE = True
+    #SECURE_SSL_REDIRECT = True      
 else:
     from secrets import token_hex
     SECRET_KEY = token_hex(32)    
@@ -35,7 +62,7 @@ else:
     CSRF_TRUSTED_ORIGINS = []
     DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Session
 SESSION_COOKIE_AGE = 3600
@@ -55,7 +82,7 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 
 # Application definition
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -151,15 +178,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-STATIC_URL = 'static/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -184,22 +202,6 @@ REST_FRAMEWORK = {
          'django_filters.rest_framework.DjangoFilterBackend'
     ]
 }
-
-# OCI
-OCI_REGION = os.environ.get('OCI_REGION_ID')
-OCI_BUCKET_NAMESPACE = os.environ.get('OCI_OBJSTR_NAMESPACE')
-CLASSIFIEDAD_TMPIMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
-CLASSIFIEDAD_IMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMG')
-CLASSIFIEDAD_TASK_QUEUE_HOST = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_HOST')
-CLASSIFIEDAD_TASK_QUEUE_PORT = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_PORT', 8100)
-OCI_LOG_ID = os.environ.get('WEBAPP_LOG_ID')
-
-AWS_ACCESS_KEY_ID = os.environ.get('OCI_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('OCI_SECRET_ACCESS_KEY')
-S3_REGION_NAME = OCI_REGION
-AWS_S3_CUSTOM_DOMAIN = f'{OCI_BUCKET_NAMESPACE}.compat.objectstorage.{OCI_REGION}.oraclecloud.com'
-AWS_S3_ENDPOINT_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}'
-AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 
 LOGGING = {    
     'version': 1,
@@ -243,11 +245,13 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'oci.logging', 'mail_admins'],
+            #'handlers': ['console', 'oci.logging', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',        
         },
         'django.server': {
-            'handlers': ['console', 'oci.logging'],
+            #'handlers': ['console', 'oci.logging'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         }      

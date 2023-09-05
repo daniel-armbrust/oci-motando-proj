@@ -56,6 +56,7 @@ locals {
          "ol8" = "ocid1.image.oc1.sa-saopaulo-1.aaaaaaaacsn7itsqbert6n7g4ywxrhmyrocfigqi5jmrhfwfxl4rlvjz2fyq",
          "ol8-arm" = "ocid1.image.oc1.sa-saopaulo-1.aaaaaaaaozkkrr2ef4z4xdtgbwqnhbk5p5fkozuyxqt7cy37h3ifzywdmoiq",
          "ol85-oke" = "ocid1.image.oc1.sa-saopaulo-1.aaaaaaaads2eehsw7wr6z3cde6q4vxpkvkmmutwr7n7akhwyavalpqwg7cpa",
+         "ol88-oke" = "ocid1.image.oc1.sa-saopaulo-1.aaaaaaaahjfhb52zwbhtqutdjklpruaax5uwocvijfiukpnozviy2jcgsn2a",
          "ol88arm-oke" = "ocid1.image.oc1.sa-saopaulo-1.aaaaaaaa63wo5saymjkxhrjw6kqprpfs3q3ggbpfe2ftbwtikee5qnq3fqlq"
       }
    }

@@ -21,5 +21,6 @@ resource "oci_identity_policy" "policy" {
        "Allow service objectstorage-sa-saopaulo-1 to manage object-family in compartment id ${var.root_compartment}", 
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to manage objects in compartment id ${var.root_compartment}",
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use fn-invocation in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use log-content in compartment id ${var.root_compartment}"
     ]
 }

@@ -11,9 +11,11 @@ django-filter==23.2
 django-s3-storage==0.14.0
 django-storages==1.13.2
 djangorestframework==3.14.0
+gunicorn==21.2.0
 jmespath==1.0.1
 mysqlclient==2.2.0
 oci==2.109.0
+packaging==23.1
 protobuf==4.21.12
 pycparser==2.21
 pyOpenSSL==23.2.0

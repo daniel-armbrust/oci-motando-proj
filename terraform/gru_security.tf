@@ -120,11 +120,40 @@ resource "oci_core_security_list" "gru_secl-1_subnpub_oke_kubeapi" {
         }
     }
 
+    # Kubernetes worker to Kubernetes API endpoint communication.
     ingress_security_rules {
         source = "172.16.10.0/24"
-        protocol = "all"
+        protocol = "6"
         source_type = "CIDR_BLOCK"
         stateless = false
+
+        tcp_options { 
+            min = 6443  
+            max = 6443           
+
+            source_port_range {                
+                min = 1024
+                max = 65535
+            }
+        }
+    }    
+
+    # Kubernetes worker to Kubernetes API endpoint communication.
+    ingress_security_rules {
+        source = "172.16.10.0/24"
+        protocol = "6"
+        source_type = "CIDR_BLOCK"
+        stateless = false
+
+        tcp_options { 
+            min = 12250  
+            max = 12250           
+
+            source_port_range {                
+                min = 1024
+                max = 65535
+            }
+        }
     }    
 
     ingress_security_rules {
@@ -157,6 +186,23 @@ resource "oci_core_security_list" "gru_secl-1_subnprv_mysql" {
 
     ingress_security_rules {
         source = "172.16.10.0/24"
+        protocol = "6"
+        source_type = "CIDR_BLOCK"
+        stateless = false
+
+        tcp_options { 
+            min = 3306  
+            max = 3306           
+
+            source_port_range {                
+                min = 1024
+                max = 65535
+            }
+        }
+    }
+
+    ingress_security_rules {
+        source = "172.16.60.0/24"
         protocol = "6"
         source_type = "CIDR_BLOCK"
         stateless = false

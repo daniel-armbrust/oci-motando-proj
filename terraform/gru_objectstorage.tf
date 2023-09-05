@@ -36,3 +36,17 @@ resource "oci_objectstorage_bucket" "gru_motando-img" {
     access_type = "ObjectReadWithoutList"
     versioning = "Disabled"
 }
+
+resource "oci_objectstorage_bucket" "gru_motando-staticfiles" {
+    provider = oci.gru
+    
+    compartment_id = var.root_compartment
+    name = "motando-staticfiles"
+    namespace = local.gru_objectstorage_ns
+    access_type = "ObjectReadWithoutList"
+    versioning = "Disabled"
+}
+
+output "objectstorage_namespace" {
+    value = local.gru_objectstorage_ns
+}

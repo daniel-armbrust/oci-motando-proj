@@ -28,6 +28,8 @@ USER celery
 EXPOSE 5555
 EXPOSE 8100
 
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
 # Environment: DEV
 FROM base as envdev
 COPY --chown=celery:celery ./ocisecrt/ /opt/celery-classifiedad/ocisecrt/

@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: motando-webapp
+spec:
+  selector:
+    matchLabels:
+      app: webapp
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp-crt
+        image: gru.ocir.io/grxmw2a9myyj/motando-webapp:v1.0.0
+        imagePullPolicy: Always
+        ports:
+            - containerPort: 8000
+        env:
+            - name: APP_ENV
+              value: "PRD"
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                  secretKeyRef:
+                      name: motando-keys
+                      key: django-seckey
+            - name: OCI_REGION_ID
+              value: "sa-saopaulo-1"
+            - name: OCI_OBJSTR_NAMESPACE
+              valueFrom:
+                  configMapKeyRef:
+                      name: motando-config
+                      key: objstr-namespace
+            - name: OCI_BUCKET_MOTANDO_IMGTMP
+              value: "motando-tmpimg"
+            - name: OCI_BUCKET_MOTANDO_IMG
+              value: "motando-img"
+            - name: OCI_STATICFILES_BUCKET_NAME
+              value: "motando-staticfiles"
+            - name: OCI_ACCESS_KEY_ID
+              valueFrom:
+                  secretKeyRef:
+                      name: motando-keys
+                      key: access-key
+            - name: OCI_SECRET_ACCESS_KEY
+              valueFrom:
+                  secretKeyRef:
+                      name: motando-keys
+                      key: secret-key              
+            - name: MYSQL_HOST
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-config
+                      key: host       
+            - name: MYSQL_USER
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-config
+                      key: user       
+            - name: MYSQL_PASSWD
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-config
+                      key: passwd
+            - name: MYSQL_DBNAME
+              value: "motandodb"
+            - name: WEBAPP_LOG_ID
+              valueFrom:
+                  configMapKeyRef:
+                      name: motando-config
+                      key: webapp-log-id
+            - name: CLASSIFIEDAD_TASK_QUEUE_HOST
+              valueFrom:
+                  configMapKeyRef:
+                      name: motando-config
+                      key: task-queue-host
+            - name: CLASSIFIEDAD_TASK_QUEUE_PORT
+              valueFrom:
+                  configMapKeyRef:
+                      name: motando-config
+                      key: task-queue-port
+      imagePullSecrets:
+       - name: motando-ocr-secret

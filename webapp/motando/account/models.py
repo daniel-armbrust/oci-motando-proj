@@ -54,12 +54,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     email = models.EmailField(max_length=255, unique=True)
-    fullname = models.CharField(max_length=500, blank=False, null=False)
-    is_active = models.BooleanField(default=False) 
+    fullname = models.CharField(max_length=500, blank=False, null=False)        
     staff = models.BooleanField(default=False) 
     admin = models.BooleanField(default=False) 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    # TODO: need to be changed in production!
+    is_active = models.BooleanField(default=True) 
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['fullname']
