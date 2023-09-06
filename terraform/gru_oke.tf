@@ -51,7 +51,7 @@ resource "oci_containerengine_node_pool" "gru_oke_motando_np-1" {
 
     compartment_id = var.root_compartment
     name = "gru_oke_motando_np-1"
-    node_shape = "VM.Standard.A1.Flex"        
+    node_shape = "VM.Standard.E4.Flex"        
     kubernetes_version = "v1.27.2"
 
     node_config_details {        
@@ -73,7 +73,7 @@ resource "oci_containerengine_node_pool" "gru_oke_motando_np-1" {
     }
 
     node_source_details {        
-        image_id = local.compute_image_id.gru.ol88arm-oke
+        image_id = local.compute_image_id.gru.ol88-oke
         source_type = "IMAGE"
         boot_volume_size_in_gbs = 150
     }

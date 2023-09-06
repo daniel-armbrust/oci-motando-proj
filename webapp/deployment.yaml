@@ -82,4 +82,4 @@ spec:
                       name: motando-config
                       key: task-queue-port
       imagePullSecrets:
-       - name: motando-ocr-secret
+       - name: motando-ocir-secret
