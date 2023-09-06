@@ -52,17 +52,17 @@ spec:
             - name: MYSQL_HOST
               valueFrom:
                   secretKeyRef:
-                      name: mysql-config
+                      name: mysql-secret
                       key: host       
             - name: MYSQL_USER
               valueFrom:
                   secretKeyRef:
-                      name: mysql-config
+                      name: mysql-secret
                       key: user       
             - name: MYSQL_PASSWD
               valueFrom:
                   secretKeyRef:
-                      name: mysql-config
+                      name: mysql-secret
                       key: passwd
             - name: MYSQL_DBNAME
               value: "motandodb"
