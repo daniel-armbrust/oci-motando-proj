@@ -80,3 +80,7 @@ resource "oci_containerengine_node_pool" "gru_oke_motando_np-1" {
 
     ssh_public_key = file("./keys/default.ssh_pubkey")     
 }
+
+output "gru_oke_motando_id" {
+    value = oci_containerengine_cluster.gru_oke_motando.id
+}
