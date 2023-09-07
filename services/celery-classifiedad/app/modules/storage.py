@@ -16,7 +16,7 @@ class OciStorage():
         
         if env == 'PRD':
             signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
-            self.__client = oci.object_storage.ObjectStorageClient(signer=signer)
+            self.__client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
         else:
             config = oci.config.from_file(file_location=OCI_CONFIG_FILE)
             self.__client = oci.object_storage.ObjectStorageClient(config=config)

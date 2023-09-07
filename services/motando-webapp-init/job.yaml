@@ -1,31 +1,17 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: motando-webapp
+  name: motando-app-init
 spec:
-  selector:
-    matchLabels:
-      app: webapp
-  replicas: 3
   template:
-    metadata:
-      labels:
-        app: webapp
     spec:
       containers:
-      - name: webapp-crt
-        image: gru.ocir.io/grxmw2a9myyj/motando-webapp:v1.0.0
-        imagePullPolicy: Always
-        ports:
-            - containerPort: 8000
+      - name: appinit-crt
+        image: gru.ocir.io/grxmw2a9myyj/motando-webapp-init:v1.0.0
+        command: ["/bin/bash",  "./motando-webapp-init.sh"]
         env:
             - name: APP_ENV
-              value: "PRD"
-            - name: DJANGO_SECRET_KEY
-              valueFrom:
-                  secretKeyRef:
-                      name: motando-keys
-                      key: django-seckey
+              value: "PRD"  
             - name: OCI_REGION_ID
               value: "sa-saopaulo-1"
             - name: OCI_OBJSTR_NAMESPACE
@@ -48,7 +34,7 @@ spec:
               valueFrom:
                   secretKeyRef:
                       name: motando-keys
-                      key: secret-key              
+                      key: secret-key                      
             - name: MYSQL_HOST
               valueFrom:
                   secretKeyRef:
@@ -66,14 +52,11 @@ spec:
                       key: passwd
             - name: MYSQL_DBNAME
               value: "motandodb"
-            - name: WEBAPP_LOG_ID
-              valueFrom:
-                  configMapKeyRef:
-                      name: motando-config
-                      key: webapp-log-id
             - name: CLASSIFIEDAD_TASK_QUEUE_HOST
               value: "celery-classifiedad.default.svc.cluster.local"
             - name: CLASSIFIEDAD_TASK_QUEUE_PORT
               value: "8100"
       imagePullSecrets:
           - name: motando-ocir-secret
+      restartPolicy: Never
+  backoffLimit: 0

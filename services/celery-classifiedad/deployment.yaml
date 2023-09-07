@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq-crt
+        image: rabbitmq:3.12-management
+        imagePullPolicy: IfNotPresent
+        ports:    
+            - containerPort: 15672            
+            - containerPort: 5672           
+        env:
+            - name: RABBITMQ_DEFAULT_VHOST
+              value: "motando-vhost"
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                  secretKeyRef:
+                      name: broker-secret
+                      key: user
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                  secretKeyRef:
+                      name: broker-secret
+                      key: passwd
+      imagePullSecrets:
+          - name: motando-ocir-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-classifiedad
+spec:
+  selector:
+    matchLabels:
+      app: celery-classifiedad
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: celery-classifiedad
+    spec:
+      containers:
+      - name: celery-crt
+        image: gru.ocir.io/grxmw2a9myyj/motando-celery-classifiedad:v1.0.0
+        imagePullPolicy: Always
+        ports:
+            - containerPort: 8100
+        env:
+            - name: APP_ENV
+              value: "PRD"            
+            - name: OCI_REGION_ID
+              value: "sa-saopaulo-1"
+            - name: RESULTDB_HOST
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-secret
+                      key: host
+            - name: RESULTDB_USER
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-secret
+                      key: user
+            - name: RESULTDB_PASSWD
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-secret
+                      key: passwd
+            - name: RESULTDB_DBNAME
+              value: "celeryresultdb"
+            - name: APPDB_HOST
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-secret
+                      key: host
+            - name: APPDB_USER
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-secret
+                      key: user
+            - name: APPDB_PASSWD
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-secret
+                      key: passwd
+            - name: APPDB_DBNAME
+              value: "motandodb"            
+            - name: BROKER_HOST
+              value: "rabbitmq.default.svc.cluster.local"
+            - name: BROKER_USER
+              valueFrom:
+                  secretKeyRef:
+                      name: broker-secret
+                      key: user
+            - name: BROKER_PASSWD
+              valueFrom:
+                  secretKeyRef:
+                      name: broker-secret
+                      key: passwd
+            - name: BROKER_VHOST
+              value: "motando-vhost"
+            - name: OCI_OBJSTR_NAMESPACE
+              valueFrom:
+                  configMapKeyRef:
+                      name: motando-config
+                      key: objstr-namespace
+            - name: OCI_BUCKET_MOTANDO_IMGTMP
+              value: "motando-tmpimg"
+            - name: OCI_BUCKET_MOTANDO_IMG
+              value: "motando-img"
+            - name: OCI_LOG_ID
+              valueFrom:
+                  configMapKeyRef:
+                      name: motando-config
+                      key: workflow-log-id          
+      imagePullSecrets:
+          - name: motando-ocir-secret

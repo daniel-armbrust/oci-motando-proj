@@ -31,10 +31,11 @@ services:
         image: rabbitmq:3.12-management
         restart: unless-stopped
         environment:
-            RABBITMQ_DEFAULT_VHOST: "motando-vhost"        
+            RABBITMQ_DEFAULT_VHOST: "motando-vhost"    
+            RABBITMQ_DEFAULT_USER: "${BROKER_USER}"
+            RABBITMQ_DEFAULT_PASS: "${BROKER_PASSWD}"
         ports:            
-            - 15672:15672
-            - 5555:5555
+            - 15672:15672            
             - 5672:5672
         network_mode: "host"
     celery-classifiedad:
@@ -64,6 +65,7 @@ services:
             OCI_BUCKET_MOTANDO_IMG: "motando-img"
         depends_on:
             - rabbitmq
-        expose:
-            - "8100"        
+        ports:                       
+            - 5555:5555
+            - 8100:8100        
         network_mode: "host"

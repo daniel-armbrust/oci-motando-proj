@@ -70,8 +70,13 @@ def create_classifiedad(user=None, max_classifiedad=3):
         'Moto tá bem conservada relação boa 2 pneus bem conservados 61 mil km original preço pra ir embora sou de Guarulhos pimentas.'
     ]
 
-    config = oci.config.from_file()
-    os_client = oci.object_storage.ObjectStorageClient(config=config)
+    if APP_ENV == 'PRD':
+        signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
+        os_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
+    else:
+        config = oci.config.from_file()
+        os_client = oci.object_storage.ObjectStorageClient(config=config)
+
     ns = os_client.get_namespace().data
 
     # Obtém as marcas das motocicletas.
