@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: motando-app-init
+  name: motando-webapp-init
 spec:
   template:
     spec:
@@ -52,6 +52,8 @@ spec:
                       key: passwd
             - name: MYSQL_DBNAME
               value: "motandodb"
+            - name: RESULTDB_DBNAME
+              value: "celeryresultdb"
             - name: CLASSIFIEDAD_TASK_QUEUE_HOST
               value: "celery-classifiedad.default.svc.cluster.local"
             - name: CLASSIFIEDAD_TASK_QUEUE_PORT

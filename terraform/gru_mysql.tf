@@ -9,7 +9,7 @@ resource "random_password" "password" {
     min_lower = 1
     min_numeric = 1   
     min_special = 1 
-    override_special = "!#$%&*()-_=+[]{}<>:?"
+    override_special = "#$%()-_<>"    
 }
 
 resource "oci_mysql_mysql_db_system" "gru_mysql_motando" {

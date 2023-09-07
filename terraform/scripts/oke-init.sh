@@ -60,9 +60,9 @@ kubectl create secret generic mysql-secret \
 echo -e "\n[INFO] Setting up \"motando-keys\" secret ..."
 
 kubectl create secret generic motando-keys \
-   --from-literal=django-seckey=$DJANGO_SECRET_KEY \
-   --from-literal=access-key=$OCI_ACCESS_KEY_ID \
-   --from-literal=secret-key=$OCI_SECRET_ACCESS_KEY
+   --from-literal=django-seckey="$DJANGO_SECRET_KEY" \
+   --from-literal=access-key="$OCI_ACCESS_KEY_ID" \
+   --from-literal=secret-key="$OCI_SECRET_ACCESS_KEY"
 
 echo -e "\n[INFO] Setting up \"broker-secret\" secret ..."
 
