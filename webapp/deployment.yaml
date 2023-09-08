@@ -5,12 +5,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: webapp
+      app: motando-webapp
   replicas: 3
   template:
     metadata:
       labels:
-        app: webapp
+        app: motando-webapp
     spec:
       containers:
       - name: webapp-crt

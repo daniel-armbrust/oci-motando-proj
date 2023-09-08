@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: webapp
+  name: motando-webapp
   labels:
-    app: webapp
+    app: motando-webapp
   annotations:
     oci.oraclecloud.com/load-balancer-type: "lb"
     service.beta.kubernetes.io/oci-load-balancer-shape: "flexible"
@@ -16,4 +16,4 @@ spec:
     port: 80
     targetPort: 8000
   selector:
-    app: webapp
+    app: motando-webapp

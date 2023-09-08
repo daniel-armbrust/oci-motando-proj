@@ -61,7 +61,7 @@
                                                         {% else %}
                                                             <div class="carousel-item">
                                                         {% endif %}
-                                                                {% if classifiedad.status == 'PUBLISHED' %}
+                                                                {% if classifiedad.status == 'published' %}
                                                                     <a href="{% url 'classifiedad:detail' brand=classifiedad.model.brand.brand|slugify|lower model=classifiedad.model.model|slugify|lower model_year=classifiedad.model_year classifiedad_id=classifiedad.id %}" 
                                                                        target="_blank" class="d-flex align-items-center justify-content-center">
                                                                             <img src="{{ classifiedad_image.url }}" class="img-fluid rounded pt-4 p-2" 
@@ -88,7 +88,7 @@
                                         </div>
                                         <div class="col-md-8">
                                             <div class="card-body">
-                                                {% if classifiedad.status == 'PUBLISHED' %}
+                                                {% if classifiedad.status == 'published' %}
                                                     <a href="{% url 'classifiedad:detail' brand=classifiedad.model.brand.brand|slugify|lower model=classifiedad.model.model|slugify|lower model_year=classifiedad.model_year classifiedad_id=classifiedad.id %}" target="_blank" class="text-decoration-none">
                                                         <h5 class="card-title text-uppercase h4"> 
                                                             {{ classifiedad.model.brand.brand }} - {{ classifiedad.model.model }} 
@@ -105,7 +105,7 @@
                                                     <span> <i class="far fa-calendar-alt"></i> &nbsp; {{ classifiedad.fabrication_year }}/{{ classifiedad.model_year }} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                  
                                                 </p>
                                                 <p class="card-text"> <span class="text-success h5 fw-bold"> R$ {{ classifiedad.price|intcomma }} </span>
-                                                {% if classifiedad.status == 'PUBLISHED' %} 
+                                                {% if classifiedad.status == 'published' %} 
                                                     <div class="row pt-2 pb-4">
                                                         <div class="col-4 d-grid gap-2">
                                                             <a class="btn btn-outline-success" href="#">
@@ -132,7 +132,7 @@
                                                 {% endif %}
                                                 <div class="row">
                                                     <div class="col">
-                                                        Status: {% if classifiedad.status == 'PUBLISHED' %} 
+                                                        Status: {% if classifiedad.status == 'published' %} 
                                                                     <span class="text-capitalize text-primary"> Publicado </span>
                                                                 {% else %} 
                                                                     <span class="text-capitalize text-secondary fst-italic"> Aguardando Publicação </span>
@@ -144,7 +144,7 @@
                                                         Última modificação: <span class="fw-normal text-secondary fst-italic"> {{ classifiedad.updated }} </span>
                                                     </div>
                                                 </div>
-                                                {% if classifiedad.status == 'PUBLISHED' %}                             
+                                                {% if classifiedad.status == 'published' %}                             
                                                         <div class="row pt-3">                                                      
                                                             <div class="col">
                                                                 Compartilhar: &nbsp;
