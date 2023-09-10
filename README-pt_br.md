@@ -2,7 +2,7 @@
 
 ## Início Rápido
 
-### 1. Instalação do _[Terraform](https://developer.hashicorp.com/terraform/downloads)_.
+### 1. Instalação do _[Terraform](https://developer.hashicorp.com/terraform/downloads)_
 
 ```
 [opc@devops ~]$ wget https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
@@ -16,7 +16,7 @@ Terraform v1.5.7
 on linux_amd64
 ```
 
-### 2. Instalação do _[Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)_.
+### 2. Instalação do _[Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)_
 
 ```
 [opc@devops ~]$ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -30,7 +30,7 @@ Client Version: v1.28.1
 Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
 ```
 
-### 3. Instalação do _[Docker](https://docs.docker.com/engine/install/)_.
+### 3. Instalação do _[Docker](https://docs.docker.com/engine/install/)_
 
 ```
 [opc@devops ~]$ sudo yum install -y yum-utils
@@ -49,7 +49,7 @@ Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
 Docker version 24.0.6, build ed223bc
 ```
 
-### 4. Instalação do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#InstallingCLI__linux_and_unix)_.
+### 4. Instalação do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#InstallingCLI__linux_and_unix)_
 
 ``` 
 [opc@devops ~]$ wget https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
@@ -62,7 +62,7 @@ Docker version 24.0.6, build ed223bc
 3.33.0
 ```
 
-### 5. Adicionando uma _[API Key](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#two)_ no OCI.
+### 5. Adicionando uma _[API Key](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#two)_ no OCI
 
 5.1 - Selecione a região _"Brazil East (Sao Paulo)"_ e em seguida acesse _"My profile"_:
 
@@ -113,7 +113,7 @@ Docker version 24.0.6, build ed223bc
 
 >_**__NOTA:__** Todos os valores de chaves ou configurações demonstrados aqui são inválidos e não podem ser usados._
 
-### 6. Adicionando uma _[Customer Secret Key](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working2)_ no OCI.
+### 6. Adicionando uma _[Customer Secret Key](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working2)_ no OCI
  
 6.1 - De volta ao _"My profile"_, selecione _"Customer secret keys"_ e logo após clique no botão _"Gerenate secret key"_:
 
@@ -133,7 +133,7 @@ Docker version 24.0.6, build ed223bc
 
 >_**__NOTA:__** Lembre-se de salvar o _"Secret Key"_ no momento de sua exibição. Depois disso, este não poderá ser visualizado._
 
-### 7. Adicionando um _[Auth Token](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working)_.
+### 7. Adicionando um _[Auth Token](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working)_
 
 7.1 - De volta ao _"My profile"_, selecione _"Auth tokens"_ e em seguida clique no botão _"Generate token"_:
 
@@ -149,7 +149,7 @@ Docker version 24.0.6, build ed223bc
 
 >_**__NOTA:__** Lembre-se de salvar o _"Auth Token"_ no momento da sua exibição. Depois disso, este não poderá mais ser visualizado._
 
-### 8. Clonar o _[repositório](https://github.com/daniel-armbrust/oci-motando-proj.git)_ da aplicação.
+### 8. Clonar o _[repositório](https://github.com/daniel-armbrust/oci-motando-proj.git)_ da aplicação
 
 ```
 [opc@devops ~]$ sudo yum install -y git
@@ -157,7 +157,7 @@ Docker version 24.0.6, build ed223bc
 [opc@devops ~]$ git clone https://github.com/daniel-armbrust/oci-motando-proj.git
 ```
 
-### 9. Criar a infraestrutura através do código _[Terraform](https://developer.hashicorp.com/terraform/downloads)_.
+### 9. Criar a infraestrutura através do código _[Terraform](https://developer.hashicorp.com/terraform/downloads)_
 
 9.1 - Acessar o diretório que contém o código _[Terraform](https://developer.hashicorp.com/terraform/downloads)_ da aplicação:
 
@@ -199,7 +199,7 @@ root_compartment = "ocid1.compartment.oc1..aaaaaaaan272727omgdrggaaaaaaaabbqbbgq
 [opc@devops ~]$ terraform apply -auto-approve
 ```
 
-### 10. Inicializar o _[OKE](https://docs.oracle.com/en-us/iaas/Content/ContEng/home.htm)_.
+### 10. Inicializar o _[OKE](https://docs.oracle.com/en-us/iaas/Content/ContEng/home.htm)_
 
 10.1 - Inserir os valores correspondentes no arquivo _"motando.env"_ que será usado para inicializar o cluster:
 
@@ -255,7 +255,7 @@ NAME            STATUS   ROLES   AGE    VERSION
 172.16.10.79    Ready    node    129m   v1.27.2
 ```
 
-### 11. Criar e transportar as imagens _[Docker](https://docs.docker.com/engine/)_ ao _[Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm)_.
+### 11. Criar e transportar as imagens _[Docker](https://docs.docker.com/engine/)_ ao _[Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm)_
 
 11.1 - Mudar para o diretório _"build"_:
 
