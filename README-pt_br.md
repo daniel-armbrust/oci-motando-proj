@@ -76,11 +76,11 @@ Docker version 24.0.6, build ed223bc
 
 ![alt_text](./githimgs/api-key_3.png "API Key #3")
 
-5.4 - Logo após a tela que exibe as configurações da chave adicionada é exibida:
+5.4 - Logo após, a tela que exibe as configurações da chave que foi adicionada é exibida:
 
 ![alt_text](./githimgs/api-key_4.png "API Key #4")
 
-5.5 - As configurações que foram exibidas devem agora ser inseridas no arquivo de configuração do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#InstallingCLI__linux_and_unix)_, conforme demonstrado abaixo:
+5.5 - As configurações exibidas devem ser inseridas no arquivo de configuração do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#InstallingCLI__linux_and_unix)_, conforme demonstrado abaixo:
 
 ```
 [opc@devops ~]$ cat <<EOF > .oci/config
@@ -111,7 +111,7 @@ Docker version 24.0.6, build ed223bc
 [opc@devops ~]$ oci setup repair-file-permissions
 ```
 
->_**__NOTA:__** Todos os valores de chaves ou configurações demonstrados aqui são inválidos e não podem ser usados._
+>_**__NOTA:__** Todos os valores das chaves e suas configurações exibidas aqui, são somente para demonstração e não podem ser utilizados em um ambiente produtivo._
 
 ### 6. Adicionando uma _[Customer Secret Key](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working2)_ no OCI
  
