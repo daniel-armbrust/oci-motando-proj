@@ -17,13 +17,12 @@ else
    done
 fi
 
+OCIR_HOST="gru.ocir.io"
 OBJSTR_NAMESPACE="$(terraform output -state=$TERRAFORM_STATE_FILE -raw objectstorage_namespace)"
 OCIR_IMAGE_PREFIX="$OCIR_HOST/$OBJSTR_NAMESPACE"
 CELERY_CLASSIFIEDAD_IMGNAME="motando-celery-classifiedad:v1.0.0"
 MOTANDO_APPINIT_IMGNAME="motando-webapp-init:v1.0.0"
 MOTANDO_WEBAPP_IMGNAME="motando-webapp:v1.0.0"
-
-source motando.env
 
 echo -e "\n[INFO] Building and pushing \"$CELERY_CLASSIFIEDAD_IMGNAME\" ..."
 cd ../services/celery-classifiedad/

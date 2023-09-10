@@ -78,7 +78,7 @@ resource "oci_containerengine_node_pool" "gru_oke_motando_np-1" {
         boot_volume_size_in_gbs = 150
     }
 
-    ssh_public_key = file("./keys/default.ssh_pubkey")     
+    ssh_public_key = file("./keys/oke-sshkey.pub")     
 }
 
 output "gru_oke_motando_id" {
