@@ -93,7 +93,7 @@ Docker version 24.0.6, build ed223bc
 > EOF
 ```
 
-5.6 - O mesmo vale para a chave privada baixada anteriormente:
+5.6 - O mesmo vale para a chave privada que foi baixada anteriormente:
 
 ```
 [opc@devops ~]$ cat <<EOF >/home/opc/.oci/priv.key
@@ -127,11 +127,11 @@ Docker version 24.0.6, build ed223bc
 
 ![alt_text](./githimgs/cust-seckey_3.png "Customer Secret Key #3")
 
-6.4 - Já o _"Access Key"_ permanece disponível todo o tempo:
+6.4 - Já o _"Access Key"_ permanece disponível todo o tempo e pode ser obtido conforme abaixo:
 
 ![alt_text](./githimgs/cust-seckey_4.png "Customer Secret Key #4")
 
->_**__NOTA:__** Lembre-se de salvar o _"Secret Key"_ no momento de sua exibição. Depois disso, este não poderá ser visualizado._
+>_**__NOTA:__** Lembre-se de salvar o _"Secret Key"_ no momento de sua exibição. Depois disso, este não poderá mais ser visualizado._
 
 ### 7. Adicionando um _[Auth Token](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working)_
 
