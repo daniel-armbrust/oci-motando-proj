@@ -320,7 +320,7 @@ Login Succeeded
        "display-name": "motando-webapp-init",
 ```
 
-### 12. Deployment da aplicação Motando
+### 12. Deployment da aplicação MOTANDO
 
 12.1 - É possível realizar o deployment da aplicação através do comando abaixo:
 
