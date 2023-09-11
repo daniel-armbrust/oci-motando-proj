@@ -129,7 +129,7 @@ Docker version 24.0.6, build ed223bc
 
 >_**__NOTE:__** All key values and their settings displayed here are for demonstration purposes only and cannot be used in a productive environment._
 
-### 6. Adicionando uma _[Customer Secret Key](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working2)_ no _[OCI](https://www.oracle.com/cloud/)_
+### 6. Adding a _[Customer Secret Key](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working2)_ on _[OCI](https://www.oracle.com/cloud/)_
  
 6.1 - Back in _"My profile"_, select _"Customer secret keys"_ and then click on the _"Generate secret key"_ button:
 
