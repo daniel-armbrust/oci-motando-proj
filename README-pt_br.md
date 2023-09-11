@@ -1,5 +1,7 @@
 # MOTANDO
 
+- Para ver esta documentação em Inglês, acesse este _[link aqui](./README-pt_br.md)_.
+
 ## Início Rápido
 
 - Os comandos abaixo foram executados em um _[Oracle Linux 8.8](https://yum.oracle.com/oracle-linux-isos.html)_:
