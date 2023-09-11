@@ -149,7 +149,7 @@ Docker version 24.0.6, build ed223bc
 
 >_**__NOTE:__** Remember to save the _"Secret Key"_ when viewing it. After that, it can no longer be viewed._
 
-### 7. Adicionando um _[Auth Token](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working)_ no _[OCI](https://www.oracle.com/cloud/)_
+### 7. Adding a _[Auth Token](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working)_ on _[OCI](https://www.oracle.com/cloud/)_
 
 7.1 - Back in _"My profile"_, select _"Auth tokens"_ and then click on the _"Generate token"_ button:
 
