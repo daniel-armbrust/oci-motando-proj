@@ -2,6 +2,8 @@
 
 ## Início Rápido
 
+- Para os comandos abaixo, foi utilizado o _[Oracle Linux 8.8](https://yum.oracle.com/oracle-linux-isos.html)_:
+
 ```
 [opc@devops ~]$ cat /etc/oracle-release
 Oracle Linux Server release 8.8
@@ -315,6 +317,8 @@ Login Succeeded
 
 ### 12. Deployment da aplicação Motando
 
+12.1 - É possível realizar o deployment da aplicação através do comando abaixo:
+
 ```
 [opc@devops build]$ ./k8s-deployment.sh
 
@@ -332,7 +336,7 @@ deployment.apps/motando-webapp created
 service/motando-webapp created
 ```
 
-12.1 - Para acompanhar a inicialização e inserção dos dados de exemplo da aplicação, utilize o comando abaixo:
+12.2 - Para acompanhar a inicialização e inserção dos dados de exemplo da aplicação, utilize o comando abaixo:
 
 ```
 [opc@devops build]$ kubectl get jobs
@@ -344,7 +348,7 @@ motando-webapp-init   0/1           20s        20s
 [opc@devops build]$ kubectl logs -f job/motando-webapp-init
 ```
 
-12.2 - A aplicação faz uso do _[Celery](https://docs.celeryq.dev/en/stable/index.html)_ para publicar suas imagens. É possível acompanhar o seu funcionamento pelos comandos abaixo:
+12.3 - A aplicação faz uso do _[Celery](https://docs.celeryq.dev/en/stable/index.html)_ para publicar suas imagens. É possível acompanhar o seu funcionamento pelos comandos abaixo:
 
 ```
 [opc@devops build]$ kubectl get deployments/celery-classifiedad
@@ -354,7 +358,7 @@ celery-classifiedad   1/1     1            1           8m32s
 [opc@devops build]$ kubectl logs -f deployments/celery-classifiedad
 ```
 
-12.3 - Por último, obtém-se o endereço IP público do _[Load Balancer](https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengcreatingloadbalancer.htm)_ da aplicação pelo comando abaixo: 
+12.4 - Por último, obtém-se o endereço IP público do _[Load Balancer](https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengcreatingloadbalancer.htm)_ da aplicação pelo comando abaixo: 
 
 ```
 [opc@devops build]$ kubectl get service/motando-webapp
@@ -362,4 +366,4 @@ NAME             TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AG
 motando-webapp   LoadBalancer   10.96.46.139   144.22.206.83   80:32696/TCP   6m34s
 ```
 
-12.4 - Fim...
+12.5 - Fim...
