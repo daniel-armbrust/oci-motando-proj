@@ -2,6 +2,11 @@
 
 ## Início Rápido
 
+```
+[opc@devops ~]$ cat /etc/oracle-release
+Oracle Linux Server release 8.8
+```
+
 ### 1. Instalação do _[Terraform](https://developer.hashicorp.com/terraform/downloads)_
 
 ```
@@ -62,7 +67,7 @@ Docker version 24.0.6, build ed223bc
 3.33.0
 ```
 
-### 5. Adicionando uma _[API Key](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#two)_ no OCI
+### 5. Adicionando uma _[API Key](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#two)_ no _[OCI](https://www.oracle.com/cloud/)_
 
 5.1 - Selecione a região _"Brazil East (Sao Paulo)"_ e em seguida acesse _"My profile"_:
 
@@ -83,6 +88,8 @@ Docker version 24.0.6, build ed223bc
 5.5 - As configurações exibidas devem ser inseridas no arquivo de configuração do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#InstallingCLI__linux_and_unix)_, conforme demonstrado abaixo:
 
 ```
+[opc@devops ~]$ mkdir .oci
+
 [opc@devops ~]$ cat <<EOF > .oci/config
 > [DEFAULT]
 > user=ocid1.user.oc1..aaaaaaaaqbbgqbbgaaaaqbbgqbbqbbgqbbqbbgqbbqbbgqbbqbbgqbbg
@@ -108,12 +115,14 @@ Docker version 24.0.6, build ed223bc
 5.7 - Por último, um ajuste nas permissões dos arquivos que foram criados:
 
 ``` 
-[opc@devops ~]$ oci setup repair-file-permissions
+[opc@devops ~]$ oci setup repair-file-permissions --file /home/opc/.oci/config
+
+[opc@devops ~]$ oci setup repair-file-permissions --file /home/opc/.oci/priv.key
 ```
 
 >_**__NOTA:__** Todos os valores das chaves e suas configurações exibidas aqui, são somente para demonstração e não podem ser utilizados em um ambiente produtivo._
 
-### 6. Adicionando uma _[Customer Secret Key](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working2)_ no OCI
+### 6. Adicionando uma _[Customer Secret Key](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working2)_ no _[OCI](https://www.oracle.com/cloud/)_
  
 6.1 - De volta ao _"My profile"_, selecione _"Customer secret keys"_ e logo após clique no botão _"Gerenate secret key"_:
 
@@ -133,7 +142,7 @@ Docker version 24.0.6, build ed223bc
 
 >_**__NOTA:__** Lembre-se de salvar o _"Secret Key"_ no momento de sua exibição. Depois disso, este não poderá mais ser visualizado._
 
-### 7. Adicionando um _[Auth Token](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working)_
+### 7. Adicionando um _[Auth Token](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm#Working)_ no _[OCI](https://www.oracle.com/cloud/)_
 
 7.1 - De volta ao _"My profile"_, selecione _"Auth tokens"_ e em seguida clique no botão _"Generate token"_:
 
@@ -168,17 +177,17 @@ Docker version 24.0.6, build ed223bc
 9.2 - Criar um par de chaves SSH para os _[Worker Nodes](https://docs.oracle.com/en-us/iaas/Content/ContEng/Concepts/contengclustersnodes.htm#Node_Pools)_ do _[OKE](https://docs.oracle.com/en-us/iaas/Content/ContEng/home.htm)_:
 
 ```
-[opc@devops ~]$ mkdir keys
+[opc@devops terraform]$ mkdir keys
 
-[opc@devops ~]$ ssh-keygen -t rsa -b 4096 -f keys/oke-sshkey -q -N ""
+[opc@devops terraform]$ ssh-keygen -t rsa -b 4096 -f keys/oke-sshkey -q -N ""
 ```
 
 9.3 - Ajustar as configurações referente ao _[tenancy](https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingtenancy.htm)_ no _[Terraform](https://developer.hashicorp.com/terraform/downloads)_:
 
 ```
-[opc@devops ~]$ mv terraform.tfvars-example terraform.tfvars
+[opc@devops terraform]$ mv terraform.tfvars-example terraform.tfvars
 
-[opc@devops ~]$ cat terraform.tfvars
+[opc@devops terraform]$ cat terraform.tfvars
 #
 # terraform.tfvars
 #
@@ -194,9 +203,9 @@ root_compartment = "ocid1.compartment.oc1..aaaaaaaan272727omgdrggaaaaaaaabbqbbgq
 9.4 - Inicializar e criar a infraestrutura:
 
 ```
-[opc@devops ~]$ terraform init
+[opc@devops terraform]$ terraform init
 
-[opc@devops ~]$ terraform apply -auto-approve
+[opc@devops terraform]$ terraform apply -auto-approve
 ```
 
 ### 10. Inicializar o _[OKE](https://docs.oracle.com/en-us/iaas/Content/ContEng/home.htm)_
@@ -204,11 +213,11 @@ root_compartment = "ocid1.compartment.oc1..aaaaaaaan272727omgdrggaaaaaaaabbqbbgq
 10.1 - Inserir os valores correspondentes no arquivo _"motando.env"_ que será usado para inicializar o cluster:
 
 ```
-[opc@devops ~]$ cd scripts/
+[opc@devops terraform]$ cd scripts/
 
-[opc@devops ~]$ mv motando.env-example motando.env
+[opc@devops terraform]$ mv motando.env-example motando.env
 
-[opc@devops ~]$ cat motando.env
+[opc@devops terraform]$ cat motando.env
 #
 # motando.env
 #
@@ -260,7 +269,7 @@ NAME            STATUS   ROLES   AGE    VERSION
 11.1 - Mudar para o diretório _"build"_:
 
 ```
-[opc@devops scripts]$ cd ../../build/
+[opc@devops scripts]$ cd $HOME/oci-motando-proj/build
 ```
 
 11.2 - Obter o valor do _[tenancy namespace](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/understandingnamespaces.htm)_:
@@ -285,7 +294,7 @@ https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 Login Succeeded
 ```
 
->_**__NOTA:__** Para o valor "Password" solicitado, utilizar o "Auth Token" que foi previamente gerado._
+>_**__NOTA:__** Utilize o "Auth Token" que foi previamente gerado para o "Password" solicitado._
 
 11.4 - Criar e transportar as imagens ao _[Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm)_:
 
@@ -302,4 +311,29 @@ Login Succeeded
        "display-name": "motando-celery-classifiedad",
        "display-name": "motando-webapp",
        "display-name": "motando-webapp-init",
+```
+
+### 12. Deployment da aplicação Motando
+
+```
+[opc@devops build]$ ./k8s-deployment.sh
+
+[INFO] Deploying "celery-classifiedad" ...
+service/rabbitmq created
+service/celery-classifiedad created
+deployment.apps/rabbitmq created
+deployment.apps/celery-classifiedad created
+
+[INFO] Deploying "motando-webapp-init" ...
+job.batch/motando-webapp-init created
+
+[INFO] Deploying "motando-webapp" ...
+deployment.apps/motando-webapp created
+service/motando-webapp created
+```
+
+12.1 - Acompanhar o progresso do deployment da aplicação:
+
+```
+[opc@devops build]$ kubectl get jobs
 ```

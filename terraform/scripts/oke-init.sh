@@ -24,7 +24,7 @@ MYSQL_USER="admin"
 MYSQL_PASSWD="$(terraform output -state=$TERRAFORM_STATE_FILE -raw gru_mysql_motando_passwd)"
 DJANGO_SECRET_KEY="$(< /dev/urandom tr -dc A-Z-a-z-0-9 | head -c${1:-64};echo;)"
 BROKER_USER="admin"
-BROKER_PASSWD="$(< /dev/urandom tr -dc A-Z-a-z-0-9 | head -c${1:-12};echo;)"
+BROKER_PASSWD="$(< /dev/urandom tr -dc A-Za-z0-9 | head -c${1:-12};echo;)"
 WEBAPP_LOG_ID="$(terraform output -state=$TERRAFORM_STATE_FILE -raw gru_motando-log_webapp_id)"
 WORKFLOW_LOG_ID="$(terraform output -state=$TERRAFORM_STATE_FILE -raw gru_motando-log_workflow_id)"
 
