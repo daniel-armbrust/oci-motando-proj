@@ -2,11 +2,14 @@
 
 ## Início Rápido
 
-- Para os comandos abaixo, foi utilizado o _[Oracle Linux 8.8](https://yum.oracle.com/oracle-linux-isos.html)_:
+- Os comandos abaixo foram executados em um _[Oracle Linux 8.8](https://yum.oracle.com/oracle-linux-isos.html)_:
 
 ```
 [opc@devops ~]$ cat /etc/oracle-release
 Oracle Linux Server release 8.8
+
+[opc@devops ~]$ uname -r
+5.15.0-104.119.4.2.el8uek.x86_64
 ```
 
 ### 1. Instalação do _[Terraform](https://developer.hashicorp.com/terraform/downloads)_
