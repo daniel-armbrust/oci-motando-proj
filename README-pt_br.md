@@ -1,6 +1,6 @@
 # MOTANDO
 
-- Para ver esta documentação em Inglês, acesse este _[link aqui](./README-pt_br.md)_.
+- Para ver esta documentação em Inglês, acesse este _[link aqui](./README.md)_.
 
 ## Início Rápido
 
