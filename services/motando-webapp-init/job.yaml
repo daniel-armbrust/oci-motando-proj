@@ -3,6 +3,8 @@ kind: Job
 metadata:
   name: motando-webapp-init
 spec:
+  completions: 1
+  parallelism: 1
   template:
     spec:
       containers:

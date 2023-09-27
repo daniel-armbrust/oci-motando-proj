@@ -11,11 +11,11 @@ spec:
     metadata:
       labels:
         app: motando-webapp
-    spec:
+    spec:      
       containers:
       - name: webapp-crt
         image: gru.ocir.io/grxmw2a9myyj/motando-webapp:v1.0.0
-        imagePullPolicy: Always
+        imagePullPolicy: Always        
         ports:
             - containerPort: 8000
         env:
@@ -72,8 +72,14 @@ spec:
                       name: motando-config
                       key: webapp-log-id
             - name: CLASSIFIEDAD_TASK_QUEUE_HOST
-              value: "celery-classifiedad.default.svc.cluster.local"
+              value: "celery-classifiedad.motando.svc.cluster.local"
             - name: CLASSIFIEDAD_TASK_QUEUE_PORT
               value: "8100"
+        livenessProbe:
+            httpGet:
+                path: /account/login
+                port: 8000
+            initialDelaySeconds: 5    
+            periodSeconds: 3      
       imagePullSecrets:
           - name: motando-ocir-secret

@@ -44,35 +44,39 @@ if [ $? -ne 0 ]; then
    exit 1
 fi
 
+echo -e "\n[INFO] Setting up motando \"namespace\" ..."
+
+kubectl create namespace motando
+
 echo -e "\n[INFO] Setting up \"docker-registry\" secret ..."
 
-kubectl create secret docker-registry motando-ocir-secret \
+kubectl create secret docker-registry motando-ocir-secret --namespace motando \
    --docker-server=$OCIR_HOST --docker-username="$OBJSTR_NAMESPACE/$OCIR_USER" \
    --docker-password=$OCIR_PASSWD
 
 echo -e "\n[INFO] Setting up \"mysql-secret\" secret ..."
 
-kubectl create secret generic mysql-secret \
+kubectl create secret generic mysql-secret --namespace motando \
    --from-literal=user=$MYSQL_USER \
    --from-literal=passwd=$MYSQL_PASSWD \
    --from-literal=host=$MYSQL_HOST
 
 echo -e "\n[INFO] Setting up \"motando-keys\" secret ..."
 
-kubectl create secret generic motando-keys \
+kubectl create secret generic motando-keys --namespace motando \
    --from-literal=django-seckey="$DJANGO_SECRET_KEY" \
    --from-literal=access-key="$OCI_ACCESS_KEY_ID" \
    --from-literal=secret-key="$OCI_SECRET_ACCESS_KEY"
 
 echo -e "\n[INFO] Setting up \"broker-secret\" secret ..."
 
-kubectl create secret generic broker-secret \
+kubectl create secret generic broker-secret --namespace motando \
    --from-literal=user=$BROKER_USER \
    --from-literal=passwd=$BROKER_PASSWD
 
 echo -e "\n[INFO] Setting up \"motando-config\" configmap ..."
 
-kubectl create configmap motando-config \
+kubectl create configmap motando-config --namespace motando \
    --from-literal=objstr-namespace=$OBJSTR_NAMESPACE \
    --from-literal=webapp-log-id=$WEBAPP_LOG_ID \
    --from-literal=workflow-log-id=$WORKFLOW_LOG_ID

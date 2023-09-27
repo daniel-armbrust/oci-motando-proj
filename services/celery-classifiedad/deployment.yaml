@@ -32,6 +32,11 @@ spec:
                   secretKeyRef:
                       name: broker-secret
                       key: passwd
+        livenessProbe:
+            tcpSocket:
+                port: 5672
+            initialDelaySeconds: 5
+            periodSeconds: 5      
       imagePullSecrets:
           - name: motando-ocir-secret
 ---
@@ -48,11 +53,11 @@ spec:
     metadata:
       labels:
         app: celery-classifiedad
-    spec:
+    spec:     
       containers:
       - name: celery-crt
         image: gru.ocir.io/grxmw2a9myyj/motando-celery-classifiedad:v1.0.0
-        imagePullPolicy: Always
+        imagePullPolicy: Always        
         ports:
             - containerPort: 8100
         env:
@@ -95,7 +100,7 @@ spec:
             - name: APPDB_DBNAME
               value: "motandodb"            
             - name: BROKER_HOST
-              value: "rabbitmq.default.svc.cluster.local"
+              value: "rabbitmq.motando.svc.cluster.local"
             - name: BROKER_USER
               valueFrom:
                   secretKeyRef:
@@ -121,6 +126,6 @@ spec:
               valueFrom:
                   configMapKeyRef:
                       name: motando-config
-                      key: workflow-log-id          
+                      key: workflow-log-id       
       imagePullSecrets:
           - name: motando-ocir-secret

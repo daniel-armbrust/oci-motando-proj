@@ -12,9 +12,10 @@ WORKDIR /opt/celery-classifiedad
 
 COPY requirements.txt ./
 COPY docker-entrypoint.sh ./
+COPY readiness-probe.sh ./
 
 RUN microdnf update -y && \
-    microdnf install -y python3.8 && \
+    microdnf install -y python3.8 procps && \
     python -m ensurepip && \
     python -m pip install --no-cache-dir --upgrade pip setuptools && \
     python -m pip install --no-cache-dir -r requirements.txt && \     

@@ -4,7 +4,7 @@
 
 ## Quick Start
 
-- The commands bellow was executed on _[Oracle Linux 8.8](https://yum.oracle.com/oracle-linux-isos.html)_:
+- The commands below were executed on _[Oracle Linux 8.8](https://yum.oracle.com/oracle-linux-isos.html)_:
 
 ```
 [opc@devops ~]$ cat /etc/oracle-release
