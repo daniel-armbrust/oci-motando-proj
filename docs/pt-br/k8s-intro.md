@@ -40,7 +40,7 @@ metadata:
 spec:
   containers:
   - name: nginx
-    image: nginx:1.14.2
+    image: nginx
     ports:
     - containerPort: 80
 ```
@@ -136,7 +136,7 @@ metadata:
 spec:
   containers:
   - name: nginx
-    image: nginx:1.14.2
+    image: nginx
     ports:
     - containerPort: 80
     livenessProbe:
@@ -148,6 +148,53 @@ spec:
 ```
 
 >_**__NOTA:__** Para maiores detalhes, consulte a documentação oficial neste [link aqui](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)._
+
+#### Limitando Recursos
+
+Quando se especifica um Pod, opcionalmente é possível especificar o quanto de recursos computacionais que um contêiner necessita _(require)_, e o quanto ele pode consumir ao máximo _(limit)_. Os recursos mais comuns de serem especificados são CPU e memória RAM porém, há suporte para outros.
+
+Há dois modos para se especificar como os contêineres podem consumir os recursos computacionais do cluster:
+
+- **requests**: especifica a quantidade mínima de recursos exigidos para executar um contêiner. O componente _(kube-scheduler)[https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/]_, utiliza essa informação para determinar em qual _worker node_ executar o Pod. Caso nenhum _worker node_ tenha tal capacidade disponível, o Pod permanesce em estado _Pending_ até que a quantidade de recursos exigidos sejam liberados.
+
+- **limits**: especifica a quantidade máxima de recursos que um contêiner pode consumir. O componente _[kubelet](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/)_, monitora e impede que um contêiner extrapole o limite imposto. Quando se ultrapassa o tempo de CPU especificado, o contêiner sofre um _throttling_ que reduz o seu desempenho. Para memória RAM, o contêiner será encerrado e se possível, reescalonado em seguida _(kill and restart)_.
+
+>_**__NOTA:__** Lembrando que as requisições por recursos são feitas por contêiner e não por Pod. Ou seja, o total de recursos mínimos para execução de um Pod, compreende a soma total dos recursos de todos os seus contêineres._
+
+As unidades de medidas usadas para CPU e memória são:
+
+- **CPU**: expresso no formato _millicpu_ ou _millicores_. Utilizar o valor 1, garantirá o uso de 100% da CPU que é equivalente a 1000m (1000 millicores). Ao utilizar 0.1 é equivalente a 100m.
+
+- **memória**: o recurso memória é medido em bytes. Para se especificar, é possível utilizar os prefixos M, Mi, G ou Gi ao se definir a quantidade.
+
+>_**__NOTA:__** 1 megabyte = 1024 KB e 1 mebibytes (MiB) é 1000 KiB.
+
+```
+[opc@devops ~]$ cat nginx.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+    livenessProbe:
+        httpGet:
+            path: /
+            port: 80
+        initialDelaySeconds: 5
+        periodSeconds: 3
+    resources:
+        requests:
+            memory: "100Mi"
+            cpu: "100m"
+        limits:
+            memory: "200Mi"
+            cpu: "200m"
+```
 
 ### Services
 

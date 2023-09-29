@@ -35,8 +35,16 @@ spec:
         livenessProbe:
             tcpSocket:
                 port: 5672
-            initialDelaySeconds: 5
-            periodSeconds: 5      
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3      
+        resources:
+            requests:
+                memory: "256Mi"
+                cpu: "100m"
+            limits:
+                memory: "500Mi"
+                cpu: "300m"
       imagePullSecrets:
           - name: motando-ocir-secret
 ---
@@ -127,5 +135,19 @@ spec:
                   configMapKeyRef:
                       name: motando-config
                       key: workflow-log-id       
+        readinessProbe:
+            exec:
+                command:
+                - /opt/celery-classifiedad/readiness-probe.sh
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+        resources:
+            requests:
+                memory: "250Mi"
+                cpu: "200m"
+            limits: 
+                memory: "600Mi"
+                cpu: "400m"   
       imagePullSecrets:
           - name: motando-ocir-secret

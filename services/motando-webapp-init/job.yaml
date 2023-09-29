@@ -57,7 +57,7 @@ spec:
             - name: RESULTDB_DBNAME
               value: "celeryresultdb"
             - name: CLASSIFIEDAD_TASK_QUEUE_HOST
-              value: "celery-classifiedad.default.svc.cluster.local"
+              value: "celery-classifiedad.motando.svc.cluster.local"
             - name: CLASSIFIEDAD_TASK_QUEUE_PORT
               value: "8100"
       imagePullSecrets:

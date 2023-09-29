@@ -6,14 +6,14 @@ if [ ! -f "$(which kubectl)" ]; then
 fi
 
 echo -e "\n[INFO] Undeploying \"motando-webapp-init\" ..."
+cd ../services/motando-webapp-init/
+kubectl delete -f ./job.yaml --namespace motando
+cd - 1>/dev/null
+
+echo -e "\n[INFO] Undeploying \"motando-webapp\" ..."
 cd ../webapp/
 kubectl delete -f ./service.yaml --namespace motando
 kubectl delete -f ./deployment.yaml --namespace motando
-cd - 1>/dev/null
-
-echo -e "\n[INFO] Undeploying \"motando-webapp-init\" ..."
-cd ../services/motando-webapp-init/
-kubectl delete -f ./job.yaml --namespace motando
 cd - 1>/dev/null
 
 echo -e "\n[INFO] Undeploying \"celery-classifiedad\" ..."

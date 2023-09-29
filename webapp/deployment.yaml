@@ -80,6 +80,13 @@ spec:
                 path: /account/login
                 port: 8000
             initialDelaySeconds: 5    
-            periodSeconds: 3      
+            periodSeconds: 5
+        resources:
+            requests:
+                memory: "500Mi"
+                cpu: "250m"
+            limits:
+                memory: "600Mi"
+                cpu: "350m"  
       imagePullSecrets:
           - name: motando-ocir-secret
