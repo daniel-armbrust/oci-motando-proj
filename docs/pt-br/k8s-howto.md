@@ -43,7 +43,7 @@ app-cm             2      2m46s
 kube-root-ca.crt   1      7d1h
 ```
 
->_**__NOTA:__** A coluna DATA exibe a quantidade de pares chave/valor de cada ConfigMap criado no cluster. Ou seja, existem dois pares chave/valor dentro do ConfigMap de nome app-cm.
+>_**__NOTA:__** A coluna DATA exibe a quantidade de pares chave/valor de cada ConfigMap criado no cluster. Ou seja, existem dois pares chave/valor dentro do ConfigMap de nome app-cm._
 
 - Exibir os pares chave/valor de um determinado ConfigMap:
 
