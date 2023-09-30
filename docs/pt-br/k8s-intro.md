@@ -24,7 +24,11 @@ Objetos Kubernetes podem ser especificados através de arquivos de manifestos,  
 deployment.apps/nginx-deployment created
 ```
 
-Dá se o nome de _modo declarativo_, quando o _"estado desejado"_ é expresso em arquivo de manifesto (YAML ou JSON). Um outro modo de se atingir o _"estado desejado"_ é através do chamado _modo imperativo_.
+Há duas formas para se comandar o cluster:
+
+- **Modo imperativo**: consiste na execução de comandos para se atingir o chamado _"estado desejado"_. 
+
+- **Modo declarativo (preferível)**: consiste em descrever o _"estado desejado"_ em arquivos de manifesto (YAML ou JSON). 
 
 ### Pod
 
@@ -207,7 +211,94 @@ spec:
 
 ### [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
 
+É uma boa prática, separar os dados de configuração (parâmetros de execução) do código da aplicação. Ou seja, os dados de configuração não devem estar _"chumbados"_ dentro do código. Isso torna a aplicação independente da infraestrutura de execução.
 
+_[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)_ é um objeto Kubernetes usado para armazenar configurações _não sensíveis_ no formato _chave/valor_. Configurações _não sensíveis_ são todos os tipos de dados que não precisam estar ocultos ou serem armazenados usando criptografia.
+
+Após sua criação, os dados de um _[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)_ podem ser injetados em um Pod na forma de variáveis de ambiente ou disponibilizados através de um volume montado.
+
+Para criar um _[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)_ através de valores literais, usa-se o comando abaixo:
+
+```
+[opc@devops ~]$ kubectl create configmap meus-valores --from-literal=chave=valor
+```
+
+Neste caso, foi criado um _[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)_ com um par chave/valor. Essa quantidade pode ser visualizada através da coluna DATA:
+
+```
+[opc@devops ~]$ kubectl get configmap/meus-valores
+NAME           DATA   AGE
+meus-valores   1      5m46s
+```
+
+Para ler os dados contidos em um _[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)_, usa-se o comando abaixo:
+
+```
+[opc@devops ~]$ kubectl get configmap/meus-valores -o yaml
+apiVersion: v1
+data:
+  chave: valor
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2023-09-30T14:33:37Z"
+  name: meus-valores
+  namespace: default
+  resourceVersion: "225437"
+  uid: 99e414f4-25f3-4e8a-a10c-c4feff5afa0e
+```
+
+É possível ver os valores do _[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)_ abaixo do campo _data_ exibido pelo comando acima.
+
+#### [ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/) através de variáveis de ambiente
+
+```
+[opc@devops ~]$ kubectl create configmap nginx-cm --from-literal=NGINX_PORT=8080
+configmap/nginx-cm created
+```
+
+```
+[opc@devops ~]$ cat nginx.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 8080
+    env:
+       - name: NGINX_PORT
+         valueFrom:
+             configMapKeyRef:
+                 name: nginx-cm
+                 key: NGINX_PORT
+```
+
+```
+[opc@devops ~]$ kubectl apply -f ./nginx.yaml
+pod/nginx created
+```
+
+```
+[opc@devops ~]$ kubectl exec pod/nginx -- env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=nginx
+NGINX_PORT=8080
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+NGINX_VERSION=1.25.2
+NJS_VERSION=0.8.0
+PKG_RELEASE=1~bookworm
+HOME=/root
+```
 
 ### Services
 

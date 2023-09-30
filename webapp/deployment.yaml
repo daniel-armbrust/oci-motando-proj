@@ -21,24 +21,30 @@ spec:
         env:
             - name: APP_ENV
               value: "PRD"
-            - name: DJANGO_SECRET_KEY
-              valueFrom:
-                  secretKeyRef:
-                      name: motando-keys
-                      key: django-seckey
             - name: OCI_REGION_ID
               value: "sa-saopaulo-1"
-            - name: OCI_OBJSTR_NAMESPACE
-              valueFrom:
-                  configMapKeyRef:
-                      name: motando-config
-                      key: objstr-namespace
             - name: OCI_BUCKET_MOTANDO_IMGTMP
               value: "motando-tmpimg"
             - name: OCI_BUCKET_MOTANDO_IMG
               value: "motando-img"
             - name: OCI_STATICFILES_BUCKET_NAME
               value: "motando-staticfiles"
+            - name: CLASSIFIEDAD_TASK_QUEUE_HOST
+              value: "celery-classifiedad.motando.svc.cluster.local"
+            - name: CLASSIFIEDAD_TASK_QUEUE_PORT
+              value: "8100"
+            - name: MYSQL_DBNAME
+              value: "motandodb"
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                  secretKeyRef:
+                      name: motando-keys
+                      key: django-seckey           
+            - name: OCI_OBJSTR_NAMESPACE
+              valueFrom:
+                  configMapKeyRef:
+                      name: motando-config
+                      key: objstr-namespace            
             - name: OCI_ACCESS_KEY_ID
               valueFrom:
                   secretKeyRef:
@@ -63,18 +69,12 @@ spec:
               valueFrom:
                   secretKeyRef:
                       name: mysql-secret
-                      key: passwd
-            - name: MYSQL_DBNAME
-              value: "motandodb"
+                      key: passwd            
             - name: WEBAPP_LOG_ID
               valueFrom:
                   configMapKeyRef:
                       name: motando-config
-                      key: webapp-log-id
-            - name: CLASSIFIEDAD_TASK_QUEUE_HOST
-              value: "celery-classifiedad.motando.svc.cluster.local"
-            - name: CLASSIFIEDAD_TASK_QUEUE_PORT
-              value: "8100"
+                      key: webapp-log-id          
         livenessProbe:
             httpGet:
                 path: /account/login
