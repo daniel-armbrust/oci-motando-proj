@@ -7,7 +7,7 @@
 
 [opc@devops ~]$ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
-[opc@devops ~]$ minukube start
+[opc@devops ~]$ minikube start
 ```
 
 ```

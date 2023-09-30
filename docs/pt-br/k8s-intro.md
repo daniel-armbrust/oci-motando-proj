@@ -2,6 +2,15 @@
 
 Kubernetes, também conhecido como K8s, é um sistema open source para automatizar o deployment, escalabilidade e gerenciamento de aplicações contêinerizadas.
 
+## Versões utilizadas
+
+```
+[opc@devops ~]$ kubectl version
+Client Version: v1.28.1
+Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
+Server Version: v1.27.4
+```
+
 ## Objetos Kubernetes
 
 Um objeto Kubernetes é um _"registro de intenção"_. Uma vez criado o objeto, o Kubernetes irá garantir a sua existência. 
@@ -163,7 +172,7 @@ Há dois modos para se especificar como os contêineres podem consumir os recurs
 
 As unidades de medidas usadas para CPU e memória são:
 
-- **CPU**: expresso no formato _millicpu_ ou _millicores_. Utilizar o valor 1, garantirá o uso de 100% da CPU que é equivalente a 1000m (1000 millicores). Ao utilizar 0.1 é equivalente a 100m.
+- **CPU**: expresso no formato _millicpu_ ou _millicores_. Utilizar o valor 1, garantirá o uso de 100% da CPU que é equivalente a 1000m (1000 millicores). Ao se utilizar o  valor 0.1, isto é equivalente a 100m.
 
 - **memória**: o recurso memória é medido em bytes. Para se especificar, é possível utilizar os prefixos M, Mi, G ou Gi ao se definir a quantidade.
 
@@ -195,6 +204,10 @@ spec:
             memory: "200Mi"
             cpu: "200m"
 ```
+
+### [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+
+
 
 ### Services
 
