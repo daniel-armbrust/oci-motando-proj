@@ -164,3 +164,10 @@ $ kubectl apply -f ./nginx.yaml
 pod/nginx created
 ```
 
+- Editar um ConfigMap:
+
+```
+$ kubectl edit configmap nginx-cm
+configmap/nginx-cm edited
+```
+
