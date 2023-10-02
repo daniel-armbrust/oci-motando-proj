@@ -171,3 +171,20 @@ $ kubectl edit configmap nginx-cm
 configmap/nginx-cm edited
 ```
 
+- ConfigMap imutável:
+
+```
+$ cat immutable.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:  
+  name: app-cm   
+data:
+  env: prod
+  hostname: webapp1
+immutable: true 
+```
+
+>_**__NOTA:__** Não é possível alterar os valores de um ConfigMap imutável. Se esta for a intenção, será necessário excluir e criar um novo ConfigMap._
+
+## [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)

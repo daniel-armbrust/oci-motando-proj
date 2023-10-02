@@ -180,7 +180,7 @@ As unidades de medidas usadas para CPU e memória são:
 
 - **memória**: o recurso memória é medido em bytes. Para se especificar, é possível utilizar os prefixos M, Mi, G ou Gi ao se definir a quantidade.
 
->_**__NOTA:__** 1 megabyte = 1024 KB e 1 mebibytes (MiB) é 1000 KiB.
+>_**__NOTA:__** 1 megabyte = 1024 KB e 1 mebibytes (MiB) é 1000 KiB._
 
 ```
 [opc@devops ~]$ cat nginx.yaml
@@ -211,9 +211,13 @@ spec:
 
 ### [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
 
-É uma boa prática, separar os dados de configuração (parâmetros de execução) do código da aplicação. Ou seja, os dados de configuração não devem estar _"chumbados"_ dentro do código. Isso torna a aplicação independente da infraestrutura de execução.
+É uma boa prática, separar os dados de configuração (parâmetros de execução) do código da aplicação. Ou seja, os dados de configuração não devem estar _"chumbados"_ dentro do código.
+
+O mesmo código deve ser usado em ambiente de desenvolvimento ou produção, tendo a facilidade de alterar somente aspectos que fazem parte da infraestrutra. Isto torna a aplicação independente da infraestrutura de execução (contêineres portáveis por todos os ambientes).
 
 _[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)_ é um objeto Kubernetes usado para armazenar configurações _não sensíveis_ no formato _chave/valor_. Configurações _não sensíveis_ são todos os tipos de dados que não precisam estar ocultos ou serem armazenados usando criptografia.
+
+>_**__NOTA:__** O tamanho máximo de um [ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/) é de 1 MB._
 
 Após sua criação, os dados de um _[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)_ podem ser injetados em um Pod na forma de variáveis de ambiente ou disponibilizados através de um volume montado.
 
@@ -223,7 +227,7 @@ Para criar um _[ConfigMap](https://kubernetes.io/docs/concepts/configuration/con
 [opc@devops ~]$ kubectl create configmap meus-valores --from-literal=chave=valor
 ```
 
-Neste caso, foi criado um _[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)_ com um par chave/valor. Essa quantidade pode ser visualizada através da coluna DATA:
+Neste caso, foi criado um _[ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/)_ com um par chave/valor. Essa quantidade pode ser visualizada através da coluna _DATA_:
 
 ```
 [opc@devops ~]$ kubectl get configmap/meus-valores
@@ -276,28 +280,66 @@ spec:
                  key: NGINX_PORT
 ```
 
-```
-[opc@devops ~]$ kubectl apply -f ./nginx.yaml
-pod/nginx created
-```
+>_**__NOTA:__** O Pod e o ConfigMap devem estar no mesmo namespace._
+
+### [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
+
+Secret é um objeto Kubernetes cujo propósito é armazenar dados _sigilosos (sensíveis ou confidenciais)_ no formato _chave/valor_. Ou seja, seu propósito é guardar uma informação sensível como senhas, tokens, chaves privadas, etc.
+
+>_**__NOTA:__** O tamanho máximo de um [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) é de 1 MB._
+
+Em sua essência, é igual ao objeto _ConfigMap_ porém, os dados são armazenados de forma obscura e precisam ser descriptografados para ser possível visualizar o seu conteúdo.
+
+>_**__NOTA:__** Por padrão, os [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) são armazenados descriptografados (plain text) no [etcd](https://etcd.io/). Qualquer pessoa com acesso a API do cluster poderá ler seus dados. Consulte a sessão "Protegendo Secrets" para torna-lo mais seguro._
+
+Atualmente, existem três diferenets tipos de _[Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)_ que podem ser criados:
+
+- **generic**: cria um _[secret](https://kubernetes.io/docs/concepts/configuration/secret/)_ a partir de um arquivo local, diretório ou valor literal.
+
+- **docker-registry**: cria um _[secret](https://kubernetes.io/docs/concepts/configuration/secret/)_ para autenticação com um _[Docker Registry](https://docs.docker.com/registry/)_.
+
+- **tls**: cria um _[secret](https://kubernetes.io/docs/concepts/configuration/secret/)_ para armazenar chave e certificado_[TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)_.
+
+Para se criar um _[secret](https://kubernetes.io/docs/concepts/configuration/secret/)_ do tipo _generic_, usa-se o comando abaixo:
+
+ ```
+$ kubectl create secret generic minhas-senhas --from-literal=dbsenha=S3cr3t0
+secret/minhas-senhas created
+ ```
+
+Para visualizar os _[secrets](https://kubernetes.io/docs/concepts/configuration/secret/)_, usa-se o comando abaixo:
 
 ```
-[opc@devops ~]$ kubectl exec pod/nginx -- env
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-HOSTNAME=nginx
-NGINX_PORT=8080
-KUBERNETES_PORT_443_TCP_PORT=443
-KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
-KUBERNETES_SERVICE_HOST=10.96.0.1
-KUBERNETES_SERVICE_PORT=443
-KUBERNETES_SERVICE_PORT_HTTPS=443
-KUBERNETES_PORT=tcp://10.96.0.1:443
-KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
-KUBERNETES_PORT_443_TCP_PROTO=tcp
-NGINX_VERSION=1.25.2
-NJS_VERSION=0.8.0
-PKG_RELEASE=1~bookworm
-HOME=/root
+$ kubectl get secret
+NAME            TYPE     DATA   AGE
+minhas-senhas   Opaque   1      4m17s
+```
+
+A coluna _DATA_ representa a quantidade de pares chave/valor contidos no _[secret](https://kubernetes.io/docs/concepts/configuration/secret/)_. Há também a coluna _TYPE_ com o valor _Opaque_ no qual indica ser do tipo _generic_. 
+
+O valor de um _[secret](https://kubernetes.io/docs/concepts/configuration/secret/)_ é codificado utilizando _[base64](https://en.wikipedia.org/wiki/Base64)_:
+
+```
+$ kubectl edit secret meus-segredos
+
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this 
+# file will be reopened with the relevant failures.
+#
+apiVersion: v1
+data:
+  dbsenha: UzNjcjN0MA==
+kind: Secret
+metadata:
+  creationTimestamp: "2023-10-02T13:31:03Z"
+  name: meus-segredos
+  namespace: default
+  resourceVersion: "283874"
+  uid: 105e2ec0-24aa-42f5-b6a8-8a74781d91a3
+type: Opaque
+
+$ echo 'UzNjcjN0MA==' | base64 -d
+S3cr3t0
 ```
 
 ### Services
