@@ -268,7 +268,7 @@ O processo de publicação (workflow de publicação) de um anúncio e suas imag
 4. De forma independente da aplicação Web, o _Celery_ começa o trabalho de publicação do anúncio que consiste basicamente na cópia das imagens entre os _Buckets_.
 5. Ao término da cópia, o _Celery_ concluí a publicação do anúncio atualizando alguns dados no _[MySQL](https://docs.oracle.com/en-us/iaas/mysql-database/index.html)_.
 
-Tendo o processo de publicação implementado de forma independente como essa, este pode ser incrementado com outras atividades. Dessa forma, por exemplo, é possível enviar um e-mail ao usuário quando a publicação do anúncio estiver sido concluída ou mesmo, acrescentar uma marca d'agua com o logotipo _Motando_ nas imagens.
+Tendo o processo de publicação implementado de forma independente, este pode ser incrementado facilmente com outras atividades se necessário. Por exemplo, é possível enviar um e-mail ao usuário quando a publicação do anúncio estiver sido concluída ou mesmo, acrescentar uma marca d'agua com o logotipo _Motando_ nas imagens.
 
 ### Redis
 
