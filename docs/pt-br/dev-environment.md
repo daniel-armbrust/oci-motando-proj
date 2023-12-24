@@ -25,7 +25,7 @@ Além da infraestrutura local, a aplicação utiliza três _[Buckets](https://do
 
 Em termos de arquitetura, a figura abaixo exibe uma visão geral dos itens que fazem parte do ambiente de desenvolvimento:
 
-![alt_text](./githimgs/dev-env_arch-1.png "Infra - Ambiente de DEV")
+![alt_text](/githimgs/dev-env_arch-1.png "Infra - Ambiente de DEV")
 
 ## Criação dos Buckets através do Terraform
 
