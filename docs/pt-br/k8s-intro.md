@@ -2,6 +2,8 @@
 
 Kubernetes, também conhecido como K8s, é um sistema open source para automatizar o deployment, escalabilidade e gerenciamento de aplicações contêinerizadas.
 
+Kubernetes é uma ferramenta usada para gerenciar contêineres Docker em larga escala.
+
 ## Versões utilizadas
 
 ```
@@ -24,7 +26,7 @@ Objetos Kubernetes podem ser especificados através de arquivos de manifestos,  
 deployment.apps/nginx-deployment created
 ```
 
-Há duas formas para se comandar o cluster:
+Há duas formas para se comandar o cluster (sintaxe para manipulação):
 
 - **Modo imperativo**: consiste na execução de comandos para se atingir o chamado _"estado desejado"_. 
 
@@ -42,7 +44,7 @@ O modelo _"one-container-per-Pod"_ é o mais comum de ser criado e gerenciado. P
 
 Contâiners dentro de um Pod formam uma única unidade coesa de serviço e são _escalonados_ para execução em uma mesma máquina do cluster. Esses contâiners compartilham os mesmos recursos e podem se comunicar uns com os outros.
 
->_**__NOTA:__** A tarefa do escalonador é decidir onde executar um determinado Pod.
+>_**__NOTA:__** A tarefa do escalonador é decidir onde executar um determinado Pod._
 
 ```
 [opc@devops ~]$ cat nginx.yaml
@@ -290,7 +292,7 @@ Secret é um objeto Kubernetes cujo propósito é armazenar dados _sigilosos (se
 
 Em sua essência, é igual ao objeto _ConfigMap_ porém, os dados são armazenados de forma obscura e precisam ser descriptografados para ser possível visualizar o seu conteúdo.
 
->_**__NOTA:__** Por padrão, os [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) são armazenados descriptografados (plain text) no [etcd](https://etcd.io/). Qualquer pessoa com acesso a API do cluster poderá ler seus dados. Consulte a sessão "Protegendo Secrets" para torna-lo mais seguro._
+>_**__NOTA:__** Por padrão, os [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) são armazenados descriptografados (plain text) no [etcd](https://etcd.io/). Qualquer pessoa com acesso a API do cluster poderá ler seus dados. Consulte a sessão "Aumentando a segurança dos Secrets" para torna-lo mais seguro._
 
 Atualmente, existem três diferenets tipos de _[Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)_ que podem ser criados:
 
@@ -341,6 +343,10 @@ type: Opaque
 $ echo 'UzNjcjN0MA==' | base64 -d
 S3cr3t0
 ```
+
+#### Aumentando a segurança dos Secrets
+
+TODO
 
 ### Services
 

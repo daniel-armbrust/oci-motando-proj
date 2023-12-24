@@ -18,6 +18,7 @@ class Database():
                                  dbname=db_name,
                                  host=db_host)
 
+
 class ClassifiedadStorage():
     def __init__(self, env: str, region_id: str, bucket_ns: str, api_sleep: int):            
         self._oci_storage = OciStorage(env=env,
@@ -61,6 +62,7 @@ class ClassifiedadStorage():
 
         return deleted
 
+
 class Classifiedad(Database, ClassifiedadStorage):    
     def __init__(self, **kwargs):        
         self._workreq_list = []                
@@ -81,8 +83,7 @@ class Classifiedad(Database, ClassifiedadStorage):
                          env=kwargs['env'],                         
                          region_id=self._region_id,
                          bucket_ns=self._bucket_ns,                       
-                         api_sleep=kwargs['api_sleep'])        
-           
+                         api_sleep=kwargs['api_sleep'])      
     
     def __del__(self):
         if self._mysql_db:
@@ -167,7 +168,6 @@ class Classifiedad(Database, ClassifiedadStorage):
                     log.error(f'Could not delete the image "{img_filename}"' + \
                               f'from bucket {self._bucket_tmp}.')
 
-
     def delete(self, classifiedad_id: int):
         """Delete the classifiedad.
         
@@ -189,9 +189,6 @@ class Classifiedad(Database, ClassifiedadStorage):
                     DELETE FROM classifiedad WHERE id = {classifiedad_id}
                  '''
             ]
-
-
-
 
     def done(self):   
         """Checks if all work requests are finished.

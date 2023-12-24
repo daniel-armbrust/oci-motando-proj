@@ -61,7 +61,7 @@ def setup_loggers(logger, *args, **kwargs):
 
 @app.task
 def new_classifiedad(classifiedad_id: int):
-    """Task for publish new classifiedad.
+    """Task to publish new classifiedad.
     
     """
     global APP_ENV, OCI_REGION_ID, OCI_OS_NAMESPACE, OCI_BUCKET_IMGTMP, \
@@ -97,7 +97,7 @@ def new_classifiedad(classifiedad_id: int):
 
 @app.task
 def update_classifiedad(classifiedad_id: int, old_img_list: list):
-    """Task for update the classifiedad.
+    """Task to update the classifiedad.
     
     """
     global APP_ENV, OCI_REGION_ID, OCI_OS_NAMESPACE, OCI_BUCKET_IMGTMP, \
@@ -130,9 +130,10 @@ def update_classifiedad(classifiedad_id: int, old_img_list: list):
         sleep(TASK_SLEEP_SECS)
         i += 1
 
+
 @app.task
 def delete_classifiedad(classifiedad_id: int):
-    """Task for delete the classifiedad.
+    """Task to delete the classifiedad.
     
     """
     global APP_ENV, OCI_REGION_ID, OCI_OS_NAMESPACE, OCI_BUCKET_IMGTMP, \
@@ -152,4 +153,3 @@ def delete_classifiedad(classifiedad_id: int):
                                 db_name=APPDB_DBNAME)
     
     classifiedad.delete(classifiedad_id)
-

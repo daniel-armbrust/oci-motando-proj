@@ -30,8 +30,8 @@ OCI_LOG_ID = os.environ.get('WEBAPP_LOG_ID')
 
 # OCI ObjectStorage Amazon S3 Compatibility API
 # https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm
-AWS_ACCESS_KEY_ID = os.environ.get('OCI_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('OCI_SECRET_ACCESS_KEY')
+AWS_ACCESS_KEY_ID = os.environ.get('OCI_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = os.environ.get('OCI_SECRET_KEY')
 S3_REGION_NAME = OCI_REGION
 AWS_S3_CUSTOM_DOMAIN = f'{OCI_BUCKET_NAMESPACE}.compat.objectstorage.{OCI_REGION}.oraclecloud.com'
 AWS_S3_ENDPOINT_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}'
@@ -39,16 +39,14 @@ AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 
 STATICFILES_BUCKET = os.environ.get('OCI_STATICFILES_BUCKET_NAME')
 STATIC_URL = 'static/'
-STATICFILES_STORAGE = 'storage.StaticFilesStorage'
-
-STATICFILES_DIRS = [BASE_DIR / 'static/']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '%s/media' % (BASE_DIR,)
 
 if APP_ENV == 'PRD':
     DEBUG = False
-    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', None)
+    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', None)    
+    STATICFILES_STORAGE = 'storage.StaticFilesStorage'
     #SESSION_COOKIE_DOMAIN = 'motando.com.br'
     #SESSION_COOKIE_SECURE = True
     #CSRF_COOKIE_DOMAIN = 'motando.com.br'    
@@ -60,7 +58,9 @@ else:
     SECRET_KEY = token_hex(32)    
     OCI_CONFIG_FILE = '/opt/webapp/ocisecrt/config'
     CSRF_TRUSTED_ORIGINS = []
+    STATICFILES_DIRS = [BASE_DIR / 'static/']
     DEBUG = True
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -119,7 +119,7 @@ ROOT_URLCONF = 'motando.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [f'{BASE_DIR}/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -257,6 +257,3 @@ LOGGING = {
         }      
     },
 }
-
-
-

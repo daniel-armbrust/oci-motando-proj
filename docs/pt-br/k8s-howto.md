@@ -1,4 +1,26 @@
+# Docker HOWTO
+
+- Inspecionar o sistema de arquivos de uma imagem recém construída:
+
+```
+$ docker run -ti --entrypoint bash oci-simple-form
+```
+
 # Kubernetes HOWTO
+
+## [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
+
+- Executando um Pod e obtendo shell dentro do contêiner:
+
+```
+$ kubectl run -ti --image=container-registry.oracle.com/os/oraclelinux:8-slim -- bash
+```
+
+```
+$ kubectl run oci-simple-form \
+    --image gru.ocir.io/grxmw2a9myyj/oci-simple-form:v1.0.0 \
+    --overrides='{ "apiVersion": "v1", "spec": {"imagePullSecrets": [{"name": "motando-ocir-secret"}]} }'
+```
 
 ## [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
 

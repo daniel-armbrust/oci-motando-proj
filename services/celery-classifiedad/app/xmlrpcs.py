@@ -12,7 +12,6 @@ import tasks
 
 
 # Globals
-OCI_API_SLEEP_SECS = 2
 APP_ENV = os.environ.get('APP_ENV')
 APP_PORT = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_PORT', 8100)
 OCI_LOG_ID = os.environ.get('OCI_LOG_ID')
@@ -32,7 +31,7 @@ def delete_classifiedad(classifiedad_id: int):
 def main():
     global APP_PORT
 
-    xmlrpc_server = SimpleXMLRPCServer(('0.0.0.0', APP_PORT), allow_none=True)
+    xmlrpc_server = SimpleXMLRPCServer(('0.0.0.0', APP_PORT), logRequests=True, allow_none=True)
     xmlrpc_server.register_function(new_classifiedad)
     xmlrpc_server.register_function(update_classifiedad)
     xmlrpc_server.register_function(delete_classifiedad)
