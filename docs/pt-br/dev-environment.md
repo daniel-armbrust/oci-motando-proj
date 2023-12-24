@@ -248,17 +248,27 @@ A aplicação _Motando_ utiliza o _[Celery](https://docs.celeryq.dev/en/stable/i
 
 Caso a reposta do servidor demore muito, o protocolo HTTP que controla esse tempo, fecha a conexão que está ativa, interrompendo assim a navegação do cliente. Em outras palavras, há um _TIMEOUT_.
 
-O _[Celery](https://docs.celeryq.dev/en/stable/index.html)_ entra em cena para toda atividade que envolve a publicação de um novo anúncio, atualização ou exclusão. Um anúncio, além das informações que o descrevem, possuem também imagens que são armazenadas em um _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_.
+O Celery entra em cena para toda atividade que envolve a publicação de um novo anúncio, atualização ou exclusão. Um anúncio, além das informações que o descrevem, possuem também imagens que são armazenadas em um _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_.
 
-Para um novo anúncio, as imagens primeiramente vão para um _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_ temporário (dev_motando-tmpimg). Logo após, o _[Celery](https://docs.celeryq.dev/en/stable/index.html)_ é comandado pela aplicação Web para transferir a imagem do _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_ temporário (dev_motando-tmpimg) para o _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_ permanente (dev_motando-img).
+Para um novo anúncio, as imagens primeiramente vão para um _Bucket_ temporário (dev_motando-tmpimg). Logo após, o Celery é comandado pela aplicação Web para transferir a imagem do _Bucket_ temporário (dev_motando-tmpimg) para o _Bucket_ permanente (dev_motando-img).
 
-Esse processo de cópia entre _[Buckets](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_, pode levar a algum tempo e prejudicar a navegação do usuário por conta do tempo no ciclo requisição/resposta imposto pelo protocolo HTTP.
+Esse processo de cópia entre os _Buckets_, pode levar a algum tempo e prejudicar a navegação do usuário por conta do tempo no ciclo requisição/resposta imposto pelo protocolo _HTTP_.
 
-Ter o processo de cópia entre _[Buckets](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_, executado de forma independente da aplicação Web, assegura o não _TIMEOUT_ entre cliente e servidor para tratar as imagens dos anúncios.
+Ter o processo de cópia entre _Buckets_, executado de forma independente da aplicação Web, assegura o não _TIMEOUT_ entre cliente e servidor para tratar as imagens dos anúncios.
 
-Optei por utilizar essa arquitetura, de possuir dois _[Buckets](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_, primeiramente como forma de evitar qualquer desperdício de espaço no _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_.
+Optei por utilizar essa arquitetura, de possuir dois _Buckets_, primeiramente como forma de evitar qualquer desperdício de espaço ao salvar as imagens. O _Bucket_ temporário possui uma _[Lifecycle Policy](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/usinglifecyclepolicies.htm)_ para excluír qualquer arquivo depois de um certo período de tempo. Há tempo suficiente para o _Celery_ fazer o seu trabalho e publicar o anúncio e suas imagens.
 
+O processo de publicação (workflow de publicação) de um anúncio e suas imagens, pode ser melhor entendido observando a figura abaixo:
 
+![alt_text](/githimgs/dev-env_arch-2.png "Infra - Ambiente de DEV")
+
+1. Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
+2. As imagens são salvas pela aplicação Web diretamente no _Bucket_ temporário (dev_motando_tmpimg).
+3. Em seguida, a aplicação Web notifica o _Celery_ via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_, dizendo que há um novo anúncio para ser publicado.
+4. De forma independente da aplicação Web, o _Celery_ começa o trabalho de publicação do anúncio que consiste na cópia das imagens do _Bucket_ temporário ao _Bucket_ permanente.
+5. O _Celery_ completa a cópia das imagens para o _Bucket_ permanente e concluí a publicação do anúncio.
+
+Tendo o processo de publicação implementado de forma independente como essa, este pode ser incrementado com outras atividades. Dessa forma, por exemplo, é possível enviar um e-mail ao usuário quando a publicação do anúncio estiver sido concluída ou mesmo, acrescentar uma marca d'agua com o logotipo _Motando_ nas imagens.
 
 ### Redis
 
