@@ -282,11 +282,13 @@ Além do broker, o _Celery_ pode salvar todo o progresso e o resultado das taref
 
 ![alt_text](/githimgs/dev_celery-arch-3.png "Celery Arch #3")
 
-#### Redis
+#### Redis (message broker)
 
 ```
 $ docker run --name redis --net=host -d redis:7
 ```
+
+#### MySQL (result backend)
 
 ## Variáveis de ambiente
 
