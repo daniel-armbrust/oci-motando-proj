@@ -260,7 +260,7 @@ Optei por utilizar essa arquitetura, de possuir dois _Buckets_, primeiramente co
 
 O processo de publicação (workflow de publicação) de um anúncio e suas imagens, pode ser melhor entendido observando a figura abaixo:
 
-![alt_text](/githimgs/dev_celery-arch-2.png "Infra - Ambiente de DEV")
+![alt_text](/githimgs/dev_celery-arch-2.png "Celery Arch #2")
 
 1. Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
 2. As imagens são salvas pela aplicação Web diretamente no _Bucket_ temporário (dev_motando_tmpimg).
@@ -272,8 +272,17 @@ Tendo o processo de publicação implementado de forma independente, este pode s
 
 ### Celery
 
+Basicamente o _[Celery](https://docs.celeryq.dev/en/stable/index.html)_ é uma ferramenta para processar tarefas de uma fila (task queue). A grande sacada do _Celery_, é que ele possibilita processar tarefas de forma independente do programa principal.  
 
-### Redis
+Como parte do seu funcionamento, o _Celery_ necessita de um serviço separado que seja capaz de armazenar suas mensagens. Este é conhecido como _message broker_ ou _message transport_.
+
+Para o _message broker_, tanto o _[RabbitMQ](https://www.rabbitmq.com/)_ quanto o _[Redis](https://redis.io/)_ são excelentes. Para a aplicação _Motando_ será usado o _Redis_ como broker de mensagens.
+
+Além do broker, o _Celery_ pode salvar todo o progresso e o resultado das tarefas em um _result backend_. Para a aplicação _Motando_, o _result backend_ será o _MySQL_.
+
+![alt_text](/githimgs/dev_celery-arch-3.png "Celery Arch #3")
+
+#### Redis
 
 ```
 $ docker run --name redis --net=host -d redis:7
