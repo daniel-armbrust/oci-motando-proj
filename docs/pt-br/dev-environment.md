@@ -246,11 +246,11 @@ Quit the server with CONTROL-C.
 
 A aplicação _Motando_ utiliza o _[Celery](https://docs.celeryq.dev/en/stable/index.html)_ para processar tarefas independentes da parte Web. Lembrando que toda interação entre navegador e servidor, utiliza um ciclo requisição/resposta. Este ciclo possui um tempo máximo para ser completado que começa a partir da requisição feita pelo cliente (navegador), até a resposta emitida pelo servidor.
 
-Caso a reposta do servidor demore muito, o protocolo HTTP que controla esse tempo, fecha a conexão que está ativa, interrompendo assim a navegação do cliente. Em outras palavras, há um _TIMEOUT_.
+Caso a reposta do servidor demore muito, o protocolo _HTTP_ que controla esse tempo, fecha a conexão que está ativa, interrompendo assim a navegação do cliente. Em outras palavras, há um _TIMEOUT_.
 
-O Celery entra em cena para toda atividade que envolve a publicação de um novo anúncio, atualização ou exclusão. Um anúncio, além das informações que o descrevem, possuem também imagens que são armazenadas em um _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_.
+O _Celery_ entra em cena para toda atividade que envolve a publicação de um novo anúncio, atualização ou exclusão. Um anúncio, além das informações que o descrevem, possuem também imagens que são armazenadas em um _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_.
 
-Para um novo anúncio, as imagens primeiramente vão para um _Bucket_ temporário (dev_motando-tmpimg). Logo após, o Celery é comandado pela aplicação Web para transferir a imagem do _Bucket_ temporário (dev_motando-tmpimg) para o _Bucket_ permanente (dev_motando-img).
+Para um novo anúncio, as imagens primeiramente vão para um _Bucket_ temporário (dev_motando-tmpimg). Logo após, o _Celery_ é comandado pela aplicação Web (via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_) para transferir a imagem do _Bucket_ temporário (dev_motando-tmpimg) para o _Bucket_ permanente (dev_motando-img).
 
 Esse processo de cópia entre os _Buckets_, pode levar a algum tempo e prejudicar a navegação do usuário por conta do tempo no ciclo requisição/resposta imposto pelo protocolo _HTTP_.
 
@@ -262,7 +262,7 @@ O processo de publicação (workflow de publicação) de um anúncio e suas imag
 
 ![alt_text](/githimgs/dev_celery-arch-2.png "Infra - Ambiente de DEV")
 
-1. Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
+**1.** Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
 2. As imagens são salvas pela aplicação Web diretamente no _Bucket_ temporário (dev_motando_tmpimg).
 3. Em seguida, a aplicação Web notifica o _Celery_ via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_, dizendo que há um novo anúncio para ser publicado.
 4. De forma independente da aplicação Web, o _Celery_ começa o trabalho de publicação do anúncio que consiste na cópia das imagens do _Bucket_ temporário ao _Bucket_ permanente.
