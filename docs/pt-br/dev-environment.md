@@ -262,7 +262,7 @@ O processo de publicação (workflow de publicação) de um anúncio e suas imag
 
 ![alt_text](/githimgs/dev_celery-arch-2.png "Infra - Ambiente de DEV")
 
-**1.** Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
+1. Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
 2. As imagens são salvas pela aplicação Web diretamente no _Bucket_ temporário (dev_motando_tmpimg).
 3. Em seguida, a aplicação Web notifica o _Celery_ via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_, dizendo que há um novo anúncio para ser publicado.
 4. De forma independente da aplicação Web, o _Celery_ começa o trabalho de publicação do anúncio que consiste na cópia das imagens do _Bucket_ temporário ao _Bucket_ permanente.
