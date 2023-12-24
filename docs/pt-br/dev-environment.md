@@ -13,7 +13,7 @@ Versões em uso:
 O desenvolvimento da aplicação _Motando_ será feito a partir de um
 simples _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_. Este ambiente virtual irá hospedar o código da aplicação e suas diversas  dependências, como também os arquivos que fazem parte do framework _[Django](https://www.djangoproject.com/)_.
 
-Todos os outros recursos de infraestrutura necessários para execução da aplicação, como o banco de dados MySQL e o servidor de mensageria RabbitMQ (utilizado pelo _[Celery](https://docs.celeryq.dev/en/stable/index.html)_), serão executados separadamente em contêineres _[Docker](https://www.docker.com/get-started/)_.
+Todos os outros recursos de infraestrutura necessários para execução da aplicação, como o banco de dados _[MySQL](https://www.mysql.com/)_, _[Celery](https://docs.celeryq.dev/en/stable/index.html)_ para tarefas assíncronas e _[Redis](https://redis.io/)_, serão executados separadamente em contêineres _[Docker](https://www.docker.com/get-started/)_.
 
 Além da infraestrutura local, a aplicação utiliza três _[Buckets](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_ para armazenar imagens:
 
@@ -269,6 +269,10 @@ O processo de publicação (workflow de publicação) de um anúncio e suas imag
 5. Ao término da cópia, o _Celery_ concluí a publicação do anúncio atualizando alguns dados no _[MySQL](https://docs.oracle.com/en-us/iaas/mysql-database/index.html)_.
 
 Tendo o processo de publicação implementado de forma independente, este pode ser incrementado facilmente com outras atividades se necessário. Por exemplo, é possível enviar um e-mail ao usuário quando a publicação do anúncio estiver sido concluída ou mesmo, acrescentar uma marca d'agua com o logotipo _Motando_ nas imagens.
+
+### Celery
+
+
 
 ### Redis
 
