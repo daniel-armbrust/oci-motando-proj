@@ -260,7 +260,7 @@ Optei por utilizar essa arquitetura, de possuir dois _Buckets_, primeiramente co
 
 O processo de publicação (workflow de publicação) de um anúncio e suas imagens, pode ser melhor entendido observando a figura abaixo:
 
-![alt_text](/githimgs/dev-env_arch-2.png "Infra - Ambiente de DEV")
+![alt_text](/githimgs/dev_celery-arch-2.png "Infra - Ambiente de DEV")
 
 1. Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
 2. As imagens são salvas pela aplicação Web diretamente no _Bucket_ temporário (dev_motando_tmpimg).
