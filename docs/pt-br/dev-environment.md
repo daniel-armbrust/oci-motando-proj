@@ -265,8 +265,8 @@ O processo de publicação (workflow de publicação) de um anúncio e suas imag
 1. Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
 2. As imagens são salvas pela aplicação Web diretamente no _Bucket_ temporário (dev_motando_tmpimg).
 3. Em seguida, a aplicação Web notifica o _Celery_ via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_, dizendo que há um novo anúncio para ser publicado.
-4. De forma independente da aplicação Web, o _Celery_ começa o trabalho de publicação do anúncio que consiste na cópia das imagens do _Bucket_ temporário ao _Bucket_ permanente.
-5. O _Celery_ completa a cópia das imagens para o _Bucket_ permanente e concluí a publicação do anúncio.
+4. De forma independente da aplicação Web, o _Celery_ começa o trabalho de publicação do anúncio que consiste basicamente na cópia das imagens entre os _Buckets_.
+5. Ao término da cópia, o _Celery_ concluí a publicação do anúncio atualizando alguns dados no _[MySQL](https://docs.oracle.com/en-us/iaas/mysql-database/index.html)_.
 
 Tendo o processo de publicação implementado de forma independente como essa, este pode ser incrementado com outras atividades. Dessa forma, por exemplo, é possível enviar um e-mail ao usuário quando a publicação do anúncio estiver sido concluída ou mesmo, acrescentar uma marca d'agua com o logotipo _Motando_ nas imagens.
 
