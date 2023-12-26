@@ -394,94 +394,30 @@ Para o ambiente de desenvolvimento, basta iniciar o _[Virtual Environment (venv)
 
 Porém, para a produção, este serviço deverá ser empacotado em uma _[imagem Docker](https://docs.docker.com/engine/reference/commandline/images/)_ para facilitar todo o transporte e seu deployment.
 
-## Tarefas assíncronas com Dramatic
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### Dramatic
-
-#### Redis (message broker)
-
-O comando abaixo irá criar o contêiner e iniciar o serviço _[Redis](https://redis.io/)_ na porta 6379/tcp:
+Como este serviço necessita de dois processos em execução (XMLRPC e Dramatiq), será utilizado a estratégia de _[Multi Service Container](https://docs.docker.com/config/containers/multi-service_container/)_ para a construção da imagem.
 
 ```
-$ docker run --name redis --net=host -d redis:7
+$ cat dramatiq-classifiedad/app/docker-entrypoint.sh
+#!/bin/bash
+
+#
+# https://docs.docker.com/config/containers/multi-service_container/
+#
+
+# Dramatiq Workers
+dramatiq tasks &
+
+# XMLRPC Server
+python xmlrpcs.py &
+
+# Wait for any process to exit
+wait -n
+
+# Exit with status of process that exited first
+exit $?
 ```
 
-#### Ambiente Virtual e dependências
 
-```
-$ pwd
-/home/darmbrust/oci-motando-proj
-
-$ cd services/dramatiq-classifiedad/
-```
-
-```
-$ python3 -m venv venv
-$ source venv/bin/activate
-(venv) $
-```
-
-```
-(venv) $ export APP_ENV='DEV'
-(venv) $ export CLASSIFIEDAD_XMLRPC_PORT=8100
-(venv) $ export OCI_LOG_ID='ocid1.log.oc1.sa-saopaulo-1.amaaaaaa7acctnqadfi7reyb3llczg4w5c4p35mebl4iq4gyltclslqngg5a'
-(venv) $ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
-```
-
-```
-(venv) $ pip install -U 'dramatiq[redis, watch]'
-(venv) $ pip install oci
-(venv) $ pip install mysql-connector-python
-
-(venv) $ pip freeze > requirements.txt 
-```
-
-```
-(venv) $ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
-(venv) $ export APP_ENV='DEV'
-
-(venv) $ export CLASSIFIEDAD_XMLRPC_PORT=8100
-
-(venv) $ export APPDB_HOST='127.0.0.1'
-(venv) $ export APPDB_USER='motandousr'
-(venv) $ export APPDB_PASSWD='secreto'
-(venv) $ export APPDB_DBNAME='motandodb'
-
-(venv) $ export REDIS_HOST='127.0.0.1'
-
-(venv) $ export OCI_REGION_ID='sa-saopaulo-1'
-(venv) $ export OCI_OS_NAMESPACE='grxmw2a9myyj'
-(venv) $ export OCI_BUCKET_MOTANDO_IMG='dev_motando-img'
-(venv) $ export OCI_BUCKET_MOTANDO_IMGTMP='dev_motando-tmpimg'
-(venv) $ export OCI_LOG_ID='ocid1.log.oc1.sa-saopaulo-1.amaaaaaa7acctnqadfi7reyb3llczg4w5c4p35mebl4iq4gyltclslqngg5a'
-```
 
 -- Para voltar o banco de dados no estado vazio:
 ```
