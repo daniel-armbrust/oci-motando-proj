@@ -487,10 +487,74 @@ rmuser.py*
 
 - data.sql : Arquivo que contém instruções SQL para inserir dados referentes a estados, cidades, marcas e modelos de motocicletas.
 - load2db.py : Script para inserir dados fictícios referente a usuários e anúncios de motocicletas na aplicação.
+- img/ : Diretório que contém algumas imagens de motocicletas.
 
 O script **load2db.py** é bastante útil, pois consegue testar todo o processo de publicação de um anúncio (workflow de publicação), testando inclusive a regra de negócio executada pelo _Dramatiq_. Ou seja, para executar o script **load2db.py**, os serviços do _Dramatiq_, _Redis_ e _MySQL_ devem estar em execução conforme demonstrado pela figura abaixo:
 
 ![alt_text](/githimgs/dev_dramatiq-arch-4.png "Ambiente de Desenvolvimento")
+
+>_**__NOTA:__** Lembre-se de concluír a tarefa anterior que envolve a adição dos dados contidos no arquivo data.sql. É um pré-requisito necessário para poder executar o script load2db.py._
+
+Para carregar os dados fictícios, seguir os passos abaixo:
+
+1 - Crie as variáveis de ambiente necessárias para execução da aplcação Web:
+
+```
+$ export APP_ENV='DEV'
+
+$ export MYSQL_HOST='127.0.0.1'
+$ export MYSQL_USER='motandousr'
+$ export MYSQL_PASSWD='secreto'
+$ export MYSQL_DBNAME='motandodb'
+
+$ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
+$ export OCI_REGION_ID='sa-saopaulo-1'
+$ export OCI_OBJSTR_NAMESPACE='grxmw2a9myyj'
+$ export OCI_BUCKET_MOTANDO_IMG='dev_motando-img'
+$ export OCI_BUCKET_MOTANDO_IMGTMP='dev_motando-tmpimg'
+
+$ export OCI_ACCESS_KEY='8aa0aaaaadas8923749hnadsaaaaaaaaa75'
+$ export OCI_SECRET_KEY='bbaa0aG8Udv6YO+1i4Gh84mCWIkH3749hnadsaaaa=='
+
+$ export CLASSIFIEDAD_XMLRPC_HOST='127.0.0.1'
+$ export CLASSIFIEDAD_XMLRPC_PORT=8100
+
+$ export WEBAPP_OCI_LOG_ID=ocid1.log.oc1.sa-saopaulo-1.amaaaaaa
+```
+
+Para facilitar, há um arquivo em _"build/motando.env-example"_ que pode ser usado para criar as variáveis de ambiente de uma maneira mais fácil. Preencha com os valores correspondentes e é possível ter as variáveis criadas sempre que necessário da seguinte forma:
+
+```
+$ mv build/motando.env-example build/motando.env
+$ source build/motando.env
+```
+
+2 - Ative o ambiente virtual:
+
+```
+$ pwd
+/home/darmbrust/oci-motando-proj
+
+$ cd webapp/
+
+$ source venv/bin/activate
+(venv) $
+```
+
+3 - Acesse o diretório que contém os dados fictícios:
+
+```
+(venv) $ pwd
+/home/darmbrust/oci-motando-proj/webapp
+
+(venv) $ cd data/
+```
+
+4 - Execute o script para carregar os dados fictícios:
+
+```
+(venv) $ ../motando/manage.py shell < ./load2db.py
+```
 
 ### Arquivos estáticos (static files)
 
