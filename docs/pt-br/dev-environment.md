@@ -274,6 +274,8 @@ O processo de publicação (workflow de publicação) de um anúncio e suas imag
 
 Tendo o processo de publicação implementado de forma independente, este pode ser incrementado facilmente com outras atividades se necessário. Por exemplo, é possível enviar um e-mail ao usuário quando a publicação do anúncio estiver sido concluída ou mesmo, acrescentar uma marca d'agua com o logotipo _Motando_ nas imagens.
 
+
+
 ### Dramatiq
 
 Basicamente o _[Dramatiq](https://dramatiq.io/index.html)_ é uma ferramenta para processar tarefas em a partir de uma fila (task queue). Porém, sua grande sacada, é que ele possibilita processar tais tarefas de forma independente do programa principal, em _background_.  
@@ -294,13 +296,130 @@ O comando abaixo irá criar o contêiner e iniciar o serviço _[Redis](https://r
 $ docker run --name redis --net=host -d redis:7
 ```
 
-#### MySQL (result backend)
-
 #### Ambiente Virtual e dependências
+
+1 - A partir do diretório raíz, deve-se acessar o diretório do serviço _Dramatic_:
+```
+$ pwd
+/home/darmbrust/oci-motando-proj
+
+$ cd services/dramatiq-classifiedad/
+```
+
+2- Crie e ative _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_ com os comandos abaixo:
+```
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $
+```
+
+3 - Instale o _[Dramatiq](https://dramatiq.io/index.html)_, suas dependências e salve-as no arquivo "requirements.txt":
+```
+(venv) $ pip install -U 'dramatiq[redis, watch]'
+(venv) $ pip install oci
+(venv) $ pip install mysql-connector-python
+
+(venv) $ pip freeze > requirements.txt 
+```
+
+#### Classificados da aplicação Motando e o Dramatiq
+
+O serviço para publicação dos classificados da aplicação _Motando_, utiliza o serviço _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_ já presente por padrão no conjunto de bibliotecas do Python3 e o _[Dramatiq](https://dramatiq.io/index.html)_.
+
+Por isso, este serviço depende da execução de dois processos independentes, o _Dramatiq_ e _XMLRPC_. 
+
+Para o _XMLRPC_:
+
+1 - Para iniciar o _XMLRPC_, primeiramente accesse o diretório "app/":
+
+```
+(venv) $ cd app/
+```
+
+2 - O _XMLRPC_ necessita acessar algumas informações através das seguintes variáveis de ambiente:
+
+```
+(venv) $ export APP_ENV='DEV'
+(venv) $ export OCI_LOG_ID='ocid1.log.oc1.sa-saopaulo-1.amaaaaaa'
+(venv) $ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
+```
+
+3 - Agora, basta iniciar o serviço:
+```
+(venv) $ python xmlrpcs.py 
+```
+
+Para o _Dramatiq_:
+
+1 - O _Dramatiq_ necessita de algumas outras informações através das seguintes variáveis de ambiente:
+
+```
+(venv) $ export APP_ENV='DEV'
+
+(venv) $ export MYSQL_HOST='127.0.0.1'
+(venv) $ export MYSQL_USER='motandousr'
+(venv) $ export MYSQL_PASSWD='secreto'
+(venv) $ export MYSQL_DBNAME='motandodb'
+
+(venv) $ export REDIS_HOST='127.0.0.1'
+(venv) $ export REDIS_PORT=6379
+(venv) $ export REDIS_PASSWD=''
+
+(venv) $ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
+(venv) $ export OCI_REGION_ID='sa-saopaulo-1'
+(venv) $ export OCI_OBJSTR_NAMESPACE='grxmw2a9myyj'
+(venv) $ export OCI_BUCKET_MOTANDO_IMG='dev_motando-img'
+(venv) $ export OCI_BUCKET_MOTANDO_IMGTMP='dev_motando-tmpimg'
+
+(venv) $ export WORKFLOW_OCI_LOG_ID='ocid1.log.oc1.sa-saopaulo-1.amaaaaaa'
+```
+
+As tarefas que serão executadas em _background_ pelo _Dramatiq_, necessitam de acesso ao _MySQL_ para publicar um determinado anúncio da aplicação. O _Redis_ é necessário para o funcionamento do _Dramatiq_ e no ambiente de desenvolvimento, ele pode ser acessado livremente sem senha.
+
+Já as variáveis de ambiente que possuem o prefixo *OCI_*, definem a localização do arquivo de configuração do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/cliconcepts.htm)_, a região do OCI usada, _[Object Storage Namespace](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/understandingnamespaces.htm)_ e o nome dos _Buckets_. Todas são necessárias para a correta manipulação das imagens a partir do ambiente de desenvolvimento.
+
+A variável de ambiente *WORKFLOW_OCI_LOG_ID*, corresponde ao OCID referente ao _[Logging](https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm)_ usado para registrar os logs no OCI.
+
+2 - Tendo as variáveis corretamente configuradas, é possível iniciar o _Dramatiq_ com o comando abaixo:
+
+```
+(venv) $ dramatiq tasks
+```
 
 #### Imagem Docker
 
+O descrito acima, sobre a criação do ambiente virtual, instalação das dependências, criação das variáveis de ambiente e incialização dos processos, teve o intuíto de apresentar o passo-a-passo usado na criação do serviço para publicação de anúncios.
+
+Para o ambiente de desenvolvimento, basta iniciar o _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_ em um shell separado e iniciar o _XMLRPC_ e _Dramatiq_ em _background_ e o serviço entrará em execução.
+
+Porém, para a produção, este serviço deverá ser empacotado em uma _[imagem Docker](https://docs.docker.com/engine/reference/commandline/images/)_ para facilitar todo o transporte e seu deployment.
+
 ## Tarefas assíncronas com Dramatic
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -49,7 +49,7 @@ log.basicConfig(
 )
 
 # Dramatiq init
-redis_broker = RedisBroker(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWD)
+redis_broker = RedisBroker(host=REDIS_HOST, port=int(REDIS_PORT), password=REDIS_PASSWD)
 dramatiq.set_broker(redis_broker)
 
 
