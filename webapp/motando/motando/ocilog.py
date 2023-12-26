@@ -12,7 +12,7 @@ import oci
 
 # Globals
 OCI_LOG_UUID = 'd0395ad0-1a75-11ee-be56-0242ac120002'
-OCI_CONFIG_FILE = os.environ.get('OCI_CONFIG_FILE')
+OCI_CONFIG_FILE = os.environ.get('OCI_CONFIG_FILE', '/opt/webapp/ocisecrt/config')
 
 class OciLogHandler(logging.Handler):
     def __init__(self) -> None: 
