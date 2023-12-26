@@ -16,17 +16,19 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Environment
+# Environment (PRD == Prodution)
 APP_ENV = os.environ.get('APP_ENV')
 
 # OCI
 OCI_REGION = os.environ.get('OCI_REGION_ID')
 OCI_BUCKET_NAMESPACE = os.environ.get('OCI_OBJSTR_NAMESPACE')
-CLASSIFIEDAD_TMPIMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
+OCI_LOG_ID = os.environ.get('WEBAPP_OCI_LOG_ID')
+
+# Classifiedad Buckets and XMLRPC host
 CLASSIFIEDAD_IMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMG')
-CLASSIFIEDAD_TASK_QUEUE_HOST = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_HOST')
-CLASSIFIEDAD_TASK_QUEUE_PORT = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_PORT', 8100)
-OCI_LOG_ID = os.environ.get('WEBAPP_LOG_ID')
+CLASSIFIEDAD_TMPIMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
+CLASSIFIEDAD_XMLRPC_HOST = os.environ.get('CLASSIFIEDAD_XMLRPC_HOST')
+CLASSIFIEDAD_XMLRPC_PORT = os.environ.get('CLASSIFIEDAD_XMLRPC_PORT', 8100)
 
 # OCI ObjectStorage Amazon S3 Compatibility API
 # https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm
@@ -37,11 +39,14 @@ AWS_S3_CUSTOM_DOMAIN = f'{OCI_BUCKET_NAMESPACE}.compat.objectstorage.{OCI_REGION
 AWS_S3_ENDPOINT_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}'
 AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 
+# Django Static Files
 STATICFILES_BUCKET = os.environ.get('OCI_STATICFILES_BUCKET_NAME')
 STATIC_URL = 'static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '%s/media' % (BASE_DIR,)
+
+ALLOWED_HOSTS = ['*']
 
 if APP_ENV == 'PRD':
     DEBUG = False
@@ -55,14 +60,10 @@ if APP_ENV == 'PRD':
     #SECURE_SSL_REDIRECT = True      
 else:
     from secrets import token_hex
-    SECRET_KEY = token_hex(32)    
-    OCI_CONFIG_FILE = '/opt/webapp/ocisecrt/config'
+    SECRET_KEY = token_hex(32)        
     CSRF_TRUSTED_ORIGINS = []
     STATICFILES_DIRS = [BASE_DIR / 'static/']
     DEBUG = True
-
-
-ALLOWED_HOSTS = ['*']
 
 # Session
 SESSION_COOKIE_AGE = 3600

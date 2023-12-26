@@ -231,6 +231,10 @@ A cópia dos arquivos estáticos da aplicação para o _[Bucket](https://docs.or
 ### Iniciando a aplicação
 
 ```
+
+```
+
+```
 (venv) $ motando/manage.py runserver
 Watching for file changes with StatReloader
 Performing system checks...
@@ -242,53 +246,139 @@ Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ```
 
-## Tarefas assíncronas com Celery
+## Tarefas assíncronas com Dramatiq
 
-A aplicação _Motando_ utiliza o _[Celery](https://docs.celeryq.dev/en/stable/index.html)_ para processar tarefas independentes da parte Web. Lembrando que toda interação entre navegador e servidor, utiliza um ciclo requisição/resposta. Este ciclo possui um tempo máximo para ser completado que começa a partir da requisição feita pelo cliente (navegador), até a resposta emitida pelo servidor.
+A aplicação _Motando_ utiliza o _[Dramatiq](https://dramatiq.io/index.html)_ para processar tarefas independentes da parte Web. Lembrando que toda interação entre navegador e servidor, utiliza um ciclo requisição/resposta. Este ciclo possui um tempo máximo para ser completado que começa a partir da requisição feita pelo cliente (navegador), até a resposta emitida pelo servidor.
 
 Caso a reposta do servidor demore muito, o protocolo _HTTP_ que controla esse tempo, fecha a conexão que está ativa, interrompendo assim a navegação do cliente. Em outras palavras, há um _TIMEOUT_.
 
-O _Celery_ entra em cena para toda atividade que envolve a publicação de um novo anúncio, atualização ou exclusão. Um anúncio, além das informações que o descrevem, possuem também imagens que são armazenadas em um _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_.
+O _Dramatiq_ entra em cena para toda atividade que envolve a publicação de um novo anúncio, atualização ou exclusão. Um anúncio, além das informações que o descrevem, possuem também imagens que são armazenadas em um _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_.
 
-Para um novo anúncio, as imagens primeiramente vão para um _Bucket_ temporário (dev_motando-tmpimg). Logo após, o _Celery_ é comandado pela aplicação Web (via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_) para transferir a imagem do _Bucket_ temporário (dev_motando-tmpimg) para o _Bucket_ permanente (dev_motando-img).
+Para um novo anúncio, as imagens primeiramente vão para um _Bucket_ temporário (dev_motando-tmpimg). Logo após, o _Dramatiq_ é comandado pela aplicação Web (via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_) para transferir a imagem do _Bucket_ temporário (dev_motando-tmpimg) para o _Bucket_ permanente (dev_motando-img).
 
 Esse processo de cópia entre os _Buckets_, pode levar a algum tempo e prejudicar a navegação do usuário por conta do tempo no ciclo requisição/resposta imposto pelo protocolo _HTTP_.
 
 Ter o processo de cópia entre _Buckets_, executado de forma independente da aplicação Web, assegura o não _TIMEOUT_ entre cliente e servidor para tratar as imagens dos anúncios.
 
-Optei por utilizar essa arquitetura, de possuir dois _Buckets_, primeiramente como forma de evitar qualquer desperdício de espaço ao salvar as imagens. O _Bucket_ temporário possui uma _[Lifecycle Policy](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/usinglifecyclepolicies.htm)_ para excluír qualquer arquivo depois de um certo período de tempo. Há tempo suficiente para o _Celery_ fazer o seu trabalho e publicar o anúncio e suas imagens.
+Optei por utilizar essa arquitetura, de possuir dois _Buckets_, primeiramente como forma de evitar qualquer desperdício de espaço ao salvar as imagens. O _Bucket_ temporário possui uma _[Lifecycle Policy](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/usinglifecyclepolicies.htm)_ para excluír qualquer arquivo depois de um certo período de tempo. Há tempo suficiente para o _Dramatiq_ fazer o seu trabalho e publicar o anúncio e suas imagens.
 
 O processo de publicação (workflow de publicação) de um anúncio e suas imagens, pode ser melhor entendido observando a figura abaixo:
 
-![alt_text](/githimgs/dev_celery-arch-2.png "Celery Arch #2")
+![alt_text](/githimgs/dev_dramatiq-arch-2.png "workflow de publicação")
 
 1. Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
 2. As imagens são salvas pela aplicação Web diretamente no _Bucket_ temporário (dev_motando_tmpimg).
-3. Em seguida, a aplicação Web notifica o _Celery_ via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_, dizendo que há um novo anúncio para ser publicado.
-4. De forma independente da aplicação Web, o _Celery_ começa o trabalho de publicação do anúncio que consiste basicamente na cópia das imagens entre os _Buckets_.
-5. Ao término da cópia, o _Celery_ concluí a publicação do anúncio atualizando alguns dados no _[MySQL](https://docs.oracle.com/en-us/iaas/mysql-database/index.html)_.
+3. Em seguida, a aplicação Web notifica o _Dramatiq_ via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_, dizendo que há um novo anúncio para ser publicado.
+4. De forma independente da aplicação Web, o _Dramatiq_ começa o trabalho de publicação do anúncio que consiste basicamente na cópia das imagens entre os _Buckets_.
+5. Ao término da cópia, o _Dramatiq_ concluí a publicação do anúncio atualizando alguns dados no _[MySQL](https://docs.oracle.com/en-us/iaas/mysql-database/index.html)_.
 
 Tendo o processo de publicação implementado de forma independente, este pode ser incrementado facilmente com outras atividades se necessário. Por exemplo, é possível enviar um e-mail ao usuário quando a publicação do anúncio estiver sido concluída ou mesmo, acrescentar uma marca d'agua com o logotipo _Motando_ nas imagens.
 
-### Celery
+### Dramatiq
 
-Basicamente o _[Celery](https://docs.celeryq.dev/en/stable/index.html)_ é uma ferramenta para processar tarefas de uma fila (task queue). A grande sacada do _Celery_, é que ele possibilita processar tarefas de forma independente do programa principal.  
+Basicamente o _[Dramatiq](https://dramatiq.io/index.html)_ é uma ferramenta para processar tarefas em a partir de uma fila (task queue). Porém, sua grande sacada, é que ele possibilita processar tais tarefas de forma independente do programa principal, em _background_.  
 
-Como parte do seu funcionamento, o _Celery_ necessita de um serviço separado que seja capaz de armazenar suas mensagens. Este é conhecido como _message broker_ ou _message transport_.
+>_**__NOTA:__** Aqui, o "programa principal" é a aplicação Web escrita através do framework [Django](https://www.djangoproject.com/)._
+
+Como parte do seu funcionamento, o _Dramatiq_ necessita de um serviço separado que seja capaz de armazenar suas mensagens. Este é conhecido como _message broker_ ou _message transport_.
 
 Para o _message broker_, tanto o _[RabbitMQ](https://www.rabbitmq.com/)_ quanto o _[Redis](https://redis.io/)_ são excelentes. Para a aplicação _Motando_ será usado o _Redis_ como broker de mensagens.
 
-Além do broker, o _Celery_ pode salvar todo o progresso e o resultado das tarefas em um _result backend_. Para a aplicação _Motando_, o _result backend_ será o _MySQL_.
-
-![alt_text](/githimgs/dev_celery-arch-3.png "Celery Arch #3")
+![alt_text](/githimgs/dev_dramatiq-arch-3.png "Dramatiq Arch #3")
 
 #### Redis (message broker)
+
+O comando abaixo irá criar o contêiner e iniciar o serviço _[Redis](https://redis.io/)_ na porta 6379/tcp:
 
 ```
 $ docker run --name redis --net=host -d redis:7
 ```
 
 #### MySQL (result backend)
+
+#### Ambiente Virtual e dependências
+
+#### Imagem Docker
+
+## Tarefas assíncronas com Dramatic
+
+
+
+### Dramatic
+
+#### Redis (message broker)
+
+O comando abaixo irá criar o contêiner e iniciar o serviço _[Redis](https://redis.io/)_ na porta 6379/tcp:
+
+```
+$ docker run --name redis --net=host -d redis:7
+```
+
+#### Ambiente Virtual e dependências
+
+```
+$ pwd
+/home/darmbrust/oci-motando-proj
+
+$ cd services/dramatiq-classifiedad/
+```
+
+```
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $
+```
+
+```
+(venv) $ export APP_ENV='DEV'
+(venv) $ export CLASSIFIEDAD_XMLRPC_PORT=8100
+(venv) $ export OCI_LOG_ID='ocid1.log.oc1.sa-saopaulo-1.amaaaaaa7acctnqadfi7reyb3llczg4w5c4p35mebl4iq4gyltclslqngg5a'
+(venv) $ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
+```
+
+```
+(venv) $ pip install -U 'dramatiq[redis, watch]'
+(venv) $ pip install oci
+(venv) $ pip install mysql-connector-python
+
+(venv) $ pip freeze > requirements.txt 
+```
+
+```
+(venv) $ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
+(venv) $ export APP_ENV='DEV'
+
+(venv) $ export CLASSIFIEDAD_XMLRPC_PORT=8100
+
+(venv) $ export APPDB_HOST='127.0.0.1'
+(venv) $ export APPDB_USER='motandousr'
+(venv) $ export APPDB_PASSWD='secreto'
+(venv) $ export APPDB_DBNAME='motandodb'
+
+(venv) $ export REDIS_HOST='127.0.0.1'
+
+(venv) $ export OCI_REGION_ID='sa-saopaulo-1'
+(venv) $ export OCI_OS_NAMESPACE='grxmw2a9myyj'
+(venv) $ export OCI_BUCKET_MOTANDO_IMG='dev_motando-img'
+(venv) $ export OCI_BUCKET_MOTANDO_IMGTMP='dev_motando-tmpimg'
+(venv) $ export OCI_LOG_ID='ocid1.log.oc1.sa-saopaulo-1.amaaaaaa7acctnqadfi7reyb3llczg4w5c4p35mebl4iq4gyltclslqngg5a'
+```
+
+-- Para voltar o banco de dados no estado vazio:
+```
+(venv) $ mysql -u motandousr -h 127.0.0.1 -A motandodb -p
+Enter password: 
+
+mysql> delete from classifiedad_images;
+Query OK, 351 rows affected (0.01 sec)
+
+mysql> delete from classifiedad;
+Query OK, 117 rows affected (0.01 sec)
+
+(venv) $ ../motando/manage.py shell < ./rmuser.py 
+```
+
+
 
 ## Variáveis de ambiente
 

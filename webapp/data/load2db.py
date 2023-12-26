@@ -23,8 +23,9 @@ APP_ENV = os.environ.get('APP_ENV')
 OCI_REGION_ID = os.environ.get('OCI_REGION_ID')
 OCI_BUCKET_NAMESPACE = os.environ.get('OCI_OBJSTR_NAMESPACE')
 CLASSIFIEDAD_TMPIMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
-CLASSIFIEDAD_TASK_QUEUE_HOST = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_HOST')
-CLASSIFIEDAD_TASK_QUEUE_PORT = os.environ.get('CLASSIFIEDAD_TASK_QUEUE_PORT')
+CLASSIFIEDAD_XMLRPC_HOST = os.environ.get('CLASSIFIEDAD_XMLRPC_HOST')
+CLASSIFIEDAD_XMLRPC_PORT = os.environ.get('CLASSIFIEDAD_XMLRPC_PORT')
+OCI_CONFIG_FILE = os.environ.get('OCI_CONFIG_FILE')
 
 
 def get_motorcycle_brands():
@@ -74,7 +75,7 @@ def create_classifiedad(user=None, max_classifiedad=3):
         signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
         os_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
     else:
-        config = oci.config.from_file()
+        config = oci.config.from_file(file_location=OCI_CONFIG_FILE)
         os_client = oci.object_storage.ObjectStorageClient(config=config)
 
     ns = os_client.get_namespace().data
@@ -149,7 +150,7 @@ def create_classifiedad(user=None, max_classifiedad=3):
                 ClassifiedAdImage(url=file_url, classifiedad_id=new_classifiedad_id).save()
             else:
                 xmlrpc_client = xmlrpc.client.ServerProxy(
-                    f'http://{CLASSIFIEDAD_TASK_QUEUE_HOST}:{CLASSIFIEDAD_TASK_QUEUE_PORT}/'
+                    f'http://{CLASSIFIEDAD_XMLRPC_HOST}:{CLASSIFIEDAD_XMLRPC_PORT}/'
                 )
 
                 try:
