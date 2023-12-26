@@ -201,6 +201,7 @@ Dockerfile
 README.md
 app/
 deployment.yaml
+docker-entrypoint.sh*
 ocisecrt/
 readiness-probe.sh*
 requirements.txt
@@ -208,8 +209,9 @@ service.yaml
 venv/
 ```
 
-- Dockerfile : Instruções para construção da imagem Docker.
+- Dockerfile : Arquivo que contém instruções para a construção da imagem Docker.
 - app/ : Diretório que contém a aplicação para publicar anúncios.
+- docker-entrypoint.sh : Script que é executado quando o contêiner iniciar.
 - ocisecrt/ : Diretório que contém os arquivos para autenticação do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#configfile)_ (neccessário somente para o ambiente de dev). 
 - requirements.txt : Arquivo que lista as dependências do projeto Python.
 - venv/ : Diretório do _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_.
@@ -236,7 +238,7 @@ O comando abaixo irá criar o contêiner e iniciar o serviço _[Redis](https://r
 $ docker run --name redis --net=host -d redis:7
 ```
 
-#### Ambiente Virtual e dependências
+### Ambiente Virtual Python e suas dependências
 
 1 - A partir do diretório raíz, deve-se acessar o diretório do serviço _Dramatic_:
 ```
@@ -378,13 +380,43 @@ $ docker image build --target=envdev -t dramatiq-classifiedad:dev .
 $ docker image build -t dramatiq-classifiedad:1.0 .
 ```
 
->_**__NOTA:__** Observe que para produção a opção --target=envdev foi omitida ao criar a imagem. Isso é uma boa ideia pois, imagems de produção não devem conter arquivos que contenham credenciais._
+>_**__NOTA:__** Observe que para produção a opção --target=envdev foi omitida ao criar a imagem para o ambiente de produção. Isso é uma boa ideia pois, imagems de produção não devem conter arquivos que contenham credenciais de qualquer tipo._
 
 ## A aplicação Motando através do framework Django
 
-### Python Virtual Environment e as dependências da aplicação
+### Descrição dos arquivos
 
-1 - A partir do diretório raíz do código fonte, acesse o diretório _webapp_":
+Abaixo a descrição dos arquivos que fazem parte do aplicação Web _Motando_:
+
+```
+$ pwd
+/home/darmbrust/oci-motando-proj
+
+$ cd webapp/
+
+$ ls -1F
+Dockerfile
+data/
+deployment.yaml
+docker-entrypoint.sh*
+motando/
+ocisecrt/
+requirements.txt
+service.yaml
+venv/
+```
+
+- Dockerfile : Arquivo que contém instruções para a construção da imagem Docker.
+- data/ : Diretório que contém scripts e dados fictícios para construção do ambiente de desenvolvimento.
+- docker-entrypoint.sh : Script que é executado quando o contêiner iniciar.
+- motando/ : Diretório da aplicação Web (_[Django Project](https://docs.djangoproject.com/en/4.2/intro/tutorial01/#creating-a-project)_). 
+- ocisecrt/ : Diretório que contém os arquivos para autenticação do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#configfile)_ (neccessário somente para o ambiente de dev). 
+- requirements.txt : Arquivo que lista as dependências do projeto Python.
+- venv/ : Diretório do _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_.
+
+### Ambiente Virtual Python e suas dependências
+
+1 - A partir do diretório raíz do código fonte, acesse o diretório "webapp/":
 
 ```
 $ pwd
@@ -436,6 +468,30 @@ mysql> source data/data.sql
 
 >_**__NOTA:__** Os dados contidos no arquivo data.sql são dados referente a cidades, estados e também sobre marcas e modeles de algumas motocicletas._
 
+### Inserindo dados fictícios
+
+Dentro do diretório "data/", há alguns arquivos e scripts que podem ser usados para inserir alguns dados fictícios. Observe a descrição dos mesmos abaixo:
+
+```
+$ pwd
+/home/darmbrust/oci-motando-proj/webapp
+
+$ ls -1F data/
+accounts.csv
+data.sql
+img/
+load2db.py*
+makecsv.py*
+rmuser.py*
+```
+
+- data.sql : Arquivo que contém instruções SQL para inserir dados referentes a estados, cidades, marcas e modelos de motocicletas.
+- load2db.py : Script para inserir dados fictícios referente a usuários e anúncios de motocicletas na aplicação.
+
+O script **load2db.py** é bastante útil, pois consegue testar todo o processo de publicação de um anúncio (workflow de publicação), testando inclusive a regra de negócio executada pelo _Dramatiq_. Ou seja, para executar o script **load2db.py**, os serviços do _Dramatiq_, _Redis_ e _MySQL_ devem estar em execução conforme demonstrado pela figura abaixo:
+
+![alt_text](/githimgs/dev_dramatiq-arch-4.png "Ambiente de Desenvolvimento")
+
 ### Arquivos estáticos (static files)
 
 A aplicação _Motando_ possui alguns arquivos estáticos como imagens, páginas HTML, arquivos CSS e JavaScript. Para o ambiente de desenvolvimento, esses arquivos ficarão acessíveis através do _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_ de nome _dev\_motando-staticfiles_.
@@ -481,3 +537,5 @@ Query OK, 117 rows affected (0.01 sec)
 
 (venv) $ ../motando/manage.py shell < ./rmuser.py 
 ```
+
+### Docker Compose
