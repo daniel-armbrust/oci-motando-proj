@@ -328,16 +328,23 @@ Por último, a variável de ambiente *WORKFLOW_OCI_LOG_ID*, corresponde ao OCID 
 
 O descrito acima, sobre a criação do ambiente virtual, instalação das dependências, criação das variáveis de ambiente e incialização dos processos, teve o intuíto de apresentar o passo-a-passo usado na criação do serviço que publica os anúncios da aplicação _Motando_.
 
-Enquanto se desenvolve a aplicação, eu prefiro iniciar os serviços cada um em um shell separado. Isto facilita o desenvolvimento.
+Porém, para a produção, este serviço deverá ser empacotado em uma _[imagem Docker](https://docs.docker.com/engine/reference/commandline/images/)_ para facilitar todo o transporte e seu deployment
 
-Para o ambiente de desenvolvimento, basta ativar o _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_ em um shell separado e iniciar o _XMLRPC_ e _Dramatiq_ em _background_ e o serviço entrará em execução.
-
-Porém, para a produção, este serviço deverá ser empacotado em uma _[imagem Docker](https://docs.docker.com/engine/reference/commandline/images/)_ para facilitar todo o transporte e seu deployment.
-
-Como este serviço necessita de dois processos em execução (XMLRPC e Dramatiq), será utilizado a estratégia de _[Multi Service Container](https://docs.docker.com/config/containers/multi-service_container/)_ para a construção da imagem.
+O _[multi-stage build](https://docs.docker.com/build/building/multi-stage/)_ foi especificado no _Dockerfile_, pois os arquivos do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#configfile)_ precisam ser transportados para dentro da imagem. Tais arquivos só são necessários ao executar o contêiner fora do OCI, ou seja, em ambiente de desenvolvimento.
 
 ```
-$ cat dramatiq-classifiedad/app/docker-entrypoint.sh
+$ tail -5 Dockerfile
+# Environment: DEV
+FROM base as envdev
+COPY --chown=dramatiq:dramatiq ./ocisecrt/ /opt/dramatiq-classifiedad/ocisecrt/
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
+```
+
+Uma outra necessidade, é que este serviço necessita de dois processos em execução (XMLRPC e Dramatiq). Para isso, será utilizado a estratégia de _[Multi Service Container](https://docs.docker.com/config/containers/multi-service_container/)_ ao iniciar o contêiner. 
+
+```
+$ cat app/docker-entrypoint.sh
 #!/bin/bash
 
 #
@@ -356,6 +363,22 @@ wait -n
 # Exit with status of process that exited first
 exit $?
 ```
+
+A partir do diretório "services/dramatiq-classifiedad", execute o comando abaixo para criar a imagem Docker:
+
+- Para o ambiente de **desenvolvimento**:
+
+```
+$ docker image build --target=envdev -t dramatiq-classifiedad:dev .
+```
+
+- Para o ambiente de **produção**:
+
+```
+$ docker image build -t dramatiq-classifiedad:1.0 .
+```
+
+>_**__NOTA:__** Observe que para produção a opção --target=envdev foi omitida ao criar a imagem. Isso é uma boa ideia pois, imagems de produção não devem conter arquivos que contenham credenciais._
 
 ## A aplicação Motando através do framework Django
 
