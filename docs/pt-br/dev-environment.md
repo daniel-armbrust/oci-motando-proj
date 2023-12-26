@@ -158,6 +158,203 @@ mysql> FLUSH PRIVILEGES;
 Query OK, 0 rows affected (0.00 sec)
 ```
 
+## Tarefas assíncronas com Dramatiq
+
+A aplicação _Motando_ utiliza o _[Dramatiq](https://dramatiq.io/index.html)_ para processar tarefas independentes da parte Web. Lembrando que toda interação entre navegador e servidor, utiliza um ciclo requisição/resposta. Este ciclo possui um tempo máximo para ser completado que começa a partir da requisição feita pelo cliente (navegador), até a resposta emitida pelo servidor.
+
+Caso a reposta do servidor demore muito, o protocolo _HTTP_ que controla esse tempo, fecha a conexão que está ativa, interrompendo assim a navegação do cliente. Em outras palavras, há um _TIMEOUT_.
+
+O _Dramatiq_ entra em cena para toda atividade que envolve a publicação de um novo anúncio, atualização ou exclusão. Um anúncio, além das informações que o descrevem, possuem também imagens que são armazenadas em um _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_.
+
+Para um novo anúncio, as imagens primeiramente vão para um _Bucket_ temporário (dev_motando-tmpimg). Logo após, o _Dramatiq_ é comandado pela aplicação Web (via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_) para transferir a imagem do _Bucket_ temporário (dev_motando-tmpimg) para o _Bucket_ permanente (dev_motando-img).
+
+Esse processo de cópia entre os _Buckets_, pode levar a algum tempo e prejudicar a navegação do usuário por conta do tempo no ciclo requisição/resposta imposto pelo protocolo _HTTP_.
+
+Ter o processo de cópia entre _Buckets_, executado de forma independente da aplicação Web, assegura o não _TIMEOUT_ entre cliente e servidor para tratar as imagens dos anúncios.
+
+Optei por utilizar essa arquitetura, de possuir dois _Buckets_, primeiramente como forma de evitar qualquer desperdício de espaço ao salvar as imagens. O _Bucket_ temporário possui uma _[Lifecycle Policy](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/usinglifecyclepolicies.htm)_ para excluír qualquer arquivo depois de um certo período de tempo. Há tempo suficiente para o _Dramatiq_ fazer o seu trabalho e publicar o anúncio e suas imagens.
+
+O processo de publicação (workflow de publicação) de um anúncio e suas imagens, pode ser melhor entendido observando a figura abaixo:
+
+![alt_text](/githimgs/dev_dramatiq-arch-2.png "workflow de publicação")
+
+1. Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
+2. As imagens são salvas pela aplicação Web diretamente no _Bucket_ temporário (dev_motando_tmpimg).
+3. Em seguida, a aplicação Web notifica o _Dramatiq_ via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_, dizendo que há um novo anúncio para ser publicado.
+4. De forma independente da aplicação Web, o _Dramatiq_ começa o trabalho de publicação do anúncio que consiste basicamente na cópia das imagens entre os _Buckets_.
+5. Ao término da cópia, o _Dramatiq_ concluí a publicação do anúncio atualizando alguns dados no _[MySQL](https://docs.oracle.com/en-us/iaas/mysql-database/index.html)_.
+
+Tendo o processo de publicação implementado de forma independente, este pode ser incrementado facilmente com outras atividades se necessário. Por exemplo, é possível enviar um e-mail ao usuário quando a publicação do anúncio estiver sido concluída ou mesmo, acrescentar uma marca d'agua com o logotipo _Motando_ nas imagens.
+
+### Dramatiq
+
+```
+$ pwd
+/home/darmbrust/oci-motando-proj
+
+$ cd services/dramatiq-classifiedad/ 
+
+$ ls -1F
+Dockerfile
+README.md
+app/
+deployment.yaml
+ocisecrt/
+readiness-probe.sh*
+requirements.txt
+service.yaml
+venv/
+```
+
+- Dockerfile : Instruções para construção da imagem Docker.
+- app/ : Diretório que contém a aplicação para publicar anúncios.
+- ocisecrt/ : Diretório que contém os arquivos para autenticação do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#configfile)_ (neccessário somente para o ambiente de dev). 
+- requirements.txt : Arquivo que lista as dependências do projeto Python.
+- venv/ : Diretório do _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_.
+
+Os arquivos _deployment.yaml_, _service.yaml_ e o script _readiness-probe.sh_, fazem parte da implantação deste serviço no _[Kubernetes](https://kubernetes.io/)_ e não serão detalhados aqui.
+
+### Dramatiq
+
+Basicamente o _[Dramatiq](https://dramatiq.io/index.html)_ é uma ferramenta para processar tarefas em a partir de uma fila (task queue). Porém, sua grande sacada, é que ele possibilita processar tais tarefas de forma independente do programa principal.  
+
+>_**__NOTA:__** Aqui, o "programa principal" é a aplicação Web escrita através do framework [Django](https://www.djangoproject.com/)._
+
+Como parte do seu funcionamento, o _Dramatiq_ necessita de um serviço separado que seja capaz de armazenar suas mensagens. Este é conhecido como _message broker_ ou _message transport_.
+
+Para o _message broker_, tanto o _[RabbitMQ](https://www.rabbitmq.com/)_ quanto o _[Redis](https://redis.io/)_ são excelentes. Para a aplicação _Motando_ será usado o _Redis_ como broker de mensagens.
+
+![alt_text](/githimgs/dev_dramatiq-arch-3.png "Dramatiq Arch #3")
+
+#### Redis (message broker)
+
+O comando abaixo irá criar o contêiner e iniciar o serviço _[Redis](https://redis.io/)_ na porta 6379/tcp:
+
+```
+$ docker run --name redis --net=host -d redis:7
+```
+
+#### Ambiente Virtual e dependências
+
+1 - A partir do diretório raíz, deve-se acessar o diretório do serviço _Dramatic_:
+```
+$ pwd
+/home/darmbrust/oci-motando-proj
+
+$ cd services/dramatiq-classifiedad/
+```
+
+2- Crie e ative _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_ com os comandos abaixo:
+```
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $
+```
+
+3 - Instale o _[Dramatiq](https://dramatiq.io/index.html)_, suas dependências e salve-as no arquivo "requirements.txt":
+```
+(venv) $ pip install -U 'dramatiq[redis, watch]'
+(venv) $ pip install oci
+(venv) $ pip install mysql-connector-python
+
+(venv) $ pip freeze > requirements.txt 
+```
+
+#### Classificados da aplicação Motando e o Dramatiq
+
+O serviço para publicação dos classificados da aplicação _Motando_, utiliza o serviço _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_ já presente por padrão no conjunto de bibliotecas do Python3 e o _[Dramatiq](https://dramatiq.io/index.html)_.
+
+Por isso, este serviço depende da execução de dois processos independentes. Para o _XMLRPC_:
+
+1 - Para iniciar o _XMLRPC_, primeiramente accesse o diretório "app/":
+
+```
+(venv) $ cd app/
+```
+
+2 - O _XMLRPC_ necessita acessar algumas informações através das seguintes variáveis de ambiente:
+
+```
+(venv) $ export APP_ENV='DEV'
+(venv) $ export OCI_LOG_ID='ocid1.log.oc1.sa-saopaulo-1.amaaaaaa'
+(venv) $ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
+```
+
+3 - Agora, basta iniciar o serviço com o comando abaixo:
+```
+(venv) $ python xmlrpcs.py 
+```
+
+Para o _Dramatiq_:
+
+1 - O _Dramatiq_ necessita de algumas outras informações através das seguintes variáveis de ambiente:
+
+```
+(venv) $ export APP_ENV='DEV'
+
+(venv) $ export MYSQL_HOST='127.0.0.1'
+(venv) $ export MYSQL_USER='motandousr'
+(venv) $ export MYSQL_PASSWD='secreto'
+(venv) $ export MYSQL_DBNAME='motandodb'
+
+(venv) $ export REDIS_HOST='127.0.0.1'
+(venv) $ export REDIS_PORT=6379
+(venv) $ export REDIS_PASSWD=''
+
+(venv) $ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
+(venv) $ export OCI_REGION_ID='sa-saopaulo-1'
+(venv) $ export OCI_OBJSTR_NAMESPACE='grxmw2a9myyj'
+(venv) $ export OCI_BUCKET_MOTANDO_IMG='dev_motando-img'
+(venv) $ export OCI_BUCKET_MOTANDO_IMGTMP='dev_motando-tmpimg'
+
+(venv) $ export WORKFLOW_OCI_LOG_ID='ocid1.log.oc1.sa-saopaulo-1.amaaaaaa'
+```
+
+As tarefas que serão executadas em _background_ pelo _Dramatiq_, necessitam de acesso ao _MySQL_ para publicar um determinado anúncio da aplicação. O _Redis_ é necessário para o funcionamento do _Dramatiq_ e, no ambiente de desenvolvimento, ele pode ser acessado livremente sem senha.
+
+Já as variáveis de ambiente que possuem o prefixo *OCI_*, definem a localização do arquivo de configuração do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/cliconcepts.htm)_, a _[região](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm#top)_ do OCI, _[Object Storage Namespace](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/understandingnamespaces.htm)_ e o nome dos _Buckets_. Todas são necessárias para a correta manipulação das imagens a partir do ambiente de desenvolvimento.
+
+Por último, a variável de ambiente *WORKFLOW_OCI_LOG_ID*, corresponde ao OCID referente ao _[Logging](https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm)_ usado para registrar os logs no OCI.
+
+2 - Tendo as variáveis corretamente configuradas, é possível iniciar o _Dramatiq_ com o comando abaixo:
+
+```
+(venv) $ dramatiq tasks
+```
+
+#### Imagem Docker
+
+O descrito acima, sobre a criação do ambiente virtual, instalação das dependências, criação das variáveis de ambiente e incialização dos processos, teve o intuíto de apresentar o passo-a-passo usado na criação do serviço que publica os anúncios da aplicação _Motando_.
+
+Enquanto se desenvolve a aplicação, eu prefiro iniciar os serviços cada um em um shell separado. Isto facilita o desenvolvimento.
+
+Para o ambiente de desenvolvimento, basta ativar o _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_ em um shell separado e iniciar o _XMLRPC_ e _Dramatiq_ em _background_ e o serviço entrará em execução.
+
+Porém, para a produção, este serviço deverá ser empacotado em uma _[imagem Docker](https://docs.docker.com/engine/reference/commandline/images/)_ para facilitar todo o transporte e seu deployment.
+
+Como este serviço necessita de dois processos em execução (XMLRPC e Dramatiq), será utilizado a estratégia de _[Multi Service Container](https://docs.docker.com/config/containers/multi-service_container/)_ para a construção da imagem.
+
+```
+$ cat dramatiq-classifiedad/app/docker-entrypoint.sh
+#!/bin/bash
+
+#
+# https://docs.docker.com/config/containers/multi-service_container/
+#
+
+# Dramatiq Workers
+dramatiq tasks &
+
+# XMLRPC Server
+python xmlrpcs.py &
+
+# Wait for any process to exit
+wait -n
+
+# Exit with status of process that exited first
+exit $?
+```
+
 ## A aplicação Motando através do framework Django
 
 ### Python Virtual Environment e as dependências da aplicação
@@ -246,179 +443,6 @@ Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ```
 
-## Tarefas assíncronas com Dramatiq
-
-A aplicação _Motando_ utiliza o _[Dramatiq](https://dramatiq.io/index.html)_ para processar tarefas independentes da parte Web. Lembrando que toda interação entre navegador e servidor, utiliza um ciclo requisição/resposta. Este ciclo possui um tempo máximo para ser completado que começa a partir da requisição feita pelo cliente (navegador), até a resposta emitida pelo servidor.
-
-Caso a reposta do servidor demore muito, o protocolo _HTTP_ que controla esse tempo, fecha a conexão que está ativa, interrompendo assim a navegação do cliente. Em outras palavras, há um _TIMEOUT_.
-
-O _Dramatiq_ entra em cena para toda atividade que envolve a publicação de um novo anúncio, atualização ou exclusão. Um anúncio, além das informações que o descrevem, possuem também imagens que são armazenadas em um _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_.
-
-Para um novo anúncio, as imagens primeiramente vão para um _Bucket_ temporário (dev_motando-tmpimg). Logo após, o _Dramatiq_ é comandado pela aplicação Web (via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_) para transferir a imagem do _Bucket_ temporário (dev_motando-tmpimg) para o _Bucket_ permanente (dev_motando-img).
-
-Esse processo de cópia entre os _Buckets_, pode levar a algum tempo e prejudicar a navegação do usuário por conta do tempo no ciclo requisição/resposta imposto pelo protocolo _HTTP_.
-
-Ter o processo de cópia entre _Buckets_, executado de forma independente da aplicação Web, assegura o não _TIMEOUT_ entre cliente e servidor para tratar as imagens dos anúncios.
-
-Optei por utilizar essa arquitetura, de possuir dois _Buckets_, primeiramente como forma de evitar qualquer desperdício de espaço ao salvar as imagens. O _Bucket_ temporário possui uma _[Lifecycle Policy](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/usinglifecyclepolicies.htm)_ para excluír qualquer arquivo depois de um certo período de tempo. Há tempo suficiente para o _Dramatiq_ fazer o seu trabalho e publicar o anúncio e suas imagens.
-
-O processo de publicação (workflow de publicação) de um anúncio e suas imagens, pode ser melhor entendido observando a figura abaixo:
-
-![alt_text](/githimgs/dev_dramatiq-arch-2.png "workflow de publicação")
-
-1. Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
-2. As imagens são salvas pela aplicação Web diretamente no _Bucket_ temporário (dev_motando_tmpimg).
-3. Em seguida, a aplicação Web notifica o _Dramatiq_ via _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_, dizendo que há um novo anúncio para ser publicado.
-4. De forma independente da aplicação Web, o _Dramatiq_ começa o trabalho de publicação do anúncio que consiste basicamente na cópia das imagens entre os _Buckets_.
-5. Ao término da cópia, o _Dramatiq_ concluí a publicação do anúncio atualizando alguns dados no _[MySQL](https://docs.oracle.com/en-us/iaas/mysql-database/index.html)_.
-
-Tendo o processo de publicação implementado de forma independente, este pode ser incrementado facilmente com outras atividades se necessário. Por exemplo, é possível enviar um e-mail ao usuário quando a publicação do anúncio estiver sido concluída ou mesmo, acrescentar uma marca d'agua com o logotipo _Motando_ nas imagens.
-
-
-
-### Dramatiq
-
-Basicamente o _[Dramatiq](https://dramatiq.io/index.html)_ é uma ferramenta para processar tarefas em a partir de uma fila (task queue). Porém, sua grande sacada, é que ele possibilita processar tais tarefas de forma independente do programa principal, em _background_.  
-
->_**__NOTA:__** Aqui, o "programa principal" é a aplicação Web escrita através do framework [Django](https://www.djangoproject.com/)._
-
-Como parte do seu funcionamento, o _Dramatiq_ necessita de um serviço separado que seja capaz de armazenar suas mensagens. Este é conhecido como _message broker_ ou _message transport_.
-
-Para o _message broker_, tanto o _[RabbitMQ](https://www.rabbitmq.com/)_ quanto o _[Redis](https://redis.io/)_ são excelentes. Para a aplicação _Motando_ será usado o _Redis_ como broker de mensagens.
-
-![alt_text](/githimgs/dev_dramatiq-arch-3.png "Dramatiq Arch #3")
-
-#### Redis (message broker)
-
-O comando abaixo irá criar o contêiner e iniciar o serviço _[Redis](https://redis.io/)_ na porta 6379/tcp:
-
-```
-$ docker run --name redis --net=host -d redis:7
-```
-
-#### Ambiente Virtual e dependências
-
-1 - A partir do diretório raíz, deve-se acessar o diretório do serviço _Dramatic_:
-```
-$ pwd
-/home/darmbrust/oci-motando-proj
-
-$ cd services/dramatiq-classifiedad/
-```
-
-2- Crie e ative _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_ com os comandos abaixo:
-```
-$ python3 -m venv venv
-$ source venv/bin/activate
-(venv) $
-```
-
-3 - Instale o _[Dramatiq](https://dramatiq.io/index.html)_, suas dependências e salve-as no arquivo "requirements.txt":
-```
-(venv) $ pip install -U 'dramatiq[redis, watch]'
-(venv) $ pip install oci
-(venv) $ pip install mysql-connector-python
-
-(venv) $ pip freeze > requirements.txt 
-```
-
-#### Classificados da aplicação Motando e o Dramatiq
-
-O serviço para publicação dos classificados da aplicação _Motando_, utiliza o serviço _[XMLRPC](https://docs.python.org/3/library/xmlrpc.html)_ já presente por padrão no conjunto de bibliotecas do Python3 e o _[Dramatiq](https://dramatiq.io/index.html)_.
-
-Por isso, este serviço depende da execução de dois processos independentes, o _Dramatiq_ e _XMLRPC_. 
-
-Para o _XMLRPC_:
-
-1 - Para iniciar o _XMLRPC_, primeiramente accesse o diretório "app/":
-
-```
-(venv) $ cd app/
-```
-
-2 - O _XMLRPC_ necessita acessar algumas informações através das seguintes variáveis de ambiente:
-
-```
-(venv) $ export APP_ENV='DEV'
-(venv) $ export OCI_LOG_ID='ocid1.log.oc1.sa-saopaulo-1.amaaaaaa'
-(venv) $ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
-```
-
-3 - Agora, basta iniciar o serviço:
-```
-(venv) $ python xmlrpcs.py 
-```
-
-Para o _Dramatiq_:
-
-1 - O _Dramatiq_ necessita de algumas outras informações através das seguintes variáveis de ambiente:
-
-```
-(venv) $ export APP_ENV='DEV'
-
-(venv) $ export MYSQL_HOST='127.0.0.1'
-(venv) $ export MYSQL_USER='motandousr'
-(venv) $ export MYSQL_PASSWD='secreto'
-(venv) $ export MYSQL_DBNAME='motandodb'
-
-(venv) $ export REDIS_HOST='127.0.0.1'
-(venv) $ export REDIS_PORT=6379
-(venv) $ export REDIS_PASSWD=''
-
-(venv) $ export OCI_CONFIG_FILE='/home/darmbrust/.oci/config'
-(venv) $ export OCI_REGION_ID='sa-saopaulo-1'
-(venv) $ export OCI_OBJSTR_NAMESPACE='grxmw2a9myyj'
-(venv) $ export OCI_BUCKET_MOTANDO_IMG='dev_motando-img'
-(venv) $ export OCI_BUCKET_MOTANDO_IMGTMP='dev_motando-tmpimg'
-
-(venv) $ export WORKFLOW_OCI_LOG_ID='ocid1.log.oc1.sa-saopaulo-1.amaaaaaa'
-```
-
-As tarefas que serão executadas em _background_ pelo _Dramatiq_, necessitam de acesso ao _MySQL_ para publicar um determinado anúncio da aplicação. O _Redis_ é necessário para o funcionamento do _Dramatiq_ e no ambiente de desenvolvimento, ele pode ser acessado livremente sem senha.
-
-Já as variáveis de ambiente que possuem o prefixo *OCI_*, definem a localização do arquivo de configuração do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/cliconcepts.htm)_, a região do OCI usada, _[Object Storage Namespace](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/understandingnamespaces.htm)_ e o nome dos _Buckets_. Todas são necessárias para a correta manipulação das imagens a partir do ambiente de desenvolvimento.
-
-A variável de ambiente *WORKFLOW_OCI_LOG_ID*, corresponde ao OCID referente ao _[Logging](https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm)_ usado para registrar os logs no OCI.
-
-2 - Tendo as variáveis corretamente configuradas, é possível iniciar o _Dramatiq_ com o comando abaixo:
-
-```
-(venv) $ dramatiq tasks
-```
-
-#### Imagem Docker
-
-O descrito acima, sobre a criação do ambiente virtual, instalação das dependências, criação das variáveis de ambiente e incialização dos processos, teve o intuíto de apresentar o passo-a-passo usado na criação do serviço para publicação de anúncios.
-
-Para o ambiente de desenvolvimento, basta iniciar o _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_ em um shell separado e iniciar o _XMLRPC_ e _Dramatiq_ em _background_ e o serviço entrará em execução.
-
-Porém, para a produção, este serviço deverá ser empacotado em uma _[imagem Docker](https://docs.docker.com/engine/reference/commandline/images/)_ para facilitar todo o transporte e seu deployment.
-
-Como este serviço necessita de dois processos em execução (XMLRPC e Dramatiq), será utilizado a estratégia de _[Multi Service Container](https://docs.docker.com/config/containers/multi-service_container/)_ para a construção da imagem.
-
-```
-$ cat dramatiq-classifiedad/app/docker-entrypoint.sh
-#!/bin/bash
-
-#
-# https://docs.docker.com/config/containers/multi-service_container/
-#
-
-# Dramatiq Workers
-dramatiq tasks &
-
-# XMLRPC Server
-python xmlrpcs.py &
-
-# Wait for any process to exit
-wait -n
-
-# Exit with status of process that exited first
-exit $?
-```
-
-
-
 -- Para voltar o banco de dados no estado vazio:
 ```
 (venv) $ mysql -u motandousr -h 127.0.0.1 -A motandodb -p
@@ -432,34 +456,3 @@ Query OK, 117 rows affected (0.01 sec)
 
 (venv) $ ../motando/manage.py shell < ./rmuser.py 
 ```
-
-
-
-## Variáveis de ambiente
-
-OCI_REGION_ID
-OCI_BUCKET_MOTANDO_IMGTMP
-OCI_BUCKET_MOTANDO_IMG
-OCI_STATICFILES_BUCKET_NAME
-OCI_OBJSTR_NAMESPACE
-
-OCI_ACCESS_KEY_ID
-OCI_SECRET_ACCESS_KEY
-
-MYSQL_DBNAME
-MYSQL_HOST
-MYSQL_USER
-MYSQL_PASSWD
-
-RESULTDB_USER
-RESULTDB_PASSWD
-RESULTDB_DBNAME
-
-BROKER_HOST
-BROKER_VHOST
-BROKER_USER
-BROKER_PASSWD
-BROKER_LOG_ID
-
-CLASSIFIEDAD_TASK_QUEUE_HOST
-CLASSIFIEDAD_TASK_QUEUE_PORT

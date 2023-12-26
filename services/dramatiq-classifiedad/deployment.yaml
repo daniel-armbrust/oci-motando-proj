@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dramatiq-classifiedad
+spec:
+  selector:
+    matchLabels:
+      app: dramatiq-classifiedad
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dramatiq-classifiedad
+    spec:     
+      containers:
+      - name: dramatiq-crt
+        image: gru.ocir.io/grxmw2a9myyj/motando-dramatiq-classifiedad:v1.0.0
+        imagePullPolicy: Always        
+        ports:
+            - containerPort: 8100
+        env:
+            - name: APP_ENV
+              value: "PRD"            
+            - name: OCI_REGION_ID
+              value: "sa-saopaulo-1"            
+            - name: MYSQL_HOST
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-secret
+                      key: host
+            - name: MYSQL_USER
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-secret
+                      key: user
+            - name: MYSQL_PASSWD
+              valueFrom:
+                  secretKeyRef:
+                      name: mysql-secret
+                      key: passwd
+            - name: MYSQL_DBNAME
+              value: "motandodb"            
+            - name: REDIS_HOST
+              value: ""
+            - name: REDIS_USER
+              valueFrom:
+                  secretKeyRef:
+                      name: broker-secret
+                      key: user
+            - name: REDIS_PASSWD
+              valueFrom:
+                  secretKeyRef:
+                      name: broker-secret
+                      key: passwd           
+            - name: OCI_OBJSTR_NAMESPACE
+              valueFrom:
+                  configMapKeyRef:
+                      name: motando-config
+                      key: objstr-namespace
+            - name: OCI_BUCKET_MOTANDO_IMGTMP
+              value: "motando-tmpimg"
+            - name: OCI_BUCKET_MOTANDO_IMG
+              value: "motando-img"
+            - name: WORKFLOW_OCI_LOG_ID
+              valueFrom:
+                  configMapKeyRef:
+                      name: motando-config
+                      key: workflow-log-id       
+        readinessProbe:
+            exec:
+                command:
+                - /opt/dramatiq-classifiedad/readiness-probe.sh
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+        resources:
+            requests:
+                memory: "250Mi"
+                cpu: "200m"
+            limits: 
+                memory: "600Mi"
+                cpu: "400m"   
+      imagePullSecrets:
+          - name: motando-ocir-secret
