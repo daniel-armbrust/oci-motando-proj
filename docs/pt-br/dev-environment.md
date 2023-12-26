@@ -186,7 +186,9 @@ O processo de publicação (workflow de publicação) de um anúncio e suas imag
 
 Tendo o processo de publicação implementado de forma independente, este pode ser incrementado facilmente com outras atividades se necessário. Por exemplo, é possível enviar um e-mail ao usuário quando a publicação do anúncio estiver sido concluída ou mesmo, acrescentar uma marca d'agua com o logotipo _Motando_ nas imagens.
 
-### Dramatiq
+### Descrição dos arquivos
+
+Abaixo a descrição dos arquivos que fazem parte do serviço de publicação dos anúncios da aplicação _Motando_:
 
 ```
 $ pwd
