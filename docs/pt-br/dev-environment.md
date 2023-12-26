@@ -5,15 +5,15 @@ Aqui está descrito os procedimentos usados para construção do ambiente de des
 Versões em uso:
 - Python 3.8
 - Banco de dados MySQL 8.0.35
-- Celery
-- RabbitMQ
+- Dramatiq 1.15 
+- Redis 7
 
 ## Descrição geral 
 
 O desenvolvimento da aplicação _Motando_ será feito a partir de um
 simples _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_. Este ambiente virtual irá hospedar o código da aplicação e suas diversas  dependências, como também os arquivos que fazem parte do framework _[Django](https://www.djangoproject.com/)_.
 
-Todos os outros recursos de infraestrutura necessários para execução da aplicação como o banco de dados _[MySQL](https://www.mysql.com/)_, _[Celery](https://docs.celeryq.dev/en/stable/index.html)_ para tarefas assíncronas e _[Redis](https://redis.io/)_, serão executados separadamente em contêineres _[Docker](https://www.docker.com/get-started/)_.
+Todos os outros recursos de infraestrutura necessários para execução da aplicação como o banco de dados _[MySQL](https://www.mysql.com/)_, _[Dramatiq](https://dramatiq.io/index.html)_ para tarefas assíncronas e _[Redis](https://redis.io/)_, serão executados separadamente em contêineres _[Docker](https://www.docker.com/get-started/)_.
 
 Além da infraestrutura local, a aplicação utiliza três _[Buckets](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_ para armazenar imagens:
 
