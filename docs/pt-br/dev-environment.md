@@ -2,11 +2,13 @@
 
 Aqui está descrito os procedimentos usados para construção do ambiente de desenvolvimento da aplicação _Motando_.
 
-Versões em uso:
-- Python 3.8
-- Banco de dados MySQL 8.0.35
-- Dramatiq 1.15 
-- Redis 7
+Principais softwares e versões em uso:
+
+- [Python 3.8](https://www.python.org/downloads/release/python-380/)
+- [Banco de dados MySQL 8.0.35](https://dev.mysql.com/downloads/mysql/8.0.html)
+- [Django 4.2](https://www.djangoproject.com/download/)
+- [Dramatiq 1.15](https://dramatiq.io/installation.html)
+- [Redis 7](https://redis.io/download/)
 
 ## Descrição geral 
 
