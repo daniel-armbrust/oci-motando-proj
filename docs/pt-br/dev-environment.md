@@ -176,7 +176,7 @@ Optei por utilizar essa arquitetura, de possuir dois _Buckets_, primeiramente co
 
 O processo de publicação (workflow de publicação) de um anúncio e suas imagens, pode ser melhor entendido observando a figura abaixo:
 
-![alt_text](/githimgs/dev_dramatiq-arch-2.png "workflow de publicação")
+![alt_text](/githimgs/dev_dramatiq-arch-2.png "Workflow de Publicação")
 
 1. Um usuário da aplicação Web posta um novo anúncio contendo algumas imagens.
 2. As imagens são salvas pela aplicação Web diretamente no _Bucket_ temporário (dev_motando_tmpimg).
@@ -220,7 +220,7 @@ Os arquivos _deployment.yaml_, _service.yaml_ e o script _readiness-probe.sh_, f
 
 ### Dramatiq
 
-Basicamente o _[Dramatiq](https://dramatiq.io/index.html)_ é uma ferramenta para processar tarefas em a partir de uma fila (task queue). Porém, sua grande sacada, é que ele possibilita processar tais tarefas de forma independente do programa principal.  
+Basicamente o _[Dramatiq](https://dramatiq.io/index.html)_ é uma biblioteca para processar tarefas de forma assíncrona a partir de uma fila (queue). Porém, sua grande sacada, é que ele possibilita processar tais tarefas de forma independente do programa principal. 
 
 >_**__NOTA:__** Aqui, o "programa principal" é a aplicação Web escrita através do framework [Django](https://www.djangoproject.com/)._
 
@@ -400,6 +400,7 @@ data/
 deployment.yaml
 docker-entrypoint.sh*
 motando/
+motando-webapp-init.sh*
 ocisecrt/
 requirements.txt
 service.yaml
@@ -410,6 +411,7 @@ venv/
 - data/ : Diretório que contém scripts e dados fictícios para construção do ambiente de desenvolvimento.
 - docker-entrypoint.sh : Script que é executado quando o contêiner iniciar.
 - motando/ : Diretório da aplicação Web (_[Django Project](https://docs.djangoproject.com/en/4.2/intro/tutorial01/#creating-a-project)_). 
+- motando-webapp-init.sh : Script utilizado para inicializar o ambiente de desenvolvimento a partir do contêiner.
 - ocisecrt/ : Diretório que contém os arquivos para autenticação do _[OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#configfile)_ (neccessário somente para o ambiente de dev). 
 - requirements.txt : Arquivo que lista as dependências do projeto Python.
 - venv/ : Diretório do _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_.
@@ -612,11 +614,46 @@ $ docker image build -t motando-webapp:1.0.0 .
 
 ## Docker Compose
 
+_[Docker Compose](https://docs.docker.com/compose/compose-file/)_ é uma ferramenta que facilita o provisionamento de múltiplos contêineres, algo que é muito útil em ambiente de desenvolvimento. Basicamente, a ferramenta lê as instruções contidas em um arquivo _[YAML](https://yaml.org/)_ para então criar e iniciar os contêineres lá especificados. Essas instruções correspondem a toda infraestrutura necessária para rodar a sua aplicação. 
+
+Ao invés de criar e executar os contêineres da aplicação de forma manual, conforme demonstrados até aqui, usa-se o _Docker Compose_ para automatizar todo esse processo. 
+
+Para a aplicação _Motando_, o arquivo _YAML_ correspondente ao _Docker Compose_, encontra-se no diretório _"build/"_:
+
 ```
-$ docker images
-REPOSITORY              TAG                   IMAGE ID       CREATED          SIZE
-motando-webapp          dev                   4701dc820e2f   57 seconds ago   782MB
-dramatiq-classifiedad   dev                   f85d3a29417c   18 hours ago     616MB
-mysql                   8.0.35-oraclelinux8   ba048db12589   8 days ago       591MB
-redis                   7                     e40e2763392d   3 weeks ago      138MB
+$ pwd
+/home/darmbrust/oci-motando-proj
+
+$ cd build/
+
+$ ls -1F *.yaml
+docker-compose.yaml
 ```
+
+1 - Primeiramente, lembre-se de criar as variáveis de ambiente com seus respectivos valores:
+
+```
+$ source motando.env
+```
+
+2 - Para criar as imagens a partir do _Docker Compose_, execute o comando abaixo:
+
+```
+$ docker-compose build
+```
+
+3 - Uma vez concluído o processo de construção das imagens, basta iniciar os contêineres com o comando abaixo:
+
+```
+$ docker-compose up -d
+```
+
+Após alguns minutos, a aplicação já pode ser acessada através do endereço: http://127.0.0.1:8000/
+
+Para baixar os contêineres em execução, utiliza-se o comando abaixo:
+
+```
+$ docker-compose down
+```
+
+>_**__NOTA:__** O procedimento demonstrado neste tópico, levanta a aplicação sem dados para testes. Lembre-se de adicionar os dados fictícios caso necessário._

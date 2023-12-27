@@ -30,7 +30,11 @@ EXPOSE 8000
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
 # Environment: DEV
+USER root
+
 FROM base as envdev
 COPY --chown=webapp:webapp ./ocisecrt/ /opt/webapp/ocisecrt/
+COPY --chown=webapp:webapp ./motando-webapp-init.sh /opt/webapp/motando/
+RUN microdnf install -y mysql
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
