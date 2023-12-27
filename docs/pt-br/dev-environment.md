@@ -652,7 +652,7 @@ $ docker-compose build
 $ docker-compose up -d
 ```
 
-Após alguns minutos, a aplicação já pode ser acessada através do endereço: http://127.0.0.1:8000/
+Após alguns minutos, a aplicação já pode ser acessada localmente através do endereço: http://127.0.0.1:8000
 
 Para baixar os contêineres em execução, utiliza-se o comando abaixo:
 
