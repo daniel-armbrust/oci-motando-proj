@@ -485,6 +485,7 @@ makecsv.py*
 rmuser.py*
 ```
 
+- accounts.csv : Arquivo csv que contém alguns usuários e suas senhas.
 - data.sql : Arquivo que contém instruções SQL para inserir dados referentes a estados, cidades, marcas e modelos de motocicletas.
 - load2db.py : Script para inserir dados fictícios referente a usuários e anúncios de motocicletas na aplicação.
 - img/ : Diretório que contém algumas imagens de motocicletas.
@@ -550,56 +551,47 @@ $ source venv/bin/activate
 (venv) $ cd data/
 ```
 
-4 - Execute o script para carregar os dados fictícios:
+4 - Execute o script através do _[Django](https://www.djangoproject.com/)_ para carregar os dados fictícios:
 
 ```
 (venv) $ ../motando/manage.py shell < ./load2db.py
 ```
 
-### Arquivos estáticos (static files)
-
-A aplicação _Motando_ possui alguns arquivos estáticos como imagens, páginas HTML, arquivos CSS e JavaScript. Para o ambiente de desenvolvimento, esses arquivos ficarão acessíveis através do _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_ de nome _dev\_motando-staticfiles_.
-
-```
-(venv) $ export OCI_STATICFILES_BUCKET_NAME='dev_motando-staticfiles'
-```
-
-A cópia dos arquivos estáticos da aplicação para o _[Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets.htm)_ é feita pelo comando abaixo:
-
-```
-(venv) $ motando/manage.py collectstatic --no-input --verbosity 2
-```
+5 - Depois que os dados forem carregados, obtenha um e-mail e senha de qualquer usuário contido no arquivo _"data/accounts.csv"_ para testar o acesso a aplicação.
 
 ### Iniciando a aplicação
 
-```
-
-```
+Uma vez que os dados já foram carregados, é possível iniciar para então testar a aplicação com o comando abaixo:
 
 ```
 (venv) $ motando/manage.py runserver
-Watching for file changes with StatReloader
-Performing system checks...
-
-System check identified no issues (0 silenced).
-December 23, 2023 - 19:13:42
-Django version 4.2.4, using settings 'motando.settings'
-Starting development server at http://127.0.0.1:8000/
-Quit the server with CONTROL-C.
 ```
 
--- Para voltar o banco de dados no estado vazio:
+### Removendo dados fictícios  
+
+Se desejar remover os dados fictícios que foram inseridos, seja para trazer o banco de dados ao estado zero ou mesmo, para realizar novos testes no processo de publicação dos anúncios, basta seguir os passos abaixo:
+
+1 - Acessar o banco de dados e excluír todos os dados na ordem apresentada, das tabelas *classifiedad_images* e logo após da tabela _classifiedad_:
+
 ```
 (venv) $ mysql -u motandousr -h 127.0.0.1 -A motandodb -p
 Enter password: 
 
-mysql> delete from classifiedad_images;
+mysql> DELETE FROM classifiedad_images;
 Query OK, 351 rows affected (0.01 sec)
 
-mysql> delete from classifiedad;
+mysql> DELETE FROM classifiedad;
 Query OK, 117 rows affected (0.01 sec)
+```
 
+2 - Remover os usuários fictícios que foram inseridos através do _[Django](https://www.djangoproject.com/)_:
+
+```
 (venv) $ ../motando/manage.py shell < ./rmuser.py 
 ```
+
+#### Imagem Docker
+
+
 
 ### Docker Compose
