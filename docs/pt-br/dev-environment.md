@@ -10,7 +10,9 @@ Principais softwares e versões em uso:
 - [Dramatiq 1.15](https://dramatiq.io/installation.html)
 - [Redis 7](https://redis.io/download/)
 
-## Descrição geral 
+Mesmo em desenvolvimeto, o serviço de _[Object Storage](https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm)_ da _Oracle Cloud (OCI)_ é utilizado. Por conta disso, é necessário uma conta ativa no _OCI_.
+
+## Descrição geral
 
 O desenvolvimento da aplicação _Motando_ será feito a partir de um
 simples _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_. Este ambiente virtual irá hospedar o código da aplicação e suas diversas  dependências, como também os arquivos que fazem parte do framework _[Django](https://www.djangoproject.com/)_.
