@@ -366,7 +366,7 @@ wait -n
 exit $?
 ```
 
-A partir do diretório "services/dramatiq-classifiedad", execute o comando abaixo para criar a imagem Docker:
+A partir do diretório _"services/dramatiq-classifiedad"_, execute o comando abaixo para criar a imagem Docker:
 
 - Para o ambiente de **desenvolvimento**:
 
@@ -377,10 +377,10 @@ $ docker image build --target=envdev -t dramatiq-classifiedad:dev .
 - Para o ambiente de **produção**:
 
 ```
-$ docker image build -t dramatiq-classifiedad:1.0 .
+$ docker image build -t dramatiq-classifiedad:1.0.0 .
 ```
 
->_**__NOTA:__** Observe que para produção a opção --target=envdev foi omitida ao criar a imagem para o ambiente de produção. Isso é uma boa ideia pois, imagems de produção não devem conter arquivos que contenham credenciais de qualquer tipo._
+>_**__NOTA:__** Observe que para produção a opção --target=envdev foi omitida ao criar a imagem para o ambiente de produção. Isso é uma boa ideia pois, imagens de produção não devem conter arquivos que contenham credenciais de qualquer tipo._
 
 ## A aplicação Motando através do framework Django
 
@@ -466,11 +466,11 @@ $ source venv/bin/activate
 mysql> source data/data.sql
 ```
 
->_**__NOTA:__** Os dados contidos no arquivo data.sql são dados referente a cidades, estados e também sobre marcas e modeles de algumas motocicletas._
+>_**__NOTA:__** Os dados contidos no arquivo data.sql são dados referente a cidades, estados e também sobre marcas e modelos de algumas motocicletas._
 
 ### Inserindo dados fictícios
 
-Dentro do diretório "data/", há alguns arquivos e scripts que podem ser usados para inserir alguns dados fictícios. Observe a descrição dos mesmos abaixo:
+Dentro do diretório _"data/"_, há alguns arquivos e scripts que podem ser usados para inserir alguns dados fictícios. Observe a descrição dos mesmos abaixo:
 
 ```
 $ pwd
@@ -590,8 +590,33 @@ Query OK, 117 rows affected (0.01 sec)
 (venv) $ ../motando/manage.py shell < ./rmuser.py 
 ```
 
-#### Imagem Docker
+### Imagem Docker
 
+O procedimento para criação da _[imagem Docker](https://docs.docker.com/engine/reference/commandline/images/)_ da parte Web, segue o mesmo princípio do que foi demonstrado para a imagem do _Dramatiq_.
 
+Aqui, a técnica do _[multi-stage build](https://docs.docker.com/build/building/multi-stage/)_ também é presente, visto que a construção da imagem para o ambiente de desenvolvimento é diferente da construção para o ambiente de produção.
 
-### Docker Compose
+A partir do diretório _"webapp/"_, execute o comando abaixo para criar a imagem Docker:
+
+- Para o ambiente de **desenvolvimento**:
+
+```
+$ docker image build --target=envdev -t motando-webapp:dev .
+```
+
+- Para o ambiente de **produção**:
+
+```
+$ docker image build -t motando-webapp:1.0.0 .
+```
+
+## Docker Compose
+
+```
+$ docker images
+REPOSITORY              TAG                   IMAGE ID       CREATED          SIZE
+motando-webapp          dev                   4701dc820e2f   57 seconds ago   782MB
+dramatiq-classifiedad   dev                   f85d3a29417c   18 hours ago     616MB
+mysql                   8.0.35-oraclelinux8   ba048db12589   8 days ago       591MB
+redis                   7                     e40e2763392d   3 weeks ago      138MB
+```
