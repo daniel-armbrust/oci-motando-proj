@@ -12,6 +12,8 @@ Principais softwares e versões em uso:
 
 Mesmo em desenvolvimeto, o serviço de _[Object Storage](https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm)_ e _[Logging](https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm)_ da _Oracle Cloud (OCI)_ são utilizados. Por conta disso, é necessário uma conta ativa no _OCI_.
 
+_**__NOTA:__** As credênciais de acesso aqui utilizadas e valores [OCID](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/identifiers.htm#Oracle), são inválidos e não servem para uso real. Estão aqui somente para demonstração dos procedimentos._
+
 ## Descrição geral
 
 O desenvolvimento da aplicação _Motando_ será feito a partir de um
@@ -226,7 +228,7 @@ Os arquivos _deployment.yaml_, _service.yaml_ e o script _readiness-probe.sh_, f
 
 Basicamente o _[Dramatiq](https://dramatiq.io/index.html)_ é uma biblioteca para processar tarefas de forma assíncrona a partir de uma fila (queue). Porém, sua grande sacada, é que ele possibilita processar tais tarefas de forma independente do programa principal. 
 
->_**__NOTA:__** Aqui, o "programa principal" é a aplicação Web escrita através do framework [Django](https://www.djangoproject.com/)._
+>_**__NOTA:__** Aqui, o "programa principal" é a aplicação Web escrita usando o framework [Django](https://www.djangoproject.com/)._
 
 Como parte do seu funcionamento, o _Dramatiq_ necessita de um serviço separado que seja capaz de armazenar suas mensagens. Este é conhecido como _message broker_ ou _message transport_.
 
