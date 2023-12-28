@@ -44,8 +44,8 @@ function ajaxGetRequest(url) {
         dataType: 'json', 
         contentType: 'application/json; charset=utf-8',                      
         beforeSend: function() {            
-            $.blockUI({ 
-                message: '<h2>Por favor aguarde ...</h2>',
+            $.blockUI({    
+                message: null,             
                 overlayCSS: { backgroundColor: '#dee2e6' } 
             });          
 
@@ -70,13 +70,16 @@ function ajaxGetRequest(url) {
                 motorcycleHtml = '<h2 class="text-dark text-center pt-4 fst-italic">Por enquanto... Não há anúncios para este filtro de consulta!</h2>';           
             }
             else {
-                for (let i = 0 ; i < jsonResp.length ; i++) {                    
-                    motorcycleUrl = `/classifiedad/${jsonResp[i].brand}/${jsonResp[i].model}/${jsonResp[i].model_year}/${jsonResp[i].id}`;
+                for (let i = 0 ; i < jsonResp.length ; i++) {            
+                    let urlBrand = jsonResp[i].brand.replace(/\s+/g, '-').toLowerCase(); 
+                    let urlModel = jsonResp[i].model.replace(/\s+/g, '-').toLowerCase();
+
+                    motorcycleUrl = `/classifiedad/${urlBrand}/${urlModel}/${jsonResp[i].model_year}/${jsonResp[i].id}`;
     
                     motorcycleHtml += `<a href="${motorcycleUrl}" class="text-decoration-none text-dark" target="_blank">` +
                                       '<div class="card shadow"><div class="row no-gutters">' +
-                                      `<div class="col-auto"><img src="${jsonResp[i].images[0].url}" class="img-fluid rounded" style="max-width: 18rem;" alt="${jsonResp[i].brand} - ${jsonResp[i].model}"></div>` +
-                                      '<div class="col"><div class="card-block">' +
+                                      `<div class="col-md-4 col-sm-4"><img src="${jsonResp[i].images[0].url}" class="img-fluid rounded w-100 p-2" alt="${jsonResp[i].brand} - ${jsonResp[i].model}"></div>` +
+                                      '<div class="col-md-8 col-sm-8"><div class="card-block m-3">' +
                                       `<h4 class="card-title pt-3">${jsonResp[i].brand} - ${jsonResp[i].model}</h4>` +
                                       `<h5 class="h6 text-uppercase">${jsonResp[i].sales_phrase}</h5>` +
                                       '<hr class="p-1" style="width: 98%;"><p class="h5 pt-2">';
@@ -93,12 +96,12 @@ function ajaxGetRequest(url) {
                     mileage = new Intl.NumberFormat('pt-BR', {maximumSignificantDigits: 3}).format(jsonResp[i].mileage);    
 
                     motorcycleHtml += `&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-tachometer-alt"></i> &nbsp; ${mileage} KM`;
-                    motorcycleHtml += '</p></div></div></div></div></a><br>';                
+                    motorcycleHtml += '</p></div></div></div></div></a><br><br>';                
                 }  
             }
 
             const totalMotorcyclePerPage = 7; 
-            const maxPageLinks = 14;
+            const maxPageLinks = 8;                        
             const nextPagelinksCount = Math.round(totalMotorcyclesFound / totalMotorcyclePerPage);
             const urlParamsCount = Array.from(urlWithParams.searchParams).length;
             const activeLinkNumber = getPageNum(url);
@@ -111,19 +114,26 @@ function ajaxGetRequest(url) {
             else
                 nextPagelink = `${urlWithParams.toString()}&page=`;                      
                            
-            for (let i = 1 ; i <= nextPagelinksCount ; i++) {
-                if (activeLinkNumber == i) {
-                   paginationLinks += `<li class="page-item active"><a class="page-link" onclick="ajaxGetRequest('${nextPagelink}${i}');" href="javascript: void(0);">${i}</a></li>`;                    
+            for (let pageNum = 1 ; pageNum <= nextPagelinksCount ; pageNum++) {                   
+                if (pageNum > maxPageLinks) {
+                    if (activeLinkNumber < pageNum) {
+                        paginationLinks += `<li class="page-item"><a class="page-link" onclick="ajaxGetRequest('${nextPagelink}${pageNum}');" href="javascript: void(0);"> <span aria-hidden="true">&raquo;</span> </a></li>`;
+                    }
+                    break;
                 }
-                else if (i == 1 && activeLinkNumber == null) {                
-                   paginationLinks += `<li class="page-item active"><a class="page-link" onclick="ajaxGetRequest('${nextPagelink}${i}');" href="javascript: void(0);">${i}</a></li>`; 
+                                      
+                if (activeLinkNumber == pageNum) {
+                   paginationLinks += `<li class="page-item active"><a class="page-link" onclick="ajaxGetRequest('${nextPagelink}${pageNum}');" href="javascript: void(0);">${pageNum}</a></li>`;                    
+                }
+                else if (pageNum == 1 && activeLinkNumber == null) {                
+                   paginationLinks += `<li class="page-item active"><a class="page-link" onclick="ajaxGetRequest('${nextPagelink}${pageNum}');" href="javascript: void(0);">${pageNum}</a></li>`; 
                 }
                 else {
-                   paginationLinks += `<li class="page-item"><a class="page-link" onclick="ajaxGetRequest('${nextPagelink}${i}');" href="javascript: void(0);">${i}</a></li>`; 
+                   paginationLinks += `<li class="page-item"><a class="page-link" onclick="ajaxGetRequest('${nextPagelink}${pageNum}');" href="javascript: void(0);">${pageNum}</a></li>`; 
                 }
-            }                    
+            }                
 
-            motorcycleHtml += '<br><div class="position-relative">' +
+            motorcycleHtml += '<div class="position-relative">' +
                               '<nav style="background-color: #F7F7F7; border-bottom: 0;" class="position-absolute top-0 start-50 translate-middle-x">' +                              
                               '<ul class="pagination">' + paginationLinks + '</ul></nav></div>';                              
                         

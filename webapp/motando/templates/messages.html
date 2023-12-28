@@ -2,7 +2,7 @@
 {% if messages %}
     {% for message in messages %}        
         <div class="row align-items-center text-center w-100">                                                                      
-            <div class="col">
+            <div class="col-md col-sm">
                 {% if message.tags == 'error' %}                   
                    <div class="h5 alert alert-danger" role="alert"> {{ message|safe }} </div>
                 {% elif message.tags == 'success' %}

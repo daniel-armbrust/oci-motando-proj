@@ -11,17 +11,19 @@
     <section>
         <div class="container">            
             <div class="row">
-                    <div class="col-3 d-flex justify-content-start">
+                    <div class="col-md-3 col-sm-3 pb-3 d-flex justify-content-start">
                         <a href="{% url 'home:main_page' %}">
                             <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando">
                         </a>
                     </div>         
-                    <div class="col-9 d-flex justify-content-end">
-                        <img src="{% static 'img/banner-2.jpg' %}" class="img-fluid float-end" alt="Banner 2">
+                    <div class="col-md-9 col-sm-9 pb-3 d-flex justify-content-end">
+                        <a href="{% url 'classifiedad:new' %}" class="text-decoration-none">
+                            <img src="{% static 'img/banner-2.jpg' %}" class="img-fluid float-end" alt="Banner 2">
+                        </a>
                     </div>
             </div>
             <div class="row">
-                    <div class="col-12 d-flex pt-2 p-2">
+                    <div class="col-md-12 col-sm-12 d-flex pt-2 p-2">
                         <nav style="--bs-breadcrumb-divider: '>'; background-color: #F7F7F7; border: 0;" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{% url 'home:main_page' %}">Home</a></li>
@@ -36,9 +38,9 @@
         <div class="container" id="id_top_container">           
                 <div class="row">
                     <!-- Left Menu -->
-                    <div class="col-4">      
+                    <div class="col-md-4 col-sm-4">      
                         <div class="row">
-                            <div class="col">                                                                 
+                            <div class="col-md col-sm">                                                                 
                                     <div class="card border-light shadow position-static">
                                         <div class="card-header bg-secondary" id="id_card_moto_props">
                                             <h5 class="h5 fw-bold mb-0 text-white">
@@ -51,17 +53,19 @@
                                             </h5>
                                         </div>  
                                         <div class="row p-2">
-                                            <div class="col">
+                                            <div class="col-md col-sm">
                                                     <label for="id_brand" class="form-label">Marca</label>
                                                     <div class="input-group">                                                                 
                                                         <select name="brand" class="form-select" id="id_brand">
-                                                            <option value="" id="id_option_motorcycle_brand_empty" selected="selected">Todas as Marcas</option>
+                                                            <option value="" id="id_option_motorcycle_brand_empty" selected="selected">
+                                                                Todas as Marcas
+                                                            </option>
                                                         </select>                                               
                                                     </div>
                                             </div>
                                         </div>
                                         <div class="row p-2">
-                                            <div class="col">
+                                            <div class="col-md col-sm">
                                                     <label for="id_model" class="form-label">Modelo</label>
                                                     <div class="input-group">                                                                 
                                                         <select name="model" class="form-select" id="id_model" disabled>                                                            
@@ -71,7 +75,7 @@
                                             </div>
                                         </div>                                      
                                         <div class="row">
-                                            <div class="col">
+                                            <div class="col-md col-sm">
                                                 <br>
                                             </div>
                                         </div>
@@ -79,7 +83,7 @@
                             </div> 
                         </div>      
                         <div class="row pt-4">
-                            <div class="col">                                                                 
+                            <div class="col-md col-sm">                                                                 
                                 <div class="card border-light shadow position-static">
                                     <div class="card-header bg-secondary" id="id_card_localizacao_props">
                                         <h5 class="h5 fw-bold mb-0 text-white">
@@ -92,7 +96,7 @@
                                         </h5>
                                     </div>    
                                     <div class="row p-2">
-                                        <div class="col">
+                                        <div class="col-md col-sm">
                                             <label for="id_brazil_state" class="form-label">Estado</label>
                                               <div class="input-group">                                                                 
                                                     <select name="brazil_state" class="form-select" 
@@ -103,7 +107,7 @@
                                         </div>
                                     </div>
                                     <div class="row p-2">
-                                        <div class="col">
+                                        <div class="col-md col-sm">
                                             <label for="id_brazil_state_city" class="form-label">Cidade</label>
                                             <div class="input-group">                                                                 
                                                 <select name="brazil_state_city" class="form-select" id="id_brazil_state_city" disabled>
@@ -116,7 +120,7 @@
                                         </div>
                                     </div>                                   
                                     <div class="row">
-                                        <div class="col">
+                                        <div class="col-md col-sm">
                                             <br>
                                         </div>
                                     </div>
@@ -124,7 +128,7 @@
                             </div> 
                         </div>                        
                         <div class="row pt-4">
-                            <div class="col">                                                                 
+                            <div class="col-md col-sm">                                                                 
                                 <div class="card border-light shadow position-static">
                                     <div class="card-header bg-secondary" id="id_card_detalhes_props">
                                         <h5 class="h5 fw-bold mb-0 text-white">
@@ -137,7 +141,7 @@
                                         </h5>
                                     </div>         
                                     <div class="row p-2">
-                                        <div class="col">
+                                        <div class="col-md col-sm">
                                                 <label for="id_motorcycle_color" class="form-label">Cor:</label>
                                                 <div class="input-group">    
                                                     <select name="motorcycle_color" class="form-select" id="id_motorcycle_color">
@@ -155,7 +159,7 @@
                                         </div>
                                     </div>                                   
                                     <div class="row p-2">                                        
-                                        <div class="col">
+                                        <div class="col-md col-sm">
                                             <label for="id_brake_system" class="form-label">Disco de freio:</label>
                                             <div class="input-group">                                                                 
                                                 <select name="brake_system" class="form-select" id="id_brake_system">                                                            
@@ -173,7 +177,7 @@
                                         </div>
                                     </div>               
                                     <div class="row p-2">                                        
-                                        <div class="col">
+                                        <div class="col-md col-sm">
                                             <label for="id_ignition_system" class="form-label">Tipo de partida:</label>
                                             <div class="input-group">                                                                 
                                                 <select name="ignition_system" class="form-select" id="id_ignition_system">                                                            
@@ -191,7 +195,7 @@
                                         </div>
                                     </div>                                                                                                          
                                     <div class="row">
-                                        <div class="col">
+                                        <div class="col-md col-sm">
                                             <br>
                                         </div>
                                     </div>
@@ -199,7 +203,7 @@
                             </div> 
                         </div>
                         <div class="row pt-4">
-                            <div class="col">                                                                 
+                            <div class="col-md col-sm">                                                                 
                                 <div class="card border-light shadow position-static">
                                     <div class="card-header bg-secondary" id="id_card_outros_detalhes_props">
                                         <h5 class="h5 fw-bold mb-0 text-white">
@@ -211,7 +215,7 @@
                                         </h5>
                                     </div>    
                                     <div class="row p-2">                                        
-                                        <div class="col pt-3">                                                     
+                                        <div class="col-md col-sm pt-3">                                                     
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value="" id="id_is_new">
                                                 <label class="form-check-label" for="id_is_new">
@@ -221,7 +225,7 @@
                                         </div>                                        
                                     </div>       
                                     <div class="row p-2">                                        
-                                        <div class="col">                                                     
+                                        <div class="col-md col-sm">                                                     
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value="" id="id_doc_ok">
                                                 <label class="form-check-label" for="id_doc_ok">
@@ -231,7 +235,7 @@
                                         </div>                                        
                                     </div>       
                                     <div class="row p-2">                                        
-                                        <div class="col">                                                     
+                                        <div class="col-md col-sm">                                                     
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value="" id="id_accept_exchange">
                                                 <label class="form-check-label" for="id_accept_exchange">
@@ -241,7 +245,7 @@
                                         </div>                                        
                                     </div>      
                                     <div class="row p-2">                                        
-                                        <div class="col">                                                     
+                                        <div class="col-md col-sm">                                                     
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value="" id="id_accept_new_offer">
                                                 <label class="form-check-label" for="id_accept_new_offer">
@@ -251,7 +255,7 @@
                                         </div>                                        
                                     </div>                                                                             
                                     <div class="row">
-                                        <div class="col">
+                                        <div class="col-md col-sm">
                                             <br>
                                         </div>
                                     </div>   
@@ -259,8 +263,9 @@
                             </div> 
                         </div> 
                     </div> 
-                    <!-- Motorcycle Dashboard -->
-                    <div class="col-8">
+                    <!-- Motorcycle Dashboard -->                    
+                    <div class="col-md-8 col-sm-8">
+                        <br>
                         <h1 class="h3 text-uppercase fw-bold my-text-purple"> Motos Novas e Usadas </h1>
                         <h2 class="h5 my-text-purple"> {{ total_published }} anúncio(s) encontrado(s) </h2>
                         <hr>
@@ -276,8 +281,8 @@
                                 <option value="3">Menor quilometragem</option>
                                 <option value="3">Maior quilometragem</option>
                             </select>                 
-                        </form>        
-                        <div id="id_motorcycle_dashboard">
+                        </form>                                
+                        <div id="id_motorcycle_dashboard" class="pt-2">
                         </div>                        
                     </div>
                 </div>              

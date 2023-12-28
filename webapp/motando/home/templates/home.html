@@ -13,13 +13,15 @@
    <section id="id_section_bike_search">
         <div class="container">
                 <div class="row">
-                    <div class="col-3 d-flex justify-content-start">
+                    <div class="col-md-3 col-sm-3 pb-3 d-flex justify-content-start">
                         <a href="{% url 'home:main_page' %}">
                             <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando">
                         </a>
                     </div>         
-                    <div class="col-9 d-flex justify-content-end">
-                        <img src="{% static 'img/banner-2.jpg' %}" class="img-fluid" alt="Banner 2">
+                    <div class="col-md-9 col-sm-9 pb-3 d-flex justify-content-end">
+                        <a href="{% url 'classifiedad:new' %}" class="text-decoration-none">
+                           <img src="{% static 'img/banner-2.jpg' %}" class="img-fluid" alt="Banner 2">
+                        </a>
                     </div>
                 </div>    
                 <br>
@@ -27,95 +29,94 @@
                     {% csrf_token %} 
                     <input type="hidden" id="id_search_url" name="search_url" value=""> 
                     <div class="row">
-                        <div class="col-12 d-flex justify-content-center" style="color: white; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #4E27B8;">
+                        <div class="col-md-12 col-sm-12 d-flex justify-content-center" style="color: white; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #4E27B8;">
                             <h2 class="h5 fw-bold p-2" style="color: white; border-top-left-radius: 5px; border-top-right-radius: 5px; background-color: #4E27B8;">Encontre sua moto</h2>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-3 pt-2 purple-border-left p-3">
+                    <div class="row purple-border-left purple-border-right">
+                        <div class="col-md-3 col-sm-3 pt-2 p-3">
                             <label for="id_brand" class="small text-primary pb-1">Marca:</label>
                             <select class="form-control" id="id_brand" name="motorcycle_brand" disabled>
                                 <option value="" id="id_option_motorcycle_brand_empty" selected="selected">Selecione a Marca</option>                          
                             </select>
                         </div>
-                        <div class="col-3 pt-2 p-3">
+                        <div class="col-md-3 col-sm-3 pt-2 p-3">
                             <label for="id_model" class="small text-primary pb-1">Modelo:</label>
                             <select class="form-control" id="id_model" name="motorcycle_brand_model" disabled>
                                 <option id="id_option_motorcycle_brand_model_empty" selected="selected" value="">Selecione o Modelo</option>
                             </select>
                         </div>
-                        <div class="col-3 pt-2 p-3">
+                        <div class="col-md-3 col-sm-3 pt-2 p-3">
                             <label for="id_brazil_state" class="small text-primary pb-1">Estado:</label>
                             <select class="form-control" id="id_brazil_state" name="brazil_state" disabled>
                                 <option id="id_option_brazil_state_empty" selected="selected" value="">Selecione o Estado</option>
                             </select>
                         </div>
-                        <div class="col-3 pt-2 purple-border-right p-3">
+                        <div class="col-md-3 col-sm-3 pt-2 p-3">
                             <label for="id_brazil_state_city" class="small text-primary pb-1">Cidade:</label>
                             <select class="form-control" id="id_brazil_state_city" name="brazil_state_city" disabled>
                                 <option id="id_option_brazil_state_city_empty" selected="selected" value="">Selecione a Cidade</option>
                             </select>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-6 pt-2 purple-border-left p-3">
+                    <div class="row purple-border-left purple-border-right">
+                        <div class="col-md-6 col-sm-6 pt-2 p-3">
                             <label for="id_model_version" class="small text-primary pb-1">Versão:</label>
                             <select class="form-control" id="id_model_version" name="brand_model_version" disabled>
                                 <option id="id_option_motorcycle_brand_model_version_empty" selected="selected" value="">Selecione a Versão</option>
                             </select>
                         </div>
-                        <div class="col-1 pt-2 ">
+                        <div class="col-md-1 col-sm-1 pt-2">
                             <label for="id_year_from" class="small text-primary pb-1"> Ano: </label>
                             <input type="text" class="form-control" id="id_year_from" name="year_from" placeholder="de">
                         </div>
-                        <div class="col-1 pt-2">
+                        <div class="col-md-1 col-sm-1 pt-2">
                             <label for="id_year_to" class="small text-primary pb-1"> &nbsp; </label>
                             <input type="text" class="form-control" id="id_year_to" name="year_to" placeholder="até">
                         </div>
-                        <div class="col-2 pt-2">
+                        <div class="col-md-2 col-sm-2 pt-2">
                             <label for="id_price_from" class="small text-primary pb-1"> Preço: </label>
                             <input type="text" class="form-control" id="id_price_from" name="price_from" placeholder="de">
                         </div>
-                        <div class="col-2 pt-2 purple-border-right">
+                        <div class="col-md-2 col-sm-2 pt-2">
                             <label for="id_price_to" class="small text-primary pb-1"> &nbsp; </label>
                             <input type="text" class="form-control" id="id_price_to" name="price_to" placeholder="até">
                         </div>
-                    </div>  
-                    <div class="row">                   
-                        <div class="col-2 pt-4 purple-border-left">                        
-                            <div class="custom-control custom-checkbox ml-3">
+                    </div>                    
+                    <div class="row purple-border-left purple-border-right">                   
+                        <div class="col-md-2 col-sm-2 pt-3">                        
+                            <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="id_is_new" name="new_motorcycle">
                                 <label class="custom-control-label" for="id_is_new">&nbsp; Zero KM</label>
                             </div>                           
                         </div>
-                        <div class="col-4 pt-4">
-                            <div class="custom-control custom-checkbox form-check form-check-inline">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="custom-control custom-checkbox pt-1">
                                 <input type="checkbox" class="custom-control-input" id="id_seller_store" name="seller_store">
                                 <label class="custom-control-label" for="id_seller_store">&nbsp; Somente anúncios de lojas </label>
-                            </div>                                              
-                            <div class="custom-control custom-checkbox form-check form-check-inline">
+                            </div>  
+                            <div class="custom-control custom-checkbox pt-1">
                                 <input type="checkbox" class="custom-control-input" id="id_seller_private" name="seller_private">
                                 <label class="custom-control-label" for="id_seller_private">&nbsp; Somente anúncios particular </label>
                             </div>                           
                         </div>                                                                          
-                        <div class="col d-flex justify-content-center pt-4 purple-border-right">                           
+                        <div class="col-md col-sm d-flex pt-3">                           
                             <button type="submit" class="btn btn-success btn-block btn-lg" id="id_submit"> 
                                 <i class="fas fa-search"></i>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Buscar moto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             </button>
                         </div>               
                     </div>
-                    <div class="row">                       
-                        <div class="col-2 pt-2 purple-border-left">
+                    <div class="row purple-border-left purple-border-right pt-2">                       
+                        <div class="col-md-12 col-sm-12 pt-2 ">
                             <a href="#" class="text-decoration-none">
                                 <i class="fas fa-trash-alt"></i>
                                 &nbsp;Limpar filtros
                             </a>
-                        </div>
-                        <div class="col-4 pt-2"></div>                                     
+                        </div>                        
                     </div>
                     <div class="row" style="background-color: white;">
-                        <div class="col-12 d-flex justify-content-center pb-3" 
+                        <div class="col-md-12 col-sm-12 d-flex justify-content-center pb-3" 
                              style="border-right: 1px solid #4E27B8; border-left: 1px solid #4E27B8; border-bottom: 1px solid #4E27B8; color: white; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">                            
                         </div>
                     </div>           
@@ -125,13 +126,13 @@
     <section id="id_section_top_ofertas">
         <div class="container">
             <div class="row pt-4">
-                <div class="col">
+                <div class="col-md col-sm">
                     <img src="{% static 'img/star_icon-150x143.png' %}" class="img-fluid float-start" alt="TOP OFERTAS" width="34">                
                     <h3 class="h4 fw-bold text-uppercase text-info"> &nbsp;TOP OFERTAS </h3>
                 </div>
             </div>
             <div class="row pt-4">
-                <div class="col-12">
+                <div class="col-md-12 col-sm-12">
                     <div id="id_owl_carousel_top_deals" class="owl-carousel owl-theme text-center">
                         {% for classifiedad in top_classifiedad %}
                             <div class="motando-carousel-box p-2">
@@ -162,13 +163,13 @@
     <section id="id_section_noticias">
         <div class="container">
             <div class="row pt-4">
-                <div class="col">
+                <div class="col-md col-sm">
                     <img src="{% static 'img/star_icon-150x143.png' %}" class="img-fluid float-start" alt="Notícias" width="34">     
                     <h3 class="h4 fw-bold text-uppercase text-info"> &nbsp;Notícias </h3>                                    
                 </div>
             </div>
             <div class="row pt-4">
-                <div class="col-8">                    
+                <div class="col-md-8 col-sm-8">                    
                     <div id="id_owl_carousel_news" class="owl-carousel owl-theme">
                         <div class="item">
                             <div class="owl_carousel-flex-container">
@@ -256,9 +257,10 @@
                         </div> <!-- owl-carousel: item -->
                     </div>
                 </div>
-                <div class="col-4 d-flex justify-content-center">
-                    <a class="text-decoration-none" href="#">
-                    <img src="{% static 'img/banner-1.jpg' %}" class="img-fluid rounded" alt="Vender Moto" style="min-height: 500px;">
+                <div class="col-md-4 col-sm-4 d-flex justify-content-center">
+                    <a href="{% url 'classifiedad:new' %}" class="text-decoration-none">                    
+                        <img src="{% static 'img/banner-1.jpg' %}" class="img-fluid rounded" 
+                             alt="Vender Moto" style="min-height: 500px;">
                     </a>
                 </div>
             </div>

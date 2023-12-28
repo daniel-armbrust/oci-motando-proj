@@ -8,7 +8,7 @@
               method="post" action="{% url 'account:login' %}" novalidate>                 
             {% csrf_token %}                        
             <a href="{% url 'home:main_page' %}">
-                <img class="mb-4" src="{% static 'img/motando_logo-402x150.png' %}">
+                <img class="mb-4 img-fluid" src="{% static 'img/motando_logo-402x150.png' %}">
             </a>
             <h1 class="h5 mb-3 fst-italic text-center">
                 Já possui cadastro no MOTANDO.com.br?

@@ -136,8 +136,7 @@ nav {
 
 .motando-carousel-box { 
     background-color: white; 
-    border-top: 1px solid gray; 
-    border-bottom: 1px solid gray;     
+    border: 1px solid gray;
     min-height: 380px;    
 }
 

@@ -25,10 +25,10 @@ function submitLogin() {
     $('#id_email').attr('readonly', true);
     $('#id_senha').attr('readonly', true);
 
-    $.blockUI({ 
-        message: '<h2>Por favor aguarde ...</h2>',
+    $.blockUI({    
+        message: null,             
         overlayCSS: { backgroundColor: '#dee2e6' } 
-    });       
+    });      
 
     let [fieldId, value, regexp] = ['', '', ''];
     

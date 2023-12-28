@@ -54,8 +54,8 @@ function delAnuncioImg(imgToDeleteFilename) {
 function submitClassifiedad() {
     let formHasErrors = false;        
 
-    $.blockUI({ 
-        message: '<h2>Por favor aguarde ...</h2>',
+    $.blockUI({    
+        message: null,             
         overlayCSS: { backgroundColor: '#dee2e6' } 
     });  
 

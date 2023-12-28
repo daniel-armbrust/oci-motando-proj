@@ -20,13 +20,12 @@ from state_city.models import State, StateCity
 
 
 APP_ENV = os.environ.get('APP_ENV')
+OCI_CONFIG_FILE = os.environ.get('OCI_CONFIG_FILE')
 OCI_REGION_ID = os.environ.get('OCI_REGION_ID')
 OCI_BUCKET_NAMESPACE = os.environ.get('OCI_OBJSTR_NAMESPACE')
 CLASSIFIEDAD_TMPIMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
 CLASSIFIEDAD_XMLRPC_HOST = os.environ.get('CLASSIFIEDAD_XMLRPC_HOST')
 CLASSIFIEDAD_XMLRPC_PORT = os.environ.get('CLASSIFIEDAD_XMLRPC_PORT')
-OCI_CONFIG_FILE = os.environ.get('OCI_CONFIG_FILE')
-
 
 def get_motorcycle_brands():
     """Retorna todas as marcas das Motos cadastradas.
@@ -51,6 +50,8 @@ def create_classifiedad(user=None, max_classifiedad=3):
     """Cria classificado do usuário.
     
     """
+    global OCI_CONFIG_FILE
+
     sales_phrase_list = [
         'UNICO DONO, DOCUMENTACAO IMPECAVEL , IPVA  PAGO. Ja licenciada 2023',
         'Único dono, todas as revisões feitas pela concessionária.',
@@ -75,6 +76,7 @@ def create_classifiedad(user=None, max_classifiedad=3):
         signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
         os_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
     else:
+        print(OCI_CONFIG_FILE)
         config = oci.config.from_file(file_location=OCI_CONFIG_FILE)
         os_client = oci.object_storage.ObjectStorageClient(config=config)
 

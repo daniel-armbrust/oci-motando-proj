@@ -238,8 +238,8 @@ function getChatMessages(chatType, chatId) {
     let participantsData = null;
     let messagesUrl = null;
 
-    $.blockUI({ 
-        message: '<h2>Por favor aguarde ...</h2>',
+    $.blockUI({    
+        message: null,             
         overlayCSS: { backgroundColor: '#dee2e6' } 
     });
 

@@ -662,4 +662,10 @@ Para baixar os contêineres em execução, utiliza-se o comando abaixo:
 $ docker-compose down
 ```
 
+Para subir apenas um serviço, basta especificar o seu nome de acordo com o nome presente no arquivo _docker-compose.yaml_:
+
+```
+$ docker-compose up -d mysql
+```
+
 >_**__NOTA:__** O procedimento demonstrado neste tópico, levanta a aplicação sem dados para testes. Lembre-se de adicionar os dados fictícios caso necessário._
