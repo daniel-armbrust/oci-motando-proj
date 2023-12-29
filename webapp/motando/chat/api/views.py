@@ -42,6 +42,8 @@ class ChatMessageApiView(views.APIView):
     def post(self, request, chat_id):
         serializer = ChatMessageSerializer(data=request.data)
 
+        print(request.data)
+
         if serializer.is_valid():
             serializer.save()
 

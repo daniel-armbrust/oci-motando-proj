@@ -15,7 +15,11 @@
 </head>
 <body> 
     {% block body %}
-        {% include "navbar.html" %}   
+        {% if user.is_authenticated %}
+            {% include "navbar_authenticated.html" %}
+        {% else %}
+            {% include "navbar_anonymous.html" %}   
+        {% endif %}
     {% endblock %}  
     {% include "footer.html" %}
     <script src="{% static 'vendor/bootstrap-5.2.2/js/bootstrap.bundle.js' %}"></script>

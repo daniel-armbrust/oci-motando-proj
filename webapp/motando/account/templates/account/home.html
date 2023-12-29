@@ -13,25 +13,26 @@
    <section>
        <div class="container">     
             <div class="row">               
-                  <div class="col-3 d-flex justify-content-center">
+                  <div class="col-md-3 col-sm-3 d-flex justify-content-center">
                       <a href="{% url 'account:home' %}">
                         <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando" 
                              style="width: 220px;">
                       </a>
                   </div>         
-                  <div class="col-9 d-flex justify-content-center">                                
+                  <div class="col-md-9 col-sm-9 d-flex justify-content-center">                                
                      {% include "messages.html" %}      
                  </div>               
             </div>
             <div class="row">
-               <div class="col-3">
+               <!-- Visible only on desktop-->
+               <div class="col-md-3 col-sm-3 d-none d-md-block">
                     {% include "account_layout/left_menu.html" with user_profile=user_profile %}  
-               </div> 
-               <div class="col-9">
+               </div>                
+               <div class="col-md col-sm">
                      <br>
                      <div class="shadow rounded bg-white border p-3" style="height: 700px;">
                         <div class="row">
-                           <div class="col">
+                           <div class="col-md col-sm">
                                  <h2 class="h4 fw-bold"> Home </h2>                                 
                            </div>
                         </div>                         

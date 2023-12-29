@@ -6,9 +6,9 @@
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-12 d-flex justify-content-center">
+                <div class="col-md-12 col-sm-12 d-flex justify-content-center">
                     <a href="{% url 'home:main_page' %}">
-                        <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando" style="width: 300px;">
+                        <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando">
                     </a>
                 </div>
             </div>
@@ -18,7 +18,7 @@
     <section>
         <div class="container">
             <div class="row">
-                <div class="col">
+                <div class="col-md col-sm">
                     <p class="text-center fw-bold fs-5">
                         Novo usuário no MOTANDO? <br>
                         Cadastre seu perfil. Falta pouco!
@@ -27,15 +27,17 @@
             </div>            
             {% include "messages.html" %}            
             <div class="row">
-                <div class="col-3"></div>
-                <div class="col-6">
+                <div class="col-md-3 col-sm-3"></div>
+                <div class="col-md-6 col-sm-6">
                         <div class="shadow rounded bg-white border p-3">
                             <form id="id_cadastro_particular_form" name="cadastro_particular_form" autocomplete="off" method="post" 
                                   action="{% url 'account:new_user' %}">                  
                                 {% csrf_token %}
                                 <div class="row pt-2 p-2">
-                                    <div class="col">
-                                        <label for="id_full_name" class="form-label my-text-purple">Nome: &nbsp;<span class="text-danger">*</span> </label>
+                                    <div class="col-md col-sm">
+                                        <label for="id_full_name" class="form-label my-text-purple">
+                                            Nome: &nbsp;<span class="text-danger">*</span> 
+                                        </label>
                                         {{ user_form.fullname }}                                        
                                         {% for fullname_error in user_form.fullname.errors %}      
                                             <div class="text-danger pt-1"> &nbsp;&bull; {{ fullname_error }} </div>
@@ -45,9 +47,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row pt-2 p-2">
-                                    <div class="col">
-                                        <label for="id_email" class="form-label my-text-purple">E-mail: &nbsp;<span class="text-danger">*</span> </label>
+                                <div class="row pt-4 p-2">
+                                    <div class="col-md col-sm">
+                                        <label for="id_email" class="form-label my-text-purple">
+                                            E-mail: &nbsp;<span class="text-danger">*</span> 
+                                        </label>
                                         {{ user_form.email }}
                                         {% for email_error in user_form.email.errors %}
                                             <div class="text-danger pt-1"> &nbsp;&bull; {{ email_error }} </div>
@@ -57,9 +61,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row pt-2 p-2">
-                                    <div class="col">
-                                        <label for="id_email_confirm" class="form-label my-text-purple">Confirme seu E-mail: &nbsp;<span class="text-danger">*</span> </label>
+                                <div class="row pt-4 p-2">
+                                    <div class="col-md col-sm">
+                                        <label for="id_email_confirm" class="form-label my-text-purple">
+                                            Confirme seu E-mail: &nbsp;<span class="text-danger">*</span> 
+                                        </label>
                                         {{ user_form.email_confirm }}
                                         {% for email_confirm_error in user_form.email_confirm.errors %}
                                             <div class="text-danger pt-1"> &nbsp;&bull; {{ email_confirm_error }} </div>
@@ -69,9 +75,11 @@
                                         </div>
                                     </div>
                                 </div>     
-                                <div class="row pt-2 p-2">
-                                    <div class="col">
-                                        <label for="id_brazil_state" class="form-label my-text-purple">Estado: &nbsp;<span class="text-danger">*</span> </label>
+                                <div class="row pt-4 p-2">
+                                    <div class="col-md col-sm">
+                                        <label for="id_brazil_state" class="form-label my-text-purple">
+                                            Estado: &nbsp;<span class="text-danger">*</span> 
+                                        </label>
                                         {{ user_profile_form.state }}
                                         {% for state_error in user_profile_form.state.errors %}
                                             <div class="text-danger pt-1"> &nbsp;&bull; {{ state_error }} </div>
@@ -81,9 +89,11 @@
                                         </div>                                        
                                     </div>
                                 </div>     
-                                <div class="row pt-2 p-2">
-                                    <div class="col">
-                                        <label for="id_brazil_state_city" class="form-label my-text-purple">Cidade: &nbsp;<span class="text-danger">*</span> </label>
+                                <div class="row pt-4 p-2">
+                                    <div class="col-md col-sm">
+                                        <label for="id_brazil_state_city" class="form-label my-text-purple">
+                                            Cidade: &nbsp;<span class="text-danger">*</span> 
+                                        </label>
                                         {{ user_profile_form.city }}
                                         {% for city_error in user_profile_form.city.errors %}
                                             <div class="text-danger pt-1"> &nbsp;&bull; {{ city_error }} </div>
@@ -93,9 +103,11 @@
                                         </div>                                        
                                     </div>
                                 </div>     
-                                <div class="row pt-2 p-2">
-                                    <div class="col">
-                                        <label for="id_telephone" class="form-label my-text-purple">Telefone: &nbsp;<span class="text-danger">*</span> </label>
+                                <div class="row pt-4 p-2">
+                                    <div class="col-md col-sm">
+                                        <label for="id_telephone" class="form-label my-text-purple">
+                                            Telefone: &nbsp;<span class="text-danger">*</span> 
+                                        </label>
                                         {{ user_profile_form.telephone }}
                                         {% for telephone_error in user_profile_form.telephone.errors %}
                                             <div class="text-danger pt-1"> &nbsp;&bull; {{ telephone_error }} </div>
@@ -105,9 +117,11 @@
                                         </div>
                                     </div>
                                 </div>                                
-                                <div class="row pt-2 p-2">
-                                    <div class="col">
-                                        <label for="id_password" class="form-label my-text-purple">Senha: &nbsp;<span class="text-danger">*</span> </label>
+                                <div class="row pt-4 p-2">
+                                    <div class="col-md col-sm">
+                                        <label for="id_password" class="form-label my-text-purple">
+                                            Senha: &nbsp;<span class="text-danger">*</span> 
+                                        </label>
                                         {{ user_form.password }}
                                         {% for password_error in user_form.password.errors %}
                                             <div class="text-danger pt-1"> &nbsp;&bull; {{ password_error }} </div>
@@ -117,9 +131,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row pt-2 p-2">
-                                    <div class="col">
-                                        <label for="id_senha_confirm" class="form-label my-text-purple">Confirme sua Senha: &nbsp;<span class="text-danger">*</span> </label>
+                                <div class="row pt-4 p-2">
+                                    <div class="col-md col-sm">
+                                        <label for="id_senha_confirm" class="form-label my-text-purple">
+                                            Confirme sua Senha: &nbsp;<span class="text-danger">*</span> 
+                                        </label>
                                         {{ user_form.password_confirm }}
                                         {% for password_confirm_error in user_form.password_confirm.errors %}
                                             <div class="text-danger pt-1"> &nbsp;&bull; {{ password_confirm_error }} </div>
@@ -133,21 +149,25 @@
                                     <div class="col">
                                         <div class="d-grid gap-2 mx-auto">
                                         <br>
-                                           <input type="submit" class="btn btn-success fw-bold btn-lg p-2" id="id_submit" value="Cadastrar">
+                                           <input type="submit" class="btn btn-success fw-bold btn-lg p-2" 
+                                                  id="id_submit" value="Cadastrar">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row pt-3 p-2">
-                                    <div class="col">
+                                    <div class="col-md col-sm">
                                         <p class="text-center text-secondary">
-                                            Já possui cadastro? <a href="{% url 'account:login' %}" class="link-secondary text-underline-hover"> Faça o Login </a>
+                                            Já possui cadastro? 
+                                            <a href="{% url 'account:login' %}" class="link-primary text-underline-hover"> 
+                                                Faça o Login 
+                                            </a>
                                         </p>
                                     </div>
                                 </div>
                             </form>
                         </div>
                 </div>
-                <div class="col-3"></div>
+                <div class="col-md-3 col-sm-3"></div>
             </div>
             <!--
             <div class="modal fade" id="id_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"

@@ -14,31 +14,32 @@
    <section>
        <div class="container">     
            <div class="row">               
-                 <div class="col-3 d-flex justify-content-center">
+                 <div class="col-md-3 col-sm-3 d-flex justify-content-center">
                      <a href="{% url 'account:home' %}">
                         <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando" 
                              style="width: 220px;">
                         </a>
                  </div>
-                 <div class="col-9 d-flex justify-content-center">            
+                 <div class="col-md-9 col-sm-9 d-flex justify-content-center">            
                      {% include "messages.html" %}      
                  </div>               
            </div>           
            <div class="row">
-                 <div class="col-3">
+                 <!-- Visible only on desktop -->
+                 <div class="col-md-3 col-sm-3 d-none d-md-block">
                      {% include "account_layout/left_menu.html" with user_profile=user_profile %}  
                  </div>
-                 <div class="col-9">
+                 <div class="col-md-9 col-sm-9">
                      <br>
                      <div class="shadow rounded bg-white border p-3">
                         <div class="row">
-                            <div class="col">
+                            <div class="col-md col-sm">
                                 <h2 class="h4 fw-bold"> Meus Anúncios </h2>                                 
                             </div>
                         </div>              
                         {% if classifiedad_page|length > 0 %}
                             <div class="row pt-2">
-                                <div class="col">
+                                <div class="col-md-auto col-sm-auto">
                                     <p class="font-monospace"> 
                                         &nbsp;&nbsp;&nbsp;&bull;&nbsp;Aúncio(s) publicado(s)...:&nbsp;<span id="id_total_published" class="text-success"> {{ total_published }} </span>
                                         <br>                             
@@ -51,7 +52,7 @@
                             {% for classifiedad in classifiedad_page %}
                                 <div class="card mb-3">
                                     <div class="row g-0">
-                                        <div class="col-md-4">        
+                                        <div class="col-md-4 col-sm-4">        
                                             <div id="id_image_carousel_{{ forloop.counter }}" class="carousel slide my-classifiedad-carousel"
                                                  data-bs-touch="false" data-bs-interval="false">                                                                                                
                                                 <div class="carousel-inner">                                                    
@@ -64,11 +65,11 @@
                                                                 {% if classifiedad.status == 'published' %}
                                                                     <a href="{% url 'classifiedad:detail' brand=classifiedad.model.brand.brand|slugify|lower model=classifiedad.model.model|slugify|lower model_year=classifiedad.model_year classifiedad_id=classifiedad.id %}" 
                                                                        target="_blank" class="d-flex align-items-center justify-content-center">
-                                                                            <img src="{{ classifiedad_image.url }}" class="img-fluid rounded pt-4 p-2" 
+                                                                            <img src="{{ classifiedad_image.url }}" class="img-fluid rounded w-100 p-2" 
                                                                                  alt="{{ classifiedad.model.brand.brand }} - {{ classifiedad.model.model }} | {{ forloop.counter }}">
                                                                     </a>            
                                                                 {% else %}
-                                                                    <img src="{{ classifiedad_image.url }}" class="img-fluid rounded pt-4 p-2" 
+                                                                    <img src="{{ classifiedad_image.url }}" class="img-fluid rounded w-100 p-2" 
                                                                          alt="{{ classifiedad.model.brand.brand }} - {{ classifiedad.model.model }} | {{ forloop.counter }}">
                                                                 {% endif %}
                                                             </div>                                                                                                                                 
@@ -85,100 +86,124 @@
                                                     <span class="visually-hidden">Próximo</span>
                                                 </button>
                                             </div>                                                                                                        
-                                        </div>
-                                        <div class="col-md-8">
+                                        </div> <!-- col -->
+                                        <div class="col-md-8 col-sm-8">
                                             <div class="card-body">
-                                                {% if classifiedad.status == 'published' %}
-                                                    <a href="{% url 'classifiedad:detail' brand=classifiedad.model.brand.brand|slugify|lower model=classifiedad.model.model|slugify|lower model_year=classifiedad.model_year classifiedad_id=classifiedad.id %}" target="_blank" class="text-decoration-none">
-                                                        <h5 class="card-title text-uppercase h4"> 
-                                                            {{ classifiedad.model.brand.brand }} - {{ classifiedad.model.model }} 
-                                                        </h5>
-                                                    </a>
-                                                {% else %}
-                                                    <h5 class="card-title text-uppercase h4"> 
-                                                        {{ classifiedad.model.brand.brand }} - {{ classifiedad.model.model }} 
-                                                    </h5>
-                                                {% endif %}
-                                                <p class="card-text pt-3">
-                                                    <span> <i class="fas fa-tachometer-alt"></i> &nbsp; {{ classifiedad.mileage|intcomma }} Km </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <span class="text-capitalize"> <i class="fas fa-fill-drip"></i>&nbsp; {{ classifiedad.color|title }} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <span> <i class="far fa-calendar-alt"></i> &nbsp; {{ classifiedad.fabrication_year }}/{{ classifiedad.model_year }} </span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                  
-                                                </p>
-                                                <p class="card-text"> <span class="text-success h5 fw-bold"> R$ {{ classifiedad.price|intcomma }} </span>
-                                                {% if classifiedad.status == 'published' %} 
-                                                    <div class="row pt-2 pb-4">
-                                                        <div class="col-4 d-grid gap-2">
-                                                            <a class="btn btn-outline-success" href="#">
-                                                                Destacar Anúncio
-                                                            </a> 
-                                                        </div>
-                                                        <div class="col-2 d-grid gap-2">
-                                                            <a class="btn btn-outline-info" 
-                                                            href="{% url 'classifiedad:edit' classifiedad_id=classifiedad.id %}">
-                                                            Editar
-                                                            </a> 
-                                                        </div>
-                                                        <div class="col-2 d-grid gap-2">
-                                                            <form method="post" action="{% url 'classifiedad:delete' %}" 
-                                                                onsubmit="return confirm('Deseja realmente excluír este anúncio?');">   
-                                                                {% csrf_token %}
-                                                                <input type="hidden" id="id_classifiedad_id" name="classifiedad_id" value="{{ classifiedad.id }}">                                    
-                                                                <button type="submit" class="btn btn-outline-danger">
-                                                                    Excluir
-                                                                </button>                                                                                                                       
-                                                            </form>
-                                                        </div>
-                                                    </div>                         
-                                                {% endif %}
                                                 <div class="row">
-                                                    <div class="col">
-                                                        Status: {% if classifiedad.status == 'published' %} 
-                                                                    <span class="text-capitalize text-primary"> Publicado </span>
-                                                                {% else %} 
-                                                                    <span class="text-capitalize text-secondary fst-italic"> Aguardando Publicação </span>
-                                                                {% endif %}                                                           
+                                                    <div class="col-md col-sm">
+                                                            {% if classifiedad.status == 'published' %}
+                                                                <a href="{% url 'classifiedad:detail' brand=classifiedad.model.brand.brand|slugify|lower model=classifiedad.model.model|slugify|lower model_year=classifiedad.model_year classifiedad_id=classifiedad.id %}" target="_blank" class="text-decoration-none">
+                                                                    <h5 class="card-title text-uppercase h4"> 
+                                                                        {{ classifiedad.model.brand.brand }} - {{ classifiedad.model.model }} 
+                                                                    </h5>
+                                                                </a>
+                                                            {% else %}
+                                                                <h5 class="card-title text-uppercase h4"> 
+                                                                    {{ classifiedad.model.brand.brand }} - {{ classifiedad.model.model }} 
+                                                                </h5>
+                                                            {% endif %}
                                                     </div>
                                                 </div>
-                                                <div class="row pt-2">
-                                                    <div class="col">
-                                                        Última modificação: <span class="fw-normal text-secondary fst-italic"> {{ classifiedad.updated }} </span>
+                                                <div class="row">
+                                                    <div class="col-auto-md col-auto-sm pb-3">
+                                                        <p class="card-text"> 
+                                                            <span class="text-success h5 fw-bold"> R$ {{ classifiedad.price|intcomma }} </span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-auto-md col-auto-sm pb-2">
+                                                        <p class="card-text">
+                                                            <span> <i class="fas fa-tachometer-alt"></i> &nbsp; {{ classifiedad.mileage|intcomma }} Km </span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-auto-md col-auto-sm pb-2">
+                                                        <p class="card-text">
+                                                            <span class="text-capitalize"> <i class="fas fa-fill-drip"></i>&nbsp; {{ classifiedad.color|title }} </span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-auto-md col-auto-sm pb-2">
+                                                        <p class="card-text">
+                                                            <span> <i class="far fa-calendar-alt"></i> &nbsp; {{ classifiedad.fabrication_year }}/{{ classifiedad.model_year }} </span>
+                                                        </p>
+                                                    </div>                                                    
+                                                </div>           
+                                                <br>                                     
+                                                <div class="row">
+                                                    <div class="col-md col-sm">
+                                                        <p>
+                                                            Status: 
+                                                            {% if classifiedad.status == 'published' %} 
+                                                                <span class="text-capitalize text-primary"> Publicado </span>
+                                                            {% else %} 
+                                                                <span class="text-capitalize text-secondary fst-italic"> Aguardando Publicação </span>
+                                                            {% endif %}                                                           
+                                                        </p>
                                                     </div>
                                                 </div>
-                                                {% if classifiedad.status == 'published' %}                             
-                                                        <div class="row pt-3">                                                      
-                                                            <div class="col">
-                                                                Compartilhar: &nbsp;
-                                                                    <a href="#" class="text-decoration-none">
-                                                                        <img src="{% static '/img/whatapp-icon.png' %}" 
-                                                                            class="img-fluid" width="5%">
-                                                                    </a> 
-                                                                    &nbsp;
-                                                                    <a href="#" class="text-decoration-none">
-                                                                        <img src="{% static '/img/facebook-icon.png' %}" 
-                                                                            class="img-fluid" width="5%">
-                                                                    </a> 
-                                                                    &nbsp;
-                                                                    <a href="#" class="text-decoration-none">
-                                                                        <img src="{% static '/img/twiter-icon.png' %}" 
-                                                                            class="img-fluid" width="5%">
-                                                                    </a>
-                                                                    &nbsp;
-                                                                    <a href="#" class="text-decoration-none">
-                                                                        <img src="{% static '/img/linkedin-icon.png' %}" 
-                                                                            class="img-fluid" width="5%">
-                                                                    </a>
-                                                            </div>
-                                                        </div>  
-                                                {% endif %}                                
+                                                <div class="row">
+                                                    <div class="col-md col-sm">
+                                                        <p>
+                                                            Última modificação: 
+                                                            <span class="fw-normal text-secondary fst-italic"> {{ classifiedad.updated }} </span>
+                                                        </p>                                                        
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                {% if classifiedad.status == 'published' %}
+                                                     <div class="row">
+                                                          <div class="col-md-4 col-sm-4 d-grid gap-2 pb-3">
+                                                               <a class="btn w-100 btn-outline-success" href="#">
+                                                                    Destacar Anúncio
+                                                               </a> 
+                                                          </div>                                                                                                                
+                                                          <div class="col-md-2 col-sm-2 d-grid gap-2 pb-3">
+                                                                <a class="btn w-100 btn-outline-info" 
+                                                                   href="{% url 'classifiedad:edit' classifiedad_id=classifiedad.id %}">
+                                                                   Editar
+                                                                </a>                                                               
+                                                          </div>                                                     
+                                                          <div class="col-md-2 col-sm-2 d-grid gap-2 pb-3">
+                                                               <form method="post" action="{% url 'classifiedad:delete' %}" 
+                                                                     onsubmit="return confirm('Deseja realmente excluír este anúncio?');">   
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" id="id_classifiedad_id" name="classifiedad_id" 
+                                                                           value="{{ classifiedad.id }}">                                    
+                                                                    <button type="submit" class="btn w-100 btn-outline-danger">
+                                                                        Excluir
+                                                                    </button>                                                                                                                       
+                                                               </form>
+                                                          </div>
+                                                     </div>  
+                                                     <div class="row pt-4">
+                                                          <div class="col-md-auto col-sm-auto d-none d-md-block">
+                                                             <p>Compartilhar:</p>
+                                                          </div>
+                                                          <div class="col-md-auto col-sm-auto text-center">                                                                                                                               
+                                                                <a href="#" class="text-decoration-none">
+                                                                    <img src="{% static '/img/whatapp-icon.png' %}" 
+                                                                         class="img-fluid">
+                                                                </a> 
+                                                                &nbsp;                                                         
+                                                                <a href="#" class="text-decoration-none">
+                                                                    <img src="{% static '/img/facebook-icon.png' %}" 
+                                                                         class="img-fluid">
+                                                                </a> 
+                                                                &nbsp;                                                         
+                                                                <a href="#" class="text-decoration-none">
+                                                                    <img src="{% static '/img/twiter-icon.png' %}" 
+                                                                         class="img-fluid">
+                                                                </a>                                                                
+                                                          </div>
+                                                     </div>
+                                                {% endif %}
                                             </div>
-                                        </div>
-                                    </div>                                
+                                        </div> <!-- col -->
+                                    </div> <!-- row -->
                                 </div>                                  
                                 <br>
                             {% endfor %}
                             {% if classifiedad_page.has_other_pages %}
                                 <div class="row">
-                                    <div class="col d-flex justify-content-center">
+                                    <div class="col-md col-sm d-flex justify-content-center">
                                         <nav aria-label="Anúncio Navegação" style="background: white; border: 0;">
                                             <ul class="pagination justify-content-center">                                            
                                                 {% if classifiedad_page.has_previous %}
@@ -209,7 +234,7 @@
                             {% endif %}
                         {% else %} 
                             <div class="row pt-4 pb-4">
-                                <div class="col d-flex justify-content-center">                            
+                                <div class="col-md col-sm d-flex justify-content-center">                            
                                     <h2 class="text-dark">Você ainda não cadastrou nenhum Anúncio!</h2>
                                 </div>
                             </div>                        

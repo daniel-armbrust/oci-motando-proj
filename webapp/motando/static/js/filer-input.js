@@ -10,7 +10,7 @@ $(document).ready(function() {
         limit: 10,
         maxSize: 5242880,
         extensions: ['jpg', 'jpeg', 'png'],       
-        changeInput: '<div class="jFiler-input-dragDrop hold-photos"><div class="jFiler-input-inner"><div class="jFiler-input-icon"><i class="icon-jfi-cloud-up-o"></i></div><div class="jFiler-input-text"><h3>Arraste at&eacute; 5 fotos da sua Moto</h3> <p>somente arquivos (jpg ou png)</p></div><a class="jFiler-input-choose-btn blue">Selecione as imagens</a></div></div>',
+        changeInput: '<div class="jFiler-input-dragDrop hold-photos" style="width: 100%;"><div class="jFiler-input-inner"><div class="jFiler-input-icon"><i class="icon-jfi-cloud-up-o"></i></div><div class="jFiler-input-text"><h3>Arraste at&eacute; 5 fotos da sua Moto</h3> <p>somente arquivos (jpg ou png)</p></div><a class="jFiler-input-choose-btn blue">Selecione as imagens</a></div></div>',
         showThumbs: true,
         theme: 'dragdropbox',
         templates: {

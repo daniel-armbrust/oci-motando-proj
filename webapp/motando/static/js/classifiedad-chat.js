@@ -167,7 +167,7 @@ function buildChatPanel(participantsJson, messagesJson, chatType) {
         let participantEmail = null;
         let participantNameEmail = null;
 
-        // Participants (Left Panel) 
+        // Participants (Left Panel) - Chat History
         for (let i = 0; i < participantsJson.data.length ; i++) {
             price = parseFloat(messagesJson.data[0].price);
             brPrice = price.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'});
@@ -187,7 +187,7 @@ function buildChatPanel(participantsJson, messagesJson, chatType) {
                 participantNameEmail = participantEmail;
                 
             htmlChatHistory = `
-               <div class="row"><div class="col m-2">
+               <div class="row"><div class="col-md col-sm m-2">
                    <a href="javascript:void(0);" onclick="getChatMessages('${chatType}', ${participantsJson.data[i].id});" 
                       class="text-decoration-none">
                      <p class="fst-italic">${participantNameEmail}</p>
@@ -196,16 +196,16 @@ function buildChatPanel(participantsJson, messagesJson, chatType) {
                      </p></a><hr></div></div>`;
             
             $('#id_chat_history').append(htmlChatHistory);
-            $('#id_chat_from_fullname').html(participantNameEmail);          
+            //$('#id_chat_from_fullname').html(participantNameEmail);          
         }
 
-        // Messages (Right Panel)
-        for (let i = 0 ; i < messagesJson.data[0].messages.length ; i++) {
+        // Messages (Right Panel) - Messages
+        for (let i = 0 ; i < messagesJson.data[0].messages.length ; i++) {           
             chatDateTime = new Date(messagesJson.data[0].messages[i].timestamp);
-            chatDateTimeStr = `${chatDateTime.toLocaleDateString()} - ${chatDateTime.toLocaleTimeString('pt-BR')}`;
+            chatDateTimeStr = `${chatDateTime.toLocaleDateString()} - ${chatDateTime.toLocaleTimeString('pt-BR')}`;           
 
             htmlChatMessages = `
-                    <div class="row"><div class="col">
+                    <div class="row"><div class="col-md col-sm">
                         <div style="background-color: #C6C6C6;" class="p-3 border rounded">
                            <p class="fw-bold fst-italic">
                                ${messagesJson.data[0].messages[i].from}
@@ -215,6 +215,16 @@ function buildChatPanel(participantsJson, messagesJson, chatType) {
 
             $('#id_chat_messages').append(htmlChatMessages);
         }
+
+        participantFullname = messagesJson.data[0].user_from_fullname;
+        participantEmail = messagesJson.data[0].user_from_email;
+
+        if (participantFullname !== null)
+            participantNameEmail = participantFullname;
+        else
+            participantNameEmail = participantEmail;
+
+        $('#id_chat_from_fullname').html(participantNameEmail);  
 
         $('#id_chat_id').val(messagesJson.data[0].id);
        

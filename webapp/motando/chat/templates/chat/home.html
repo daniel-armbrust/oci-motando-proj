@@ -13,37 +13,42 @@
    <section>
        <div class="container">     
             <div class="row">               
-                  <div class="col-3 d-flex justify-content-center">
+                  <div class="col-md-3 col-sm-3 d-flex justify-content-center">
                       <a href="{% url 'account:home' %}">
                         <img src="{% static 'img/motando_logo-402x150.png' %}" class="img-fluid" alt="Motando" 
                              style="width: 220px;">
                       </a>
                   </div>         
-                  <div class="col-9 d-flex justify-content-center">                                
+                  <div class="col-md-9 col-sm-9 d-flex justify-content-center">                                
                      {% include "messages.html" %}      
                  </div>               
             </div>
             <div class="row">
-               <div class="col-3">
+               <!-- Visible only on desktop -->
+               <div class="col-md-3 col-sm-3 d-none d-md-block">
                     {% include "account_layout/left_menu.html" with user_profile=user_profile %}  
                </div> 
-               <div class="col-9">
+               <div class="col-md-9 col-sm-9">
                   <br>
                   <form id="id_form_id" autocomplete="off">                     
                      {% csrf_token %}       
-                     <div class="shadow rounded bg-white border p-3"  style="height: 688px;">
+                     <div class="shadow rounded bg-white border p-3"  style="min-height: 700px;">
                          <div class="row">
-                           <div class="col">
-                                 <h2 class="h4 fw-bold"> Chat de Propostas </h2>  
-                                 <p> 
-                                    Veja aqui a lista e histórico de suas negociações <b>via CHAT</b>, 
-                                    por anúncio publicado, ativo ou arquivado. <br>
-                                    Você também pode selecionar o anúncio e enviar uma mensagem. 
-                                 </p>                               
-                           </div>
+                              <div class="col-md col-sm">
+                                    <h2 class="h4 fw-bold"> Chat de Propostas </h2>  
+                              </div>
+                         </div>
+                         <div class="row">                         
+                              <div class="col-md col-sm">
+                                    <p class="text-justify"> 
+                                        Veja aqui a lista e histórico de suas negociações <b>via CHAT</b>, 
+                                        por anúncio publicado, ativo ou arquivado. <br>
+                                        Você também pode selecionar o anúncio e enviar uma mensagem. 
+                                    </p>                               
+                              </div>
                          </div>  
                          <div class="row m-2 pb-4">
-                              <div class="col-2 d-flex justify-content-center">
+                              <div class="col-md-auto col-sm-auto d-flex pt-2">
                                   <div class="form-check">
                                       <input class="form-check-input" type="radio" id="id_chat_selling" name="chat_options" value="selling">
                                       <label class="form-check-label" for="id_chat_selling">
@@ -51,7 +56,7 @@
                                       </label>
                                   </div>
                               </div>
-                              <div class="col-3 d-flex justify-content-center">
+                              <div class="col-md-auto col-sm-auto d-flex pt-2">
                                   <div class="form-check">
                                       <input class="form-check-input" type="radio" id="id_chat_buying" name="chat_options" value="buying">
                                       <label class="form-check-label" for="id_chat_buying">
@@ -59,7 +64,7 @@
                                       </label>
                                   </div>
                               </div>
-                              <div class="col-3 d-flex justify-content-center">
+                              <div class="col-md-auto col-sm-auto d-flex pt-2">
                                  <div class="form-check">
                                        <input class="form-check-input" type="radio" id="id_chat_archive" name="chat_options" value="archive">
                                        <label class="form-check-label" for="id_chat_archive">
@@ -69,30 +74,30 @@
                               </div>
                          </div>
                          <div class="row d-none" id="id_chat_painel">
-                           <input type="hidden" name="chat_id" id="id_chat_id" value=""> 
-                           <div class="col-4">
-                               <p class="fw-bold rounded-top my-background-purple text-white p-3 text-center"> Histórico de Conversas </p>  
-                               <div style="overflow-y: scroll; overflow-x: hidden; height: 300px;" id="id_chat_history">                                   
-                               </div>
-                           </div>                            
-                           <div class="col-8">
-                               <p class="fw-bold rounded-top my-background-purple text-white p-3 text-left text-uppercase" 
-                                  id="id_chat_from_fullname"> 
-                               </p>  
-                               <div style="overflow-y: scroll; overflow-x: hidden; height: 312px;"
-                                    id="id_chat_messages">                                  
-                               </div>
-                               <br>
-                               <div class="input-group mb-3">
-                                   <input type="text" class="form-control fst-italic" placeholder="Digite uma mensagem" 
-                                          aria-label="Digite uma mensagem" aria-describedby="button-addon2" 
-                                          id="id_chat_message" readonly>
-                                   <button class="btn btn-success" type="button" id="id_button_sendmsg" disabled>
-                                         &nbsp;&nbsp; Enviar &nbsp;&nbsp;
-                                   </button>
-                               </div>                               
-                           </div>
-                       </div>
+                              <input type="hidden" name="chat_id" id="id_chat_id" value=""> 
+                              <div class="col-md-4 col-sm-4">
+                                  <p class="fw-bold rounded-top my-background-purple text-white p-3 text-center"> Histórico de Conversas </p>  
+                                  <div style="overflow-y: scroll; overflow-x: hidden;" id="id_chat_history">                                   
+                                  </div>
+                              </div>                            
+                              <div class="col-md-8 col-sm-8">
+                                  <p class="fw-bold rounded-top my-background-purple text-white p-3 text-left text-uppercase" 
+                                      id="id_chat_from_fullname"> 
+                                  </p>  
+                                  <div style="overflow-y: scroll; overflow-x: hidden;"
+                                        id="id_chat_messages">                                  
+                                  </div>
+                                  <br>
+                                  <div class="input-group mb-3">
+                                      <input type="text" class="form-control fst-italic" placeholder="Digite uma mensagem" 
+                                              aria-label="Digite uma mensagem" aria-describedby="button-addon2" 
+                                              id="id_chat_message" readonly>
+                                      <button class="btn btn-success" type="button" id="id_button_sendmsg" disabled>
+                                            &nbsp;&nbsp; Enviar &nbsp;&nbsp;
+                                      </button>
+                                  </div>                               
+                              </div>
+                         </div>
                      </div>
                   </form>
                   <div class="modal" tabindex="-1" id="id_modal">
