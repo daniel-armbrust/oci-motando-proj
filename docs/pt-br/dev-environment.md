@@ -14,7 +14,7 @@ Mesmo em desenvolvimeto, o serviço de _[Object Storage](https://docs.oracle.com
 
 _**__NOTA:__** As credênciais de acesso aqui utilizadas e valores [OCID](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/identifiers.htm#Oracle), são inválidos e não servem para uso real. Estão aqui somente para demonstração dos procedimentos._
 
-## Descrição geral
+## Visão geral
 
 O desenvolvimento da aplicação _Motando_ será feito a partir de um
 simples _[Virtual Environment (venv)](https://docs.python.org/3/library/venv.html)_. Este ambiente virtual irá hospedar o código da aplicação e suas diversas  dependências, como também os arquivos que fazem parte do framework _[Django](https://www.djangoproject.com/)_.

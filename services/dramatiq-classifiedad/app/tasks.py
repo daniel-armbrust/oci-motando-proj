@@ -49,7 +49,19 @@ log.basicConfig(
 )
 
 # Dramatiq init
-redis_broker = RedisBroker(host=REDIS_HOST, port=int(REDIS_PORT), password=REDIS_PASSWD)
+redis_broker = None
+
+if APP_ENV == 'PRD':
+    # OCI Redis uses TLS by default.
+    redis_broker = RedisBroker(host=REDIS_HOST, 
+                               port=int(REDIS_PORT),                                
+                               ssl=True,
+                               ssl_cert_reqs=None)
+else:
+    redis_broker = RedisBroker(host=REDIS_HOST, 
+                               port=int(REDIS_PORT), 
+                               password=REDIS_PASSWD)
+
 dramatiq.set_broker(redis_broker)
 
 
