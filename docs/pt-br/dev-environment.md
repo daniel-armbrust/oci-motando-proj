@@ -12,7 +12,7 @@ Principais softwares e versões em uso:
 
 Mesmo em desenvolvimeto, o serviço de _[Object Storage](https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/objectstorageoverview.htm)_ e _[Logging](https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm)_ da _Oracle Cloud (OCI)_ são utilizados. Por conta disso, é necessário uma conta ativa no _OCI_.
 
-_**__NOTA:__** As credênciais de acesso aqui utilizadas e valores [OCID](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/identifiers.htm#Oracle), são inválidos e não servem para uso real. Estão aqui somente para demonstração dos procedimentos._
+>_**__NOTA:__** As credênciais de acesso aqui utilizadas e valores [OCID](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/identifiers.htm#Oracle), são inválidos e não servem para uso real. Estão aqui somente para demonstração dos procedimentos._
 
 ## Visão geral
 
