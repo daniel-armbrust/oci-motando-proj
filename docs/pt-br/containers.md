@@ -114,4 +114,48 @@ A técnica do _[multi-stage build](https://docs.docker.com/build/building/multi-
 
 >_**__NOTA:__** O link [Required Keys and OCIDs](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#Required_Keys_and_OCIDs) descreve o procedimento para gerar as chaves de autenticação usados para assinar as solicitações de API do OCI._
 
-## Semântica de versão
+Uma vez, tendo as imagens construídas, é possível visualiza-las com o comando _docker images_:
+
+```
+$ docker images
+REPOSITORY                                     TAG                   IMAGE ID       CREATED             SIZE
+motando-webapp                                 1.0.0                 d5f276c0ea5a   About an hour ago   1.11GB
+motando-webapp                                 dev                   99efd0d06555   4 days ago          1.11GB
+dramatiq-classifiedad                          dev                   73417ba77b99   4 days ago          616MB
+container-registry.oracle.com/os/oraclelinux   8-slim                854e7d006919   11 days ago         116MB
+mysql                                          8.0.35-oraclelinux8   ba048db12589   13 days ago         591MB
+redis                                          7                     e40e2763392d   3 weeks ago         138MB
+```
+
+>_**__NOTA:__** Lembrando que o [Oracle Linux](https://container-registry.oracle.com/ords/ocr/ba/os/oraclelinux) é a imagem base que foi usada para construir a imagem da aplicação. Por conta disso, ela também é exibida através do comando docker images._
+
+## Nota sobre Container Registry
+
+_[Container Registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm)_ é um sistema usado para armazenar e distribuir imagens de contêineres sendo o _[Docker Hub](https://hub.docker.com/)_, o maior _registry público_ existente. A _[Oracle](https://www.oracle.com/corporate/)_ também possui o seu próprio _registry público_ de imagens que pode ser acessado através deste _[link aqui](https://container-registry.oracle.com)_:
+
+![alt_text](/githimgs/oracle-container-registry-1.jpg "Oracle Container Registry")
+
+Aqui vale um detalhe! Por padrão, o ferramental do _[Docker](https://developer.oracle.com/learn/technical-articles/what-is-docker)_ sempre faz _download (pull)_ das imagens direto do _[Docker Hub (docker.io)](https://hub.docker.com/)_, quando não especificado o contrário:
+
+```
+$ docker image pull oraclelinux:8
+Trying to pull repository docker.io/library/oraclelinux ...
+8: Pulling from docker.io/library/oraclelinux
+eeccb7e6dc78: Pull complete
+Digest: sha256:9e930388d5fff03c6ba9c07223d0183bcd00c6b16b71705ca37524a0f467eb19
+Status: Downloaded newer image for oraclelinux:8
+oraclelinux:8
+```
+
+O problema é que o _[Docker Hub](https://hub.docker.com/)_ impõe alguns limites nas operações de _pull_ realizadas nele. Sim, uma operação _pull_ salva localmente a imagem solicitada e permite a sua reutilização, sem a necessidade de um novo _pull_ futuro. De qualquer forma, se há outros desenvolvedores no mesmo time, baixando diversas outras imagens do _Docker Hub_, este limite pode atrapalhar.
+
+O _[Oracle Container Registry](https://container-registry.oracle.com)_ não possui esses limites e é uma alternativa válida para ser usada. Ele possui diversas _imagens docker_ disponíveis, como é o caso da imagem _[Oracle Linux](https://container-registry.oracle.com/ords/ocr/ba/os/oraclelinux)_ que está sendo usada pela  aplicação _Motando_:
+
+```
+$ head -5 Dockerfile
+#
+# Dockerfile
+#
+FROM container-registry.oracle.com/os/oraclelinux:8-slim as base
+
+```
