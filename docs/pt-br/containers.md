@@ -68,7 +68,7 @@ Abaixo, a explicação de alguns dos comandos presentes neste _Dockerfile_:
 
 - [FROM](https://docs.docker.com/engine/reference/builder/#from) : Especifica uma _imagem base_ que será usada para se construir uma nova imagem a partir dela. Neste caso, está sendo usado o _[Oracle Linux versão 8-slim](https://container-registry.oracle.com/ords/ocr/ba/os/oraclelinux)_ como base.
 
-- WORKDIR : Altera para o diretório especificado tornando este, o novo diretório raíz de trabalho para execução dos demais comandos. 
+- [WORKDIR](https://docs.docker.com/engine/reference/builder/#workdir) : Altera para o diretório especificado tornando este, o novo diretório raíz de trabalho para execução dos demais comandos. 
 
 - [COPY](https://docs.docker.com/engine/reference/builder/#copy) : Copia arquivos ou diretórios de fora para dentro da imagem em construção.
 
@@ -77,6 +77,8 @@ Abaixo, a explicação de alguns dos comandos presentes neste _Dockerfile_:
 - [EXPOSE](https://docs.docker.com/engine/reference/builder/#expose) : Informa a porta de rede que a aplicação irá expor. Esta instrução não "abre" nenhuma porta de rede. Ela serve como uma forma de documentar qual é a porta que este contêiner irá expor.
 
 - [ENTRYPOINT](https://docs.docker.com/engine/reference/builder/#entrypoint) : Define o comando que será executado quando o contêiner for criado e iniciado. Para este caso de exemplo, é um shell script que irá iniciar a aplicação Web.
+
+>_**__NOTA:__** Consulte [Dockerfile reference](https://docs.docker.com/engine/reference/builder/) para um descrição de todos os comandos suportados._
 
 Para se construir uma imagem a partir deste _Dockerfile_, basta executar o comando _docker build_ especificando um _nome_ e _tag_ no formato _nome:tag_ através do parâmetro _-t_ conforme abaixo:
 
