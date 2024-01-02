@@ -51,7 +51,7 @@ O processo de envio das imagens pode ser resumido nos passos abaixo:
 
 4. Enviar a imagem local ao _[container registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm)_ através do comando _"docker push"_.
 
-### Gerar um Auth Token
+### Gerando um Auth Token
 
 _[Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm)_ é um tipo de credencial gerada pelo OCI para autenticação com APIs de terceiros, como é o caso do _[container registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm)_ que é implementado de acordo com a especificação da _[API do Docker Registry](https://distribution.github.io/distribution/spec/api/)_.
 
@@ -85,7 +85,7 @@ O _[container registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Conc
 
 Para o exemplo aqui descrito, está sendo utilizada a região _Brazil East (São Paulo)_ no qual o _[OCIR](https://www.oracle.com/br/cloud/cloud-native/container-registry/)_ é acessado pelo nome _**gru.ocir.io**_:
 
-![alt_text](/githimgs/ocir-region-1.jpg "região Brazil East (São Paulo)")
+![alt_text](/githimgs/ocir-region-1.jpg "OCIR - região Brazil East (São Paulo)")
 
 >_**__NOTA:__** Para encontrar o endpoint do serviço em outra região, consulte este [link aqui](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryprerequisites.htm#regional-availability)._
 
@@ -102,7 +102,7 @@ Tendo as informações em mãos, estas devem ser informados ao comando _docker l
 
 ```
 $ docker login gru.ocir.io
-Username: grxmw2a9myyj/daniel.armbrust@oracle.com
+Username: grxmw2a9myyj/darmbrust@gmail.com
 Password:
 WARNING! Your password will be stored unencrypted in /home/darmbrust/.docker/config.json.
 Configure a credential helper to remove this warning. See
@@ -114,3 +114,48 @@ Login Succeeded
 >_**__NOTA:__** Para o Password, deve-se utilizar o [Auth Token](https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm) previamente gerado._
 
 ### Enviando a imagem através do _docker push_
+
+Como último passo, deve-se utilizar o comando _docker tag_ e nomear (ou taguear) a imagem de acordo com o seguinte formato:
+
+```
+<region-key>.ocir.io/<tenancy-namespace>/<repo-name>:<version>
+```
+
+- **region-key**
+    - String de três caracteres que identifica a _[região](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm#About)_. Para o exemplo, onde a
+    região _Brazil East (São Paulo)_ está sendo usada, o _region-key_ corresponde ao valor _gru_.
+
+- **tenancy-namespace**
+    - Informação do _[tenancy namespace](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/understandingnamespaces.htm)_ (valor já obtido anteriormente).
+
+- **repo-name**
+    - Nome do _[repositório](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryconcepts.htm#About_Repositories)_ onde a imagem será salva.
+
+- **version**
+    - Versão da imagem. Quando não especificado, o valor _latest_ é usado como padrão.
+
+>_**__NOTA:__** O valor latest indica a versão mais recente. Como boa prática, é sempre melhor especificar uma versão (ex: 1.0.0). Isto garante compatibilidade.  Consulte [Versionamento Semântico (SemVer)](https://semver.org/) para saber mais sobre como versionar._
+
+Juntando as informações, para a aplicação Web teremos algo como:
+
+```
+gru.ocir.io/grxmw2a9myyj/motando-webapp:1.0.0
+```
+
+Para aplicar a _tag_ através do _Docker_, usa-se o _IMAGE ID (d5f276c0ea5a)_ da imagem correspondente:
+
+```
+$ docker images
+REPOSITORY                                     TAG                   IMAGE ID       CREATED        SIZE
+motando-webapp                                 1.0.0                 d5f276c0ea5a   25 hours ago   1.11GB
+
+$ docker tag d5f276c0ea5a gru.ocir.io/grxmw2a9myyj/motando-webapp:1.0.0
+```
+
+Assim, é possível enviar a imagem ao _[container registry](https://docs.oracle.com/en-us/iaas/Content/Registry/Concepts/registryoverview.htm)_ através do comando abaixo:
+
+```
+$ docker push gru.ocir.io/grxmw2a9myyj/motando-webapp:1.0.0
+```
+
+![alt_text](/githimgs/oracle-container-registry-2.jpg "OCIR - Repositórios e imagens")
