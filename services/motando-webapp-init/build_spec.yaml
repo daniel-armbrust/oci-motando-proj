@@ -6,5 +6,6 @@ failImmediatelyOnError: true
 steps:  
   - type: Command    
     name: "Dockerizer"
-    command: |            
-      docker build -t motando-webapp-init:1.0.0 services/motando-webapp-init/
+    command: |               
+      cd services/motando-webapp-init/ ;      
+      docker build -t motando-webapp-init:1.0.0 .
