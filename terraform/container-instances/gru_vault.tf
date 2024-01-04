@@ -33,7 +33,7 @@ resource "oci_vault_secret" "gru_vault-secret_github-token" {
     vault_id = oci_kms_vault.gru_vault_motando.id
     key_id = oci_kms_key.gru_vault-enckey_motando.id
 
-    secret_name = "secret_github-token"
+    secret_name = "secret_github-token-NEW"
     description = "GitHub - Personal access tokens (classic)"
 
     secret_content {        
