@@ -13,6 +13,7 @@ fi
 
 cd /opt/webapp/motando/
 
+# CHARSET UTF8MB4 = UTF8
 mysql -u$MYSQL_USER -p$MYSQL_PASSWD -h $MYSQL_HOST \
     -e "CREATE DATABASE $MYSQL_DBNAME CHARSET UTF8MB4"
 

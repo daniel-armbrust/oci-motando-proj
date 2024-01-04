@@ -20,10 +20,6 @@ resource "oci_logging_log" "gru_motando-log_webapp" {
     retention_duration = 30 # 30 dias  
 }
 
-output "gru_motando-log_webapp_id" {   
-    value = oci_logging_log.gru_motando-log_webapp.id
-}
-
 resource "oci_logging_log" "gru_motando-log_workflow" {  
     provider = oci.gru
       
@@ -34,6 +30,24 @@ resource "oci_logging_log" "gru_motando-log_workflow" {
     retention_duration = 30 # 30 dias  
 }
 
-output "gru_motando-log_workflow_id" {    
-    value = oci_logging_log.gru_motando-log_workflow.id
+# DevOps Service LOG
+resource "oci_logging_log" "gru_service-log_devops" {  
+    provider = oci.gru
+      
+    display_name = "service-log_devops"
+    log_group_id = oci_logging_log_group.gru_loggroup_motando.id
+    log_type = "SERVICE"
+    is_enabled = true
+    retention_duration = 30 # 30 dias  
+
+    configuration {        
+        source {            
+            category = "ALL"
+            resource = oci_devops_project.gru_devops_motando.id
+            service = "DEVOPS"
+            source_type = "OCISERVICE"            
+        }
+
+        compartment_id = var.root_compartment
+    }
 }

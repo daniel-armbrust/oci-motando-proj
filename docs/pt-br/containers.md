@@ -83,7 +83,7 @@ Abaixo, a explicação de alguns dos comandos presentes neste _Dockerfile_:
 Para se construir uma imagem a partir deste _Dockerfile_, basta executar o comando _docker build_ especificando um _nome_ e _tag_ no formato _nome:tag_ através do parâmetro _-t_ conforme abaixo:
 
 ```
-$ docker build -t motando-webapp:1.0.0 .
+$ docker build --target=base -t motando-webapp:1.0.0 .
 ```
 
 >_**__NOTA:__** Lembre-se de estar dentro do diretório onde encontra-se o arquivo [Dockerfile](https://docs.docker.com/engine/reference/builder/) para poder executar o comando docker build._
@@ -124,6 +124,7 @@ REPOSITORY                                     TAG                   IMAGE ID   
 motando-webapp                                 1.0.0                 d5f276c0ea5a   About an hour ago   1.11GB
 motando-webapp                                 dev                   99efd0d06555   4 days ago          1.11GB
 dramatiq-classifiedad                          dev                   73417ba77b99   4 days ago          616MB
+dramatiq-classifiedad                          1.0.0                 7301e9a0dffd   About a minute ago  616MB
 container-registry.oracle.com/os/oraclelinux   8-slim                854e7d006919   11 days ago         116MB
 mysql                                          8.0.35-oraclelinux8   ba048db12589   13 days ago         591MB
 redis                                          7                     e40e2763392d   3 weeks ago         138MB

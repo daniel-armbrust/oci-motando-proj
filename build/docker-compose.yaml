@@ -18,6 +18,7 @@ services:
     dramatiq-classifiedad:
         build:
             context: ../services/dramatiq-classifiedad/
+            dockerfile: Dockerfile
             target: envdev
         image: dramatiq-classifiedad:dev
         container_name: dramatiq-classifiedad
@@ -42,6 +43,7 @@ services:
     webapp:
         build:
             context: ../webapp/
+            dockerfile: Dockerfile
             target: envdev        
         image: motando-webapp:dev
         container_name: motando-webapp

@@ -13,6 +13,17 @@ resource "oci_artifacts_container_repository" "gru_ocir_motando-webapp" {
     is_public = false
 }
 
+resource "oci_artifacts_container_repository" "gru_ocir_motando-webapp-init" {
+    provider = oci.gru
+    
+    compartment_id = var.root_compartment
+    
+    display_name = "motando-webapp-init"
+   
+    is_immutable = false
+    is_public = false
+}
+
 resource "oci_artifacts_container_repository" "gru_ocir_dramatiq-classifiedad" {
     provider = oci.gru
     

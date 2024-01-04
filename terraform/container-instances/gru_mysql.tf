@@ -2,7 +2,17 @@
 # gru_mysql.tf - MySQL Database
 #
 
-resource "random_password" "password" {
+resource "random_password" "admin_password" {
+    length = 12
+    special = true    
+    min_upper = 1
+    min_lower = 1
+    min_numeric = 1   
+    min_special = 1 
+    override_special = "$()-_<>"
+}
+
+resource "random_password" "webappl_password" {
     length = 12
     special = true    
     min_upper = 1
@@ -30,7 +40,7 @@ resource "oci_mysql_mysql_db_system" "gru_mysql_motando-1" {
     hostname_label = "mysql1"    
 
     admin_username = "admin"
-    admin_password = random_password.password.result    
+    admin_password = random_password.admin_password.result    
 
     backup_policy {
         is_enabled = false        
@@ -39,9 +49,4 @@ resource "oci_mysql_mysql_db_system" "gru_mysql_motando-1" {
     maintenance {
         window_start_time = "sun 01:00"
     }
-}
-
-output "gru_mysql_motando-1_passwd" {
-  value = element(random_password.password[*].result, 1)
-  sensitive = true
 }

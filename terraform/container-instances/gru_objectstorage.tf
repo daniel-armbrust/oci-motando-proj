@@ -2,6 +2,16 @@
 # gru_objectstorage.tf - Object Storage
 #
 
+resource "oci_objectstorage_bucket" "gru_motando-img" {
+    provider = oci.gru
+    
+    compartment_id = var.root_compartment
+    name = "motando-img"
+    namespace = local.gru_objectstorage_ns
+    access_type = "ObjectReadWithoutList"
+    versioning = "Disabled"
+}
+
 resource "oci_objectstorage_bucket" "gru_motando-tmpimg" {
     provider = oci.gru
     
@@ -27,16 +37,6 @@ resource "oci_objectstorage_object_lifecycle_policy" "gru_lifecycle-policy_motan
     }
 }
 
-resource "oci_objectstorage_bucket" "gru_motando-img" {
-    provider = oci.gru
-    
-    compartment_id = var.root_compartment
-    name = "motando-img"
-    namespace = local.gru_objectstorage_ns
-    access_type = "ObjectReadWithoutList"
-    versioning = "Disabled"
-}
-
 resource "oci_objectstorage_bucket" "gru_motando-staticfiles" {
     provider = oci.gru
     
@@ -45,8 +45,4 @@ resource "oci_objectstorage_bucket" "gru_motando-staticfiles" {
     namespace = local.gru_objectstorage_ns
     access_type = "ObjectReadWithoutList"
     versioning = "Disabled"
-}
-
-output "objectstorage_namespace" {
-    value = local.gru_objectstorage_ns
 }

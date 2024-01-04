@@ -14,7 +14,7 @@ import tasks
 # Globals
 APP_ENV = os.environ.get('APP_ENV')
 XMLRPC_PORT = os.environ.get('CLASSIFIEDAD_XMLRPC_PORT', 8100)
-OCI_LOG_ID = os.environ.get('OCI_LOG_ID')
+OCI_LOG_ID = os.environ.get('WORKFLOW_OCI_LOG_ID')
 
 
 def new_classifiedad(classifiedad_id: int):
