@@ -14,6 +14,6 @@ steps:
       docker build -t gru.ocir.io/${OCI_OBJSTR_NAMESPACE}/motando-webapp-init:1.0.0 .
 
 outputArtifacts:
-  - name: motando-webapp-init:1.0.0
+  - name: motando-webapp-init
     type: DOCKER_IMAGE
     location: gru.ocir.io/${OCI_OBJSTR_NAMESPACE}/motando-webapp-init:1.0.0
