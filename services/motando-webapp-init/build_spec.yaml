@@ -3,9 +3,6 @@ component: build
 timeoutInSeconds: 3600
 shell: bash
 failImmediatelyOnError: true
-env:
-  variables:
-    OCI_OBJSTR_NAMESPACE: `oci os ns get --query 'data' --raw-output`
 steps:  
   - type: Command    
     name: "Creating Docker Image"
