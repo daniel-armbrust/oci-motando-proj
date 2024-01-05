@@ -143,7 +143,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_deli
     deliver_artifact_collection {        
         items {            
             artifact_id = oci_devops_deploy_artifact.gru_devops-artifact_motando-webapp-init.id
-            artifact_name = "img_motando-webapp-init"
+            artifact_name = "motando-webapp-init:1.0.0"
         }
     }
 

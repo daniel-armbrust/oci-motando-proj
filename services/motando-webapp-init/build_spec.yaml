@@ -3,9 +3,17 @@ component: build
 timeoutInSeconds: 3600
 shell: bash
 failImmediatelyOnError: true
+env:
+  variables:
+    OCI_OBJSTR_NAMESPACE: "$(oci os ns get --query 'data' --raw-output)"
 steps:  
   - type: Command    
-    name: "Dockerizer"
+    name: "Creating Docker Image"
     command: |               
       cd services/motando-webapp-init/ ;      
-      docker build -t motando-webapp-init:1.0.0 .
+      docker build -t gru.ocir.io/${OCI_OBJSTR_NAMESPACE}/motando-webapp-init:1.0.0 .
+
+outputArtifacts:
+  - name: motando-webapp-init:1.0.0
+    type: DOCKER_IMAGE
+    location: gru.ocir.io/${OCI_OBJSTR_NAMESPACE}/motando-webapp-init:1.0.0
