@@ -8,9 +8,9 @@ steps:
     name: "Creating Docker Image"
     command: |               
       cd services/motando-webapp-init/ ;      
-      docker build -t gru.ocir.io/$OCI_OBJSTR_NAMESPACE/motando-webapp-init:1.0.0 .
+      docker build -t gru.ocir.io/$OBJSTR_NAMESPACE/motando-webapp-init:1.0.0 .
 
 outputArtifacts:
   - name: motando-webapp-init
     type: DOCKER_IMAGE
-    location: gru.ocir.io/$OCI_OBJSTR_NAMESPACE/motando-webapp-init:1.0.0
+    location: gru.ocir.io/$OBJSTR_NAMESPACE/motando-webapp-init:1.0.0
