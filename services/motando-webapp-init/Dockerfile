@@ -16,4 +16,4 @@ RUN microdnf update -y && \
     python -m pip install --no-cache-dir --upgrade pip setuptools && \
     microdnf clean all && rm -rf /var/cache/yum
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD motando-webapp-init.sh

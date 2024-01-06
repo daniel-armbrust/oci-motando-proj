@@ -17,7 +17,8 @@ resource "oci_identity_dynamic_group" "dyngrp_motando" {
                 resource.type = 'devopsbuildpipeline', 
                 resource.type = 'devopsrepository', 
                 resource.type = 'devopsconnection', 
-                resource.type = 'devopstrigger'
+                resource.type = 'devopstrigger',
+                resource.type = 'computecontainerinstance'
             }
         }
     EOT
@@ -33,6 +34,12 @@ resource "oci_identity_policy" "iam_policy" {
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to read secret-family in compartment id ${var.root_compartment}",
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use devops-family in compartment id ${var.root_compartment}",
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use ons-topics in compartment id ${var.root_compartment}",
-       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use adm-knowledge-bases in compartment id ${var.root_compartment}"
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use adm-knowledge-bases in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to manage repos in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to manage compute-container-instances in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to manage compute-containers in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use vnics in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use subnets in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use dhcp-options in compartment id ${var.root_compartment}"
     ]
 }
