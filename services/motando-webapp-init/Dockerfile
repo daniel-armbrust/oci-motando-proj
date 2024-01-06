@@ -16,4 +16,4 @@ RUN microdnf update -y && \
     python -m pip install --no-cache-dir --upgrade pip setuptools && \
     microdnf clean all && rm -rf /var/cache/yum
 
-CMD motando-webapp-init.sh
+ENTRYPOINT ["motando-webapp-init.sh"]

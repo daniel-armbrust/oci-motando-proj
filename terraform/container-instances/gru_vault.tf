@@ -33,7 +33,7 @@ resource "oci_vault_secret" "gru_vault-secret_github-token" {
     vault_id = oci_kms_vault.gru_vault_motando.id
     key_id = oci_kms_key.gru_vault-enckey_motando.id
 
-    secret_name = "secret_github-token-NEW"
+    secret_name = "secret_github-token"
     description = "GitHub - Personal access tokens (classic)"
 
     secret_content {        
@@ -50,12 +50,12 @@ resource "oci_vault_secret" "gru_vault-secret_mysql-admin" {
     vault_id = oci_kms_vault.gru_vault_motando.id
     key_id = oci_kms_key.gru_vault-enckey_motando.id
 
-    secret_name = "secret_mysql-admin"
+    secret_name = "secret_mysql-admin_${formatdate("YYYY-MM-DD", timestamp())}"
     description = "MySQL - Admin User Password"
 
     secret_content {        
         content_type = "BASE64"
-        content = base64encode("${random_password.admin_password.result}")
+        content = base64encode("${random_password.admin_password.result}")        
     }
 }
 
@@ -67,7 +67,7 @@ resource "oci_vault_secret" "gru_vault-secret_mysql-webappl" {
     vault_id = oci_kms_vault.gru_vault_motando.id
     key_id = oci_kms_key.gru_vault-enckey_motando.id
 
-    secret_name = "secret_mysql-webappl"
+    secret_name = "secret_mysql-webappl_${formatdate("YYYY-MM-DD", timestamp())}"
     description = "MySQL - Web Application User Password"
 
     secret_content {        
