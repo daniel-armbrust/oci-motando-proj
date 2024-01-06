@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 #------------------#
 # Motando Database #
 #------------------# 
@@ -18,6 +20,7 @@ mysql -u admin -p$MYSQL_ADMIN_PASSWD -h $MYSQL_HOST \
 mysql -u admin -p$MYSQL_ADMIN_PASSWD -h $MYSQL_HOST \
     -e "FLUSH PRIVILEGES"
 
+sleep infinity
 
 #git clone https://github.com/daniel-armbrust/oci-motando-proj.git
 
