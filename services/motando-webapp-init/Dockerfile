@@ -10,6 +10,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /
 
+COPY motando-webapp-init.sh ./
+
 RUN microdnf update -y && \
     microdnf install -y gcc python38-devel python3.8 mysql mysql-devel git && \
     python -m ensurepip && \
