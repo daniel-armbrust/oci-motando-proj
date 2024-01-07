@@ -1,7 +1,7 @@
 #
 # Dockerfile
 #
-FROM container-registry.oracle.com/os/oraclelinux:8-slim as base
+FROM container-registry.oracle.com/os/oraclelinux:8-slim
 
 LABEL maintainer="Daniel Armbrust <darmbrust@gmail.com>"
 
@@ -16,4 +16,4 @@ RUN microdnf update -y && \
     python -m pip install --no-cache-dir --upgrade pip setuptools && \
     microdnf clean all && rm -rf /var/cache/yum
 
-ENTRYPOINT ["motando-webapp-init.sh"]
+ENTRYPOINT ["./motando-webapp-init.sh"]
