@@ -242,6 +242,42 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
             default_value = "gru.ocir.io/${local.gru_objectstorage_ns}/${oci_artifacts_container_repository.gru_ocir_motando-webapp-init.display_name}:1.0.0"
             description = "Container Image URL"
         }
+
+        items {
+            name = "MOTANDO_OCI_REPO_URL"
+            default_value = oci_devops_repository.gru_devops_github-repository.http_url
+            description = "Motando - OCI Repository URL"
+        }
+
+        items {
+            name = "MOTANDO_BUCKET_STATICFILES"
+            default_value = oci_objectstorage_bucket.gru_motando-staticfiles.name
+            description = "Motando - Object Storage Bucket for static files"
+        }
+
+        items {
+            name = "REGION_ID"
+            default_value = "sa-saopaulo-1"
+            description = "Motando - OCI primary region"
+        }
+
+        items {
+            name = "MOTANDO_ACCESS_KEY_SECRET_OCID"
+            default_value = oci_vault_secret.gru_vault-secret_motando-access-key.id
+            description = "Motando - OCI Object Storage ACCESS KEY"
+        }
+
+        items {
+            name = "MOTANDO_SECRET_KEY_SECRET_OCID"
+            default_value = oci_vault_secret.gru_vault-secret_motando-secret-key.id
+            description = "Motando - OCI Object Storage SECRET KEY"
+        }
+
+        items {
+            name = "WEBAPP_OCI_LOG_ID"
+            default_value = oci_logging_log.gru_motando-log_webapp.id
+            description = "Motando - Web Application Logging OCID"
+        }
     }
 }
 

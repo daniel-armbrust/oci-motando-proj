@@ -26,3 +26,13 @@ variable "root_compartment" {
     description = "The root/main compartment where the resources will be created."
     type = string  
 }
+
+variable "motando_access_key" {
+    description = "Motando ACCESS KEY - ObjectStorage Amazon S3 Compatibility API."
+    type = string  
+}
+
+variable "motando_secret_key" {
+    description = "Motando SECRET KEY - ObjectStorage Amazon S3 Compatibility API."
+    type = string  
+}

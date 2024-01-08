@@ -23,9 +23,6 @@ mysql -u$MYSQL_USER -p$MYSQL_PASSWD -h $MYSQL_HOST \
 mysql -u$MYSQL_USER -p$MYSQL_PASSWD -h $MYSQL_HOST \
     -e "GRANT ALL PRIVILEGES ON motandodb.* TO 'motandousr'"
 
-mysql -u$MYSQL_USER -p$MYSQL_PASSWD -h $MYSQL_HOST \
-    -e "FLUSH PRIVILEGES"
-
 ./manage.py migrate
 
 exit 0

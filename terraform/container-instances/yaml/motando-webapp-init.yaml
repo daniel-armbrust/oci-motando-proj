@@ -2,10 +2,6 @@ version: 0.1
 component: command
 timeoutInSeconds: 3600
 shell: bash
-env:  
-  vaultVariables:
-      MYSQL_ADMIN_PASSWD: "${MYSQL_ADMIN_SECRET_OCID}"
-      MYSQL_WEBAPPL_PASSWD: "${MYSQL_WEBAPPL_SECRET_OCID}"
 steps:
     - type: Command    
       name: "CI creation for Motando application initialization"
@@ -20,11 +16,17 @@ steps:
               --display-name "gru_ci_motando-webapp-init" \
               --containers "[{
                     \"environmentVariables\": {
-                         \"MYSQL_ADMIN_PASSWD\": \"$MYSQL_ADMIN_PASSWD\", 
+                         \"MYSQL_ADMIN_SECRET_OCID\": \"$MYSQL_ADMIN_SECRET_OCID\", 
                          \"MYSQL_WEBAPPL_DBNAME\": \"$MYSQL_WEBAPPL_DBNAME\", 
                          \"MYSQL_HOST\": \"$MYSQL_HOST\", 
                          \"MYSQL_WEBAPPL_USER\": \"$MYSQL_WEBAPPL_USER\", 
-                         \"MYSQL_WEBAPPL_PASSWD\": \"$MYSQL_WEBAPPL_PASSWD\"
+                         \"MYSQL_WEBAPPL_SECRET_OCID\": \"$MYSQL_WEBAPPL_SECRET_OCID\",
+                         \"MOTANDO_OCI_REPO_URL\": \"$MOTANDO_OCI_REPO_URL\",
+                         \"MOTANDO_BUCKET_STATICFILES\": \"$OCI_STATICFILES_BUCKET_NAME\",
+                         \"REGION_ID\": \"$OCI_REGION_ID\",
+                         \"MOTANDO_ACCESS_KEY_SECRET_OCID\": \"$MOTANDO_ACCESS_KEY_SECRET_OCID\",
+                         \"MOTANDO_SECRET_KEY_SECRET_OCID\": \"$MOTANDO_SECRET_KEY_SECRET_OCID\",
+                         \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\"
                     }, 
                     \"imageUrl\": \"$IMAGE_URL\"}]"
               

@@ -40,6 +40,10 @@ resource "oci_vault_secret" "gru_vault-secret_github-token" {
         content_type = "BASE64"
         content = filebase64("./keys/github.token")
     }
+
+    lifecycle {
+       ignore_changes = [secret_name]
+    }
 }
 
 # MySQL Admin Password
@@ -50,12 +54,16 @@ resource "oci_vault_secret" "gru_vault-secret_mysql-admin" {
     vault_id = oci_kms_vault.gru_vault_motando.id
     key_id = oci_kms_key.gru_vault-enckey_motando.id
 
-    secret_name = "secret_mysql-admin_${formatdate("YYYY-MM-DD_hh-mm-ss", timestamp())}"
+    secret_name = "secret_mysql-admin_${formatdate("YYYY-MM-DD", timestamp())}"
     description = "MySQL - Admin User Password"
 
     secret_content {        
         content_type = "BASE64"
         content = base64encode("${random_password.admin_password.result}")        
+    }
+
+    lifecycle {
+       ignore_changes = [secret_name]
     }
 }
 
@@ -67,11 +75,57 @@ resource "oci_vault_secret" "gru_vault-secret_mysql-webappl" {
     vault_id = oci_kms_vault.gru_vault_motando.id
     key_id = oci_kms_key.gru_vault-enckey_motando.id
 
-    secret_name = "secret_mysql-webappl_${formatdate("YYYY-MM-DD_hh-mm-ss", timestamp())}"
+    secret_name = "secret_mysql-webappl_${formatdate("YYYY-MM-DD", timestamp())}"
     description = "MySQL - Web Application User Password"
 
     secret_content {        
         content_type = "BASE64"
         content = base64encode("${random_password.webappl_password.result}")
+    }
+
+    lifecycle {
+       ignore_changes = [secret_name]
+    }
+}
+
+# Access KEY - OCI ObjectStorage Amazon S3 Compatibility API
+resource "oci_vault_secret" "gru_vault-secret_motando-access-key" {
+    provider = oci.gru
+
+    compartment_id = var.root_compartment    
+    vault_id = oci_kms_vault.gru_vault_motando.id
+    key_id = oci_kms_key.gru_vault-enckey_motando.id
+
+    secret_name = "secret_motando-access-key"
+    description = "Motando - ACCESS KEY (ObjectStorage Amazon S3 Compatibility API)"
+
+    secret_content {        
+        content_type = "BASE64"
+        content = base64encode("${var.motando_access_key}")
+    }
+
+    lifecycle {
+       ignore_changes = [secret_name]
+    }
+}
+
+# Secret KEY - OCI ObjectStorage Amazon S3 Compatibility API
+resource "oci_vault_secret" "gru_vault-secret_motando-secret-key" {
+    provider = oci.gru
+
+    compartment_id = var.root_compartment    
+    vault_id = oci_kms_vault.gru_vault_motando.id
+    key_id = oci_kms_key.gru_vault-enckey_motando.id
+
+    secret_name = "secret_motando-secret-key"
+    description = "Motando - SECRET KEY (ObjectStorage Amazon S3 Compatibility API)"
+
+    secret_content {        
+        content_type = "BASE64"
+        content = base64encode("${var.motando_secret_key}")
+    }
+
+    lifecycle {
+       ignore_changes = [secret_name]
     }
 }
