@@ -18,7 +18,7 @@ export MYSQL_WEBAPPL_PASSWD="$(oci --auth resource_principal secrets secret-bund
                                    --stage "LATEST" --query 'data."secret-bundle-content".content' \
                                    --raw-output | base64 -d)"
 
-if [ \(-z "$MYSQL_ADMIN_PASSWD" \) -o \(-z "$MYSQL_WEBAPPL_PASSWD" \) ]; then
+if [ \( -z "$MYSQL_ADMIN_PASSWD" \) -o \( -z "$MYSQL_WEBAPPL_PASSWD" \) ]; then
    exit 1
 fi
 
@@ -34,11 +34,11 @@ mysql -u admin -p$MYSQL_ADMIN_PASSWD -h $MYSQL_HOST \
     -e "GRANT ALL PRIVILEGES ON $MYSQL_WEBAPPL_DBNAME.* TO '$MYSQL_WEBAPPL_USER'"
 
 
-#--------------------#
-# Motando Repo Clone #
-#--------------------# 
+#---------------------------#
+# Motando GitHub Repo Clone #
+#---------------------------# 
 
-git clone "$MOTANDO_OCI_REPO_URL"
+git clone "$GITHUB_REPO_URL"
 
 
 #-------------------------------#
@@ -77,7 +77,7 @@ export OCI_SECRET_KEY="$(oci --auth resource_principal secrets secret-bundle get
                              --stage "LATEST" --query 'data."secret-bundle-content".content' \
                              --raw-output | base64 -d)"
 
-if [ \(-z "$OCI_ACCESS_KEY" \) -o \(-z "$OCI_SECRET_KEY" \) ]; then
+if [ \( -z "$OCI_ACCESS_KEY" \) -o \( -z "$OCI_SECRET_KEY" \) ]; then
    exit 1
 fi
 

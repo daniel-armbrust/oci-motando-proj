@@ -244,9 +244,9 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
         }
 
         items {
-            name = "MOTANDO_OCI_REPO_URL"
-            default_value = oci_devops_repository.gru_devops_github-repository.http_url
-            description = "Motando - OCI Repository URL"
+            name = "GITHUB_REPO_URL"
+            default_value = "https://github.com/daniel-armbrust/oci-motando-proj"
+            description = "Motando - GitHub Repository URL"
         }
 
         items {
