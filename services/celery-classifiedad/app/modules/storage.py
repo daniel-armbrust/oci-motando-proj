@@ -15,7 +15,11 @@ class OciStorage():
         self.__bucket_ns = bucket_ns
         
         if env == 'PRD':
-            signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
+            try:
+                signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()            
+            except:
+                signer = oci.auth.signers.get_resource_principals_signer()
+                
             self.__client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
         else:
             config = oci.config.from_file(file_location=OCI_CONFIG_FILE)
