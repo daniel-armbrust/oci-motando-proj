@@ -7,14 +7,16 @@ set -x
 #------------------# 
 
 # MySQL - Admin Password (read the secret value from OCI VAULT)
-MYSQL_ADMIN_PASSWD="$(oci secrets secret-bundle get --secret-id "$MYSQL_ADMIN_SECRET_OCID" \
-                           --stage "LATEST" --query 'data."secret-bundle-content".content' \
-                           --raw-output | base64 -d)"
+export MYSQL_ADMIN_PASSWD="$(oci --auth resource_principal secrets secret-bundle get \
+                                 --secret-id "$MYSQL_ADMIN_SECRET_OCID" \
+                                 --stage "LATEST" --query 'data."secret-bundle-content".content' \
+                                 --raw-output | base64 -d)"
 
 # MySQL - Web Application Password (read the secret value from OCI VAULT)
-MYSQL_WEBAPPL_PASSWD="$(oci secrets secret-bundle get --secret-id "$MYSQL_WEBAPPL_SECRET_OCID" \
-                           --stage "LATEST" --query 'data."secret-bundle-content".content' \
-                           --raw-output | base64 -d)"
+export MYSQL_WEBAPPL_PASSWD="$(oci --auth resource_principal secrets secret-bundle get \
+                                   --secret-id "$MYSQL_WEBAPPL_SECRET_OCID" \
+                                   --stage "LATEST" --query 'data."secret-bundle-content".content' \
+                                   --raw-output | base64 -d)"
 
 if [ \(-z "$MYSQL_ADMIN_PASSWD" \) -o \(-z "$MYSQL_WEBAPPL_PASSWD" \) ]; then
    exit 1
@@ -60,18 +62,20 @@ export REGION_ID
 export WEBAPP_OCI_LOG_ID
 
 # OCI - Object Storage Namespace
-export OCI_OBJSTR_NAMESPACE="$(oci os ns get --query 'data' --raw-output)"
+export OCI_OBJSTR_NAMESPACE="$(oci --auth resource_principal os ns get --query 'data' --raw-output)"
 
 
 # Motando - OCI Object Storage ACCESS KEY (read the secret value from OCI VAULT)
-export OCI_ACCESS_KEY="$(oci secrets secret-bundle get --secret-id "$MOTANDO_ACCESS_KEY_SECRET_OCID" \
-                            --stage "LATEST" --query 'data."secret-bundle-content".content' \
-                            --raw-output | base64 -d)"
+export OCI_ACCESS_KEY="$(oci --auth resource_principal secrets secret-bundle get \
+                             --secret-id "$MOTANDO_ACCESS_KEY_SECRET_OCID" \
+                             --stage "LATEST" --query 'data."secret-bundle-content".content' \
+                             --raw-output | base64 -d)"
 
 # Motando - OCI Object Storage SECRET KEY (read the secret value from OCI VAULT)
-export OCI_SECRET_KEY="$(oci secrets secret-bundle get --secret-id "$MOTANDO_SECRET_KEY_SECRET_OCID" \
-                            --stage "LATEST" --query 'data."secret-bundle-content".content' \
-                            --raw-output | base64 -d)"
+export OCI_SECRET_KEY="$(oci --auth resource_principal secrets secret-bundle get \
+                             --secret-id "$MOTANDO_SECRET_KEY_SECRET_OCID" \
+                             --stage "LATEST" --query 'data."secret-bundle-content".content' \
+                             --raw-output | base64 -d)"
 
 if [ \(-z "$OCI_ACCESS_KEY" \) -o \(-z "$OCI_SECRET_KEY" \) ]; then
    exit 1

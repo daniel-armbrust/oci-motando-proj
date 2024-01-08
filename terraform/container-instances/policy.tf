@@ -31,6 +31,9 @@ resource "oci_identity_policy" "iam_policy" {
     description = "IAM Policies da aplicação Montado."
 
     statements = [
+       "Allow service objectstorage-sa-saopaulo-1 to manage object-family in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to manage objects in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use log-content in compartment id ${var.root_compartment}",
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to read secret-family in compartment id ${var.root_compartment}",
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use devops-family in compartment id ${var.root_compartment}",
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use ons-topics in compartment id ${var.root_compartment}",
