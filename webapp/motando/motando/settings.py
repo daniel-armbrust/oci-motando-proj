@@ -41,6 +41,7 @@ AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 
 # Django Static Files
 STATICFILES_BUCKET = os.environ.get('OCI_STATICFILES_BUCKET_NAME')
+STATICFILES_DIRS = [BASE_DIR / 'static/']
 STATIC_URL = 'static/'
 
 MEDIA_URL = '/media/'
@@ -62,7 +63,7 @@ else:
     from secrets import token_hex
     SECRET_KEY = token_hex(32)        
     CSRF_TRUSTED_ORIGINS = []
-    STATICFILES_DIRS = [BASE_DIR / 'static/']
+    #STATICFILES_DIRS = [BASE_DIR / 'static/']
     DEBUG = True
 
 # Session
