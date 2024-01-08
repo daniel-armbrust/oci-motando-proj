@@ -22,8 +22,8 @@ steps:
                          \"MYSQL_WEBAPPL_USER\": \"$MYSQL_WEBAPPL_USER\", 
                          \"MYSQL_WEBAPPL_SECRET_OCID\": \"$MYSQL_WEBAPPL_SECRET_OCID\",
                          \"GITHUB_REPO_URL\": \"$GITHUB_REPO_URL\",
-                         \"MOTANDO_BUCKET_STATICFILES\": \"$OCI_STATICFILES_BUCKET_NAME\",
-                         \"REGION_ID\": \"$OCI_REGION_ID\",
+                         \"OCI_STATICFILES_BUCKET_NAME\": \"$MOTANDO_BUCKET_STATICFILES\",
+                         \"OCI_REGION_ID\": \"$REGION_ID\",
                          \"MOTANDO_ACCESS_KEY_SECRET_OCID\": \"$MOTANDO_ACCESS_KEY_SECRET_OCID\",
                          \"MOTANDO_SECRET_KEY_SECRET_OCID\": \"$MOTANDO_SECRET_KEY_SECRET_OCID\",
                          \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\"

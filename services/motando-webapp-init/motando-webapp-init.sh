@@ -59,7 +59,7 @@ python -m pip install --no-cache-dir -r ./requirements.txt
 export APP_ENV='PRD'
 
 # OCI - Primary region (ex: sa-saopaulo-1)
-export REGION_ID="$REGION_ID"
+export OCI_REGION_ID="$OCI_REGION_ID"
 
 # OCI - Web Application Logging OCID
 export WEBAPP_OCI_LOG_ID="$WEBAPP_OCI_LOG_ID"
@@ -93,6 +93,7 @@ export MYSQL_HOST="$MYSQL_HOST"
 
 # Django Web Framework - Migrations
 # https://docs.djangoproject.com/en/4.2/topics/migrations/
+
 ./motando/manage.py migrate
 
 # Motando - Loads some application specific data into database
@@ -101,8 +102,10 @@ mysql -u $MYSQL_WEBAPPL_USER -p$MYSQL_WEBAPPL_PASSWD -h $MYSQL_HOST \
 
 # Django Web Framework - static files (loads static files into Object Storage)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-./motando/manage.py collectstatic --no-input --verbosity 2 
 
+export OCI_STATICFILES_BUCKET_NAME="$OCI_STATICFILES_BUCKET_NAME"
+
+./motando/manage.py collectstatic --no-input --verbosity 2 
 
 # Done...
 exit 0
