@@ -55,6 +55,9 @@ python -m pip install --no-cache-dir -r ./requirements.txt
 # https://www.djangoproject.com/  #
 #---------------------------------#
 
+# Needs for Resource Principal authentication inside OCI
+export APP_ENV='PRD'
+
 # OCI - Primary region (ex: sa-saopaulo-1)
 export REGION_ID
 

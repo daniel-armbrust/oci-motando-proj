@@ -233,8 +233,8 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
 
         items {            
             name = "SUBNET_OCID"            
-            default_value = oci_core_subnet.gru_subnet_svcs.id
-            description = "Container Instance Subnet ID"
+            default_value = oci_core_subnet.gru_subnet_appl.id
+            description = "Web Application Subnet"
         }
 
         items {            
