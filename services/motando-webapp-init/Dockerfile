@@ -16,7 +16,7 @@ RUN microdnf update -y && \
     microdnf install -y gcc python38-devel python3.8 mysql mysql-devel git && \        
     python -m ensurepip && \
     python -m pip install --no-cache-dir --upgrade pip setuptools && \
-    pip install oci-cli && \    
+    python -m pip install --no-cache-dir oci-cli && \    
     microdnf clean all && rm -rf /var/cache/yum
 
 ENTRYPOINT ["./motando-webapp-init.sh"]
