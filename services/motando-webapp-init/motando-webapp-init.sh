@@ -59,10 +59,10 @@ python -m pip install --no-cache-dir -r ./requirements.txt
 export APP_ENV='PRD'
 
 # OCI - Primary region (ex: sa-saopaulo-1)
-export REGION_ID
+export REGION_ID="$REGION_ID"
 
 # OCI - Web Application Logging OCID
-export WEBAPP_OCI_LOG_ID
+export WEBAPP_OCI_LOG_ID="$WEBAPP_OCI_LOG_ID"
 
 # OCI - Object Storage Namespace
 export OCI_OBJSTR_NAMESPACE="$(oci --auth resource_principal os ns get --query 'data' --raw-output)"
@@ -88,7 +88,7 @@ fi
 export MYSQL_DBNAME="$MYSQL_WEBAPPL_DBNAME"
 export MYSQL_USER="$MYSQL_WEBAPPL_USER"
 export MYSQL_PASSWD="$MYSQL_WEBAPPL_PASSWD"
-export MYSQL_HOST
+export MYSQL_HOST="$MYSQL_HOST"
 
 
 # Django Web Framework - Migrations
