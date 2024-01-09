@@ -340,8 +340,8 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
     }
 }
 
-# STAGE - Shell command to initialize the CI
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-1_motando-webapp-init" {
+# STAGE #1 - Shell command to initialize the CI
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_1-shell_motando-webapp-init" {
     provider = oci.gru     
     
     deploy_stage_type = "SHELL"
@@ -378,8 +378,8 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-1_mot
     }   
 }
 
-# STAGE - Wait
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-wait-stage-1_motando-webapp-init" {
+# STAGE #2 - Wait
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_2-wait_motando-webapp-init" {
     provider = oci.gru     
     
     deploy_stage_type = "WAIT"
@@ -395,13 +395,13 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-wait-stage-1_mota
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-shell-stage-1_motando-webapp-init.id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-stage_1-shell_motando-webapp-init.id
         }
     } 
 }
 
-# STAGE - Shell command to get the OCID of CI
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-2_motando-webapp-init" {
+# STAGE #3 - Shell command to get the OCID of CI
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_3-shell_motando-webapp-init" {
     provider = oci.gru     
     
     deploy_stage_type = "SHELL"
@@ -433,13 +433,13 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-2_mot
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-wait-stage-1_motando-webapp-init.id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-stage_2-wait_motando-webapp-init.id
         }
     }   
 }
 
-# STAGE - Shell command to remove the CI
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-3_motando-webapp-init" {
+# STAGE #4 - Shell command to remove the CI
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_4-shell_motando-webapp-init" {
     provider = oci.gru     
     
     deploy_stage_type = "SHELL"
@@ -471,7 +471,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-3_mot
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-wait-stage-2_motando-webapp-init.id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-stage_3-shell_motando-webapp-init .id
         }
     }   
 }
