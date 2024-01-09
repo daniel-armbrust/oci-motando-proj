@@ -139,9 +139,9 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
     # Managed Build
     build_pipeline_stage_type = "BUILD"    
     build_spec_file = "services/motando-webapp-init/build_spec.yaml"
-    stage_execution_timeout_in_seconds = 1500        
+    stage_execution_timeout_in_seconds = 1500            
     
-    display_name = "create-dockerimg_motando-webapp-init"
+    display_name = "Create Docker Image"
     description = "Estágio de criação da imagem Docker para inicializar a aplicação Motando"
     
     image = "OL7_X86_64_STANDARD_10" # Oracle Linux 7 x86_64 standard:1.0
@@ -177,7 +177,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_deli
     
     build_pipeline_stage_type = "DELIVER_ARTIFACT"    
 
-    display_name = "delivery-artifact_motando-webapp-init"
+    display_name = "Send Docker Image to OCIR"
     description = "Estágio que irá enviar a imagem Docker gerada para o OCIR"
 
     deliver_artifact_collection {        
@@ -201,8 +201,9 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_trig
     build_pipeline_id = oci_devops_build_pipeline.gru_devops-build-pipeline_motando-webapp-init.id
     
     build_pipeline_stage_type = "TRIGGER_DEPLOYMENT_PIPELINE"    
+    is_pass_all_parameters_enabled = false
 
-    display_name = "trigger_deploy_motando-webapp-init"
+    display_name = "Trigger Deploy Pipeline"
     description = "Estágio que irá ativar o Deployment Pipeline para inicializar a aplicação Motando"
 
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
@@ -327,7 +328,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-1_mot
     deploy_stage_type = "SHELL"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
 
-    display_name = "shell-stage-1_motando-webapp-init"
+    display_name = "Create CI to init Motando Application (SHELL)"
     description = "Estágio que cria um Container Instance que irá inicializar o Banco de Dados MySQL"
 
     command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-1_motando-webapp-init.id
@@ -359,23 +360,23 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-1_mot
 }
 
 # STAGE - Wait
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-wait-stage_motando-webapp-init" {
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-wait-stage-1_motando-webapp-init" {
     provider = oci.gru     
     
     deploy_stage_type = "WAIT"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
 
-    display_name = "wait-stage_motando-webapp-init"
+    display_name = "Wait"
     description = "Estágio para aguardar a inicialização da aplicação e Banco de Dados MySQL"    
 
     wait_criteria {     
         wait_type = "ABSOLUTE_WAIT"
-        wait_duration = "900"
+        wait_duration = "PT120S" # 120 seconds (ISO 8601 formatted duration string)
     }
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline-shell-stage_motando-webapp-init.id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-shell-stage-1_motando-webapp-init.id
         }
     } 
 }
@@ -387,7 +388,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-2_mot
     deploy_stage_type = "SHELL"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
 
-    display_name = "shell-stage-2_motando-webapp-init"
+    display_name = "Remove CI used to init Motando Application (SHELL)"
     description = "Estágio que remove o Container Instance usado para inicializar o Banco de Dados MySQL"
 
     command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-2_motando-webapp-init.id
@@ -413,7 +414,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-2_mot
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline-wait-stage_motando-webapp-init.id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-wait-stage-1_motando-webapp-init.id
         }
     }   
 }
