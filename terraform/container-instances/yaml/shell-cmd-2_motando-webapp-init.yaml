@@ -1,0 +1,19 @@
+version: 0.1
+component: command
+timeoutInSeconds: 120
+shell: bash
+env:
+    exportedVariables:
+        - CI_OCID
+steps:
+    - type: Command
+      name: "Get the CI OCID"
+      command: |
+          export CI_OCID="`oci container-instances container-instance list --compartment-id "$COMPARTMENT_OCID" --display-name "gru_ci_motando-webapp-init" --lifecycle-state "INACTIVE" --query "data.items[0].id" --all --raw-output`"
+    - type: Command    
+      name: "Delete the CI used to initialize Motando application"
+      command: |
+          oci container-instances container-instance delete \
+              --container-instance-id "$CI_OCID" \
+              --force \
+              --wait-for-state "SUCCEEDED"

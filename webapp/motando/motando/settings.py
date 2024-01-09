@@ -62,8 +62,7 @@ if APP_ENV == 'PRD':
 else:
     from secrets import token_hex
     SECRET_KEY = token_hex(32)        
-    CSRF_TRUSTED_ORIGINS = []
-    #STATICFILES_DIRS = [BASE_DIR / 'static/']
+    CSRF_TRUSTED_ORIGINS = []    
     DEBUG = True
 
 # Session

@@ -77,19 +77,38 @@ resource "oci_devops_deploy_artifact" "gru_devops-artifact_motando-webapp-init" 
     argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
 }
 
-resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd_motando-webapp-init" {
+resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-1_motando-webapp-init" {
     provider = oci.gru
 
     project_id = oci_devops_project.gru_devops_motando.id
         
-    display_name = "shell-cmd_motando-webapp-init"
+    display_name = "shell-cmd-1_motando-webapp-init"
     description = "Comando para criação do Container Instance para inicializar o banco de dados MySQL"
     
     argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
 
     deploy_artifact_source {        
         deploy_artifact_source_type = "INLINE"        
-        base64encoded_content = filebase64("yaml/motando-webapp-init.yaml")
+        base64encoded_content = filebase64("yaml/shell-cmd-1_motando-webapp-init.yaml")
+    }
+
+    # DEPLOYMENT_SPEC, JOB_SPEC, KUBERNETES_MANIFEST, GENERIC_FILE, DOCKER_IMAGE,HELM_CHART,COMMAND_SPEC
+    deploy_artifact_type = "COMMAND_SPEC"
+}
+
+resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-2_motando-webapp-init" {
+    provider = oci.gru
+
+    project_id = oci_devops_project.gru_devops_motando.id
+        
+    display_name = "shell-cmd-2_motando-webapp-init"
+    description = "Comando para remover o Container Instance que foi criado"
+    
+    argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
+
+    deploy_artifact_source {        
+        deploy_artifact_source_type = "INLINE"        
+        base64encoded_content = filebase64("yaml/shell-cmd-2_motando-webapp-init.yaml")
     }
 
     # DEPLOYMENT_SPEC, JOB_SPEC, KUBERNETES_MANIFEST, GENERIC_FILE, DOCKER_IMAGE,HELM_CHART,COMMAND_SPEC
@@ -107,11 +126,11 @@ resource "oci_devops_build_pipeline" "gru_devops-build-pipeline_motando-webapp-i
     
     project_id = oci_devops_project.gru_devops_motando.id
 
-    display_name = "motando-webapp-init"
+    display_name = "build_motando-webapp-init"
     description = "Build Pipeline para inicializar a aplicação Motando"
 }
 
-# STAGE to create the Docker Image
+# STAGE - Create the Docker Image
 resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_create-dockerimg_motando-webapp-init" {
     provider = oci.gru
     
@@ -120,7 +139,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
     # Managed Build
     build_pipeline_stage_type = "BUILD"    
     build_spec_file = "services/motando-webapp-init/build_spec.yaml"
-    stage_execution_timeout_in_seconds = 3600        
+    stage_execution_timeout_in_seconds = 1500        
     
     display_name = "create-dockerimg_motando-webapp-init"
     description = "Estágio de criação da imagem Docker para inicializar a aplicação Motando"
@@ -150,7 +169,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
     }    
 }
 
-# STAGE to send the Docker image to OCIR
+# STAGE - Send the Docker image to OCIR
 resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_delivery-artifact_motando-webapp-init" {
     provider = oci.gru
     
@@ -175,6 +194,26 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_deli
     } 
 }
 
+# STAGE - Trigger the deployment pipeline
+resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_trigger_deploy-pipeline_motando-webapp-init" {
+    provider = oci.gru
+    
+    build_pipeline_id = oci_devops_build_pipeline.gru_devops-build-pipeline_motando-webapp-init.id
+    
+    build_pipeline_stage_type = "TRIGGER_DEPLOYMENT_PIPELINE"    
+
+    display_name = "trigger_deploy_motando-webapp-init"
+    description = "Estágio que irá ativar o Deployment Pipeline para inicializar a aplicação Motando"
+
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
+
+    build_pipeline_stage_predecessor_collection {        
+        items {        
+            id = oci_devops_build_pipeline_stage.gru_devops-build-pipeline-stage_delivery-artifact_motando-webapp-init.id
+        }
+    } 
+}
+
 
 #----------------------#
 # Deployment Pipeline  #
@@ -185,7 +224,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
 
     project_id = oci_devops_project.gru_devops_motando.id
 
-    display_name = "motando-webapp-init"
+    display_name = "deploy_motando-webapp-init"
     description = "Deployment Pipeline para inicializar a aplicação Motando"
     
     deploy_pipeline_parameters {        
@@ -281,18 +320,18 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
     }
 }
 
-# STAGE - Shell for
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage_motando-webapp-init" {
+# STAGE - Shell command to initialize the CI
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-1_motando-webapp-init" {
     provider = oci.gru     
     
     deploy_stage_type = "SHELL"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
 
-    display_name = "shell-stage_motando-webapp-init"
+    display_name = "shell-stage-1_motando-webapp-init"
     description = "Estágio que cria um Container Instance que irá inicializar o Banco de Dados MySQL"
 
-    command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd_motando-webapp-init.id
-    timeout_in_seconds = 3600
+    command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-1_motando-webapp-init.id
+    timeout_in_seconds = 600
     
     container_config {        
         compartment_id = var.root_compartment
@@ -319,3 +358,62 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage_motan
     }   
 }
 
+# STAGE - Wait
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-wait-stage_motando-webapp-init" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "WAIT"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
+
+    display_name = "wait-stage_motando-webapp-init"
+    description = "Estágio para aguardar a inicialização da aplicação e Banco de Dados MySQL"    
+
+    wait_criteria {     
+        wait_type = "ABSOLUTE_WAIT"
+        wait_duration = "900"
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline-shell-stage_motando-webapp-init.id
+        }
+    } 
+}
+
+# STAGE - Shell command to remove the CI
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-shell-stage-2_motando-webapp-init" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "SHELL"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
+
+    display_name = "shell-stage-2_motando-webapp-init"
+    description = "Estágio que remove o Container Instance usado para inicializar o Banco de Dados MySQL"
+
+    command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-2_motando-webapp-init.id
+    timeout_in_seconds = 120
+    
+    container_config {        
+        compartment_id = var.root_compartment
+
+        container_config_type = "CONTAINER_INSTANCE_CONFIG"
+
+        network_channel {        
+            subnet_id = oci_core_subnet.gru_subnet_svcs.id
+            network_channel_type = "SERVICE_VNIC_CHANNEL"
+        }
+
+        shape_name = "CI.Standard.E4.Flex"
+
+        shape_config {            
+            ocpus = 1
+            memory_in_gbs = 1
+        }
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline-wait-stage_motando-webapp-init.id
+        }
+    }   
+}

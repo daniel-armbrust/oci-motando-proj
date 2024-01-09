@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -x
+# Debug
+#set -x
 
 #------------------#
 # Motando Database #
@@ -89,7 +90,6 @@ export MYSQL_DBNAME="$MYSQL_WEBAPPL_DBNAME"
 export MYSQL_USER="$MYSQL_WEBAPPL_USER"
 export MYSQL_PASSWD="$MYSQL_WEBAPPL_PASSWD"
 export MYSQL_HOST="$MYSQL_HOST"
-
 
 # Django Web Framework - Migrations
 # https://docs.djangoproject.com/en/4.2/topics/migrations/

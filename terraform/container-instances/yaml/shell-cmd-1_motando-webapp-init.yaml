@@ -1,6 +1,6 @@
 version: 0.1
 component: command
-timeoutInSeconds: 3600
+timeoutInSeconds: 300
 shell: bash
 steps:
     - type: Command    
@@ -14,6 +14,7 @@ steps:
               --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SUBNET_OCID\"}]" \
               --container-restart-policy "NEVER" \
               --display-name "gru_ci_motando-webapp-init" \
+              --wait-for-state "SUCCEEDED" \
               --containers "[{
                     \"environmentVariables\": {
                          \"MYSQL_ADMIN_SECRET_OCID\": \"$MYSQL_ADMIN_SECRET_OCID\", 
