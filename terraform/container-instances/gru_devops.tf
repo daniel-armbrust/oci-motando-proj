@@ -167,8 +167,8 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
 
     build_runner_shape_config {        
         build_runner_type = "CUSTOM"
-        memory_in_gbs = 2
-        ocpus = 1
+        memory_in_gbs = 4
+        ocpus = 2
     }
 
     build_source_collection {
@@ -390,7 +390,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_2-wait_mota
 
     wait_criteria {     
         wait_type = "ABSOLUTE_WAIT"
-        wait_duration = "PT120S" # 120 seconds (ISO 8601 formatted duration string)
+        wait_duration = "PT300S" # 300 seconds (ISO 8601 formatted duration string)
     }
 
     deploy_stage_predecessor_collection {       
@@ -411,7 +411,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_3-shell_mot
     description = "Estágio que obtém o OCID do Container Instance usado para inicializar o Banco de Dados MySQL"
 
     command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-2_motando-webapp-init.id
-    timeout_in_seconds = 60
+    timeout_in_seconds = 900
     
     container_config {        
         compartment_id = var.root_compartment
@@ -449,7 +449,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_4-shell_mot
     description = "Estágio que remove o Container Instance usado para inicializar o Banco de Dados MySQL"
 
     command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-3_motando-webapp-init.id
-    timeout_in_seconds = 60
+    timeout_in_seconds = 900
     
     container_config {        
         compartment_id = var.root_compartment

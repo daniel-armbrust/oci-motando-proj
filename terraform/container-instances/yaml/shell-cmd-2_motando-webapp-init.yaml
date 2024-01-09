@@ -1,6 +1,6 @@
 version: 0.1
 component: command
-timeoutInSeconds: 60
+timeoutInSeconds: 300
 shell: bash
 env:
     exportedVariables:
