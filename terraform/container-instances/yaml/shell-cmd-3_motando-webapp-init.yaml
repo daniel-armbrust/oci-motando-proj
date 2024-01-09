@@ -1,0 +1,12 @@
+version: 0.1
+component: command
+timeoutInSeconds: 60
+shell: bash
+steps:    
+    - type: Command    
+      name: "Delete the CI used to initialize Motando application"
+      command: |
+          oci container-instances container-instance delete \
+              --container-instance-id "$CI_OCID" \
+              --force \
+              --wait-for-state "SUCCEEDED"
