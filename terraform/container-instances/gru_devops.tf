@@ -148,8 +148,8 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
 
     build_runner_shape_config {        
         build_runner_type = "CUSTOM"
-        memory_in_gbs = 2
-        ocpus = 1
+        memory_in_gbs = 4
+        ocpus = 2
     }
 
     build_source_collection {
