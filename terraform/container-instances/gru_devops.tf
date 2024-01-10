@@ -139,7 +139,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
     # Managed Build
     build_pipeline_stage_type = "BUILD"    
     build_spec_file = "services/motando-webapp-init/build_spec.yaml"
-    stage_execution_timeout_in_seconds = 1500            
+    stage_execution_timeout_in_seconds = 3600            
     
     display_name = "Create Docker Image"
     description = "Estágio de criação da imagem Docker para inicializar a aplicação Motando"
@@ -414,7 +414,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_3-shell_mot
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-stage_2-shell_motando-webapp-init .id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-stage_2-wait_motando-webapp-init.id
         }
     }   
 }
