@@ -7,7 +7,7 @@ steps:
   - type: Command    
     name: "Build Docker Image - Web Application"
     command: |               
-      cd services/motando-webapp-init/ \
+      cd services/motando-webapp-init/ ;
       docker build -t gru.ocir.io/grxmw2a9myyj/motando-webapp-init:1.0.0 .
 
 outputArtifacts:

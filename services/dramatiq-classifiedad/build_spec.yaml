@@ -7,7 +7,7 @@ steps:
   - type: Command    
     name: "Build Docker Image - Dramatiq Classifiedad"
     command: |               
-      cd services/dramatiq-classifiedad/ \
+      cd services/dramatiq-classifiedad/ ;
       docker build -t gru.ocir.io/grxmw2a9myyj/dramatiq-classifiedad:1.0.0 --target=base .
 
 outputArtifacts:

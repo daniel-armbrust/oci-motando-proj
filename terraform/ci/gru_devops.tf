@@ -66,12 +66,48 @@ resource "oci_devops_deploy_artifact" "gru_devops-artifact_motando-webapp-init" 
     project_id = oci_devops_project.gru_devops_motando.id
        
     display_name = "artifact_motando-webapp-init"    
-    description = "Imagem Docker: motando-webapp-init"
+    description = "Docker Image: motando-webapp-init"
 
     deploy_artifact_source {        
         deploy_artifact_source_type = "OCIR"        
         image_uri = "gru.ocir.io/${local.gru_objectstorage_ns}/motando-webapp-init:1.0.0"
         repository_id = oci_artifacts_container_repository.gru_ocir_motando-webapp-init.id
+    }
+
+    argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
+}
+
+resource "oci_devops_deploy_artifact" "gru_devops-artifact_motando-webapp" {
+    provider = oci.gru
+    
+    deploy_artifact_type = "DOCKER_IMAGE"
+    project_id = oci_devops_project.gru_devops_motando.id
+       
+    display_name = "artifact_motando-webapp"    
+    description = "Docker Image: motando-webapp"
+
+    deploy_artifact_source {        
+        deploy_artifact_source_type = "OCIR"        
+        image_uri = "gru.ocir.io/${local.gru_objectstorage_ns}/motando-webapp:1.0.0"
+        repository_id = oci_artifacts_container_repository.gru_ocir_motando-webapp.id
+    }
+
+    argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
+}
+
+resource "oci_devops_deploy_artifact" "gru_devops-artifact_dramatiq-classifiedad" {
+    provider = oci.gru
+    
+    deploy_artifact_type = "DOCKER_IMAGE"
+    project_id = oci_devops_project.gru_devops_motando.id
+       
+    display_name = "artifact_dramatiq-classifiedad"    
+    description = "Docker Image: dramatiq-classifiedad"
+
+    deploy_artifact_source {        
+        deploy_artifact_source_type = "OCIR"        
+        image_uri = "gru.ocir.io/${local.gru_objectstorage_ns}/dramatiq-classifiedad:1.0.0"
+        repository_id = oci_artifacts_container_repository.gru_ocir_dramatiq-classifiedad.id
     }
 
     argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
@@ -268,8 +304,33 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
     }    
 }
 
+# STAGE #2: Send the Docker image to OCIR
+resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_delivery-artifact_motando-webapp" {
+    provider = oci.gru
+    
+    build_pipeline_id = oci_devops_build_pipeline.gru_devops-build-pipeline_motando-webapp.id
+    
+    build_pipeline_stage_type = "DELIVER_ARTIFACT"    
+
+    display_name = "Send Docker Image to OCIR"
+    description = "Estágio que irá enviar a imagem Docker gerada para o OCIR"
+
+    deliver_artifact_collection {        
+        items {            
+            artifact_id = oci_devops_deploy_artifact.gru_devops-artifact_motando-webapp.id
+            artifact_name = "motando-webapp"
+        }
+    }
+
+    build_pipeline_stage_predecessor_collection {        
+        items {        
+            id = oci_devops_build_pipeline_stage.gru_devops-build-pipeline-stage_create-dockerimg_motando-webapp.id
+        }
+    } 
+}
+
 # STAGE #1: Build Docker Image - Dramatiq Classifiedad
-resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_create-dockerimg_motando-webapp" {
+resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_create-dockerimg_dramatiq-classifiedad" {
     provider = oci.gru
     
     build_pipeline_id = oci_devops_build_pipeline.gru_devops-build-pipeline_motando-webapp.id
@@ -307,6 +368,30 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
     }    
 }
 
+# STAGE #2: Send the Docker image to OCIR
+resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_delivery-artifact_dramatiq-classifiedad" {
+    provider = oci.gru
+    
+    build_pipeline_id = oci_devops_build_pipeline.gru_devops-build-pipeline_motando-webapp.id
+    
+    build_pipeline_stage_type = "DELIVER_ARTIFACT"    
+
+    display_name = "Send Docker Image to OCIR"
+    description = "Estágio que irá enviar a imagem Docker gerada para o OCIR"
+
+    deliver_artifact_collection {        
+        items {            
+            artifact_id = oci_devops_deploy_artifact.gru_devops-artifact_dramatiq-classifiedad.id
+            artifact_name = "dramatiq-classifiedad"
+        }
+    }
+
+    build_pipeline_stage_predecessor_collection {        
+        items {        
+            id = oci_devops_build_pipeline_stage.gru_devops-build-pipeline-stage_create-dockerimg_dramatiq-classifiedad.id
+        }
+    } 
+}
 
 
 #--------------------------------------------------#
