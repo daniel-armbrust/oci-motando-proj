@@ -18,7 +18,8 @@ RUN microdnf update -y && \
     microdnf install -y python3.8 procps && \
     python -m ensurepip && \
     python -m pip install --no-cache-dir --upgrade pip setuptools && \
-    python -m pip install --no-cache-dir -r requirements.txt && \     
+    python -m pip install --no-cache-dir -r requirements.txt && \
+    python -m pip install --no-cache-dir oci-cli && \    
     microdnf clean all && rm -rf /var/cache/yum
 
 RUN adduser -l -d /opt/dramatiq-classifiedad dramatiq
