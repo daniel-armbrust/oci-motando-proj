@@ -433,6 +433,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_trig
 }
 
 # STAGE #3: Trigger the deployment pipeline (Web Application)
+/*
 resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_trigger_deploy-pipeline_motando-webapp" {
     provider = oci.gru
     
@@ -452,6 +453,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_trig
         }
     } 
 }
+*/
 
 
 #--------------------------------------------------#
