@@ -116,9 +116,9 @@ resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-2_mo
 }
 
 
-#--------------------#
-# Build Pipeline     #
-#--------------------#
+#----------------------------------------------#
+# Build Pipeline - Application Initialization  #
+#----------------------------------------------#
 
 # Build Pipeline - Docker image for Motando application data initialization
 resource "oci_devops_build_pipeline" "gru_devops-build-pipeline_motando-webapp-init" {
@@ -141,7 +141,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
     build_spec_file = "services/motando-webapp-init/build_spec.yaml"
     stage_execution_timeout_in_seconds = 3600            
     
-    display_name = "Create Docker Image"
+    display_name = "Build Docker Image - Motando Initialization"
     description = "Estágio de criação da imagem Docker para inicializar a aplicação Motando"
     
     image = "OL7_X86_64_STANDARD_10" # Oracle Linux 7 x86_64 standard:1.0
@@ -215,10 +215,103 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_trig
     } 
 }
 
+#--------------------------------------#
+# Build Pipeline - Motando Application #
+#--------------------------------------#
 
-#----------------------#
-# Deployment Pipeline  #
-#----------------------#
+# Build Pipeline - Motando Application
+resource "oci_devops_build_pipeline" "gru_devops-build-pipeline_motando-webapp" {
+    provider = oci.gru
+    
+    project_id = oci_devops_project.gru_devops_motando.id
+
+    display_name = "build_motando-webapp"
+    description = "Build Pipeline para construção da aplicação Motando"
+}
+
+# STAGE #1: Build Docker Image - Web Application
+resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_create-dockerimg_motando-webapp" {
+    provider = oci.gru
+    
+    build_pipeline_id = oci_devops_build_pipeline.gru_devops-build-pipeline_motando-webapp.id
+
+    # Managed Build
+    build_pipeline_stage_type = "BUILD"    
+    build_spec_file = "webapp/build_spec.yaml"
+    stage_execution_timeout_in_seconds = 3600            
+    
+    display_name = "Build Docker Image - Web Application"
+    description = "Estágio de criação da imagem Docker da aplicação Web"
+    
+    image = "OL7_X86_64_STANDARD_10" # Oracle Linux 7 x86_64 standard:1.0
+
+    build_runner_shape_config {        
+        build_runner_type = "CUSTOM"
+        memory_in_gbs = 2
+        ocpus = 1
+    }
+
+    build_source_collection {
+        items {            
+            name = oci_devops_repository.gru_devops_github-repository.name
+            connection_type = "DEVOPS_CODE_REPOSITORY"
+            branch = "main"            
+            repository_id = oci_devops_repository.gru_devops_github-repository.id
+            repository_url = "https://devops.scmservice.sa-saopaulo-1.oci.oraclecloud.com/namespaces/${local.gru_objectstorage_ns}/projects/${oci_devops_project.gru_devops_motando.name}/repositories/${oci_devops_repository.gru_devops_github-repository.name}"
+        }
+    }
+
+    build_pipeline_stage_predecessor_collection {        
+        items {        
+            id = oci_devops_build_pipeline.gru_devops-build-pipeline_motando-webapp.id
+        }
+    }    
+}
+
+# STAGE #1: Build Docker Image - Dramatiq Classifiedad
+resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_create-dockerimg_motando-webapp" {
+    provider = oci.gru
+    
+    build_pipeline_id = oci_devops_build_pipeline.gru_devops-build-pipeline_motando-webapp.id
+
+    # Managed Build
+    build_pipeline_stage_type = "BUILD"    
+    build_spec_file = "services/dramatiq-classifiedad/build_spec.yaml"
+    stage_execution_timeout_in_seconds = 3600            
+    
+    display_name = "Build Docker Image - Dramatiq Classifiedad"
+    description = "Estágio de criação da imagem Docker do serviço Dramatiq"
+    
+    image = "OL7_X86_64_STANDARD_10" # Oracle Linux 7 x86_64 standard:1.0
+
+    build_runner_shape_config {        
+        build_runner_type = "CUSTOM"
+        memory_in_gbs = 2
+        ocpus = 1
+    }
+
+    build_source_collection {
+        items {            
+            name = oci_devops_repository.gru_devops_github-repository.name
+            connection_type = "DEVOPS_CODE_REPOSITORY"
+            branch = "main"            
+            repository_id = oci_devops_repository.gru_devops_github-repository.id
+            repository_url = "https://devops.scmservice.sa-saopaulo-1.oci.oraclecloud.com/namespaces/${local.gru_objectstorage_ns}/projects/${oci_devops_project.gru_devops_motando.name}/repositories/${oci_devops_repository.gru_devops_github-repository.name}"
+        }
+    }
+
+    build_pipeline_stage_predecessor_collection {        
+        items {        
+            id = oci_devops_build_pipeline.gru_devops-build-pipeline_motando-webapp.id
+        }
+    }    
+}
+
+
+
+#--------------------------------------------------#
+# Deployment Pipeline - Application Initialization #
+#--------------------------------------------------#
 
 resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp-init" {
     provider = oci.gru
