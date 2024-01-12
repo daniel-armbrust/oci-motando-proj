@@ -433,7 +433,6 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_trig
 }
 
 # STAGE #3: Trigger the deployment pipeline (Web Application)
-/*
 resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_trigger_deploy-pipeline_motando-webapp" {
     provider = oci.gru
     
@@ -453,8 +452,6 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_trig
         }
     } 
 }
-*/
-
 
 #--------------------------------------------------#
 # Deployment Pipeline - Application Initialization #
@@ -758,10 +755,48 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_dramatiq-class
     }
 }
 
+# STAGE #1: Shell command to initialize the CI
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_1-shell_dramatiq-classifiedad" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "SHELL"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_dramatiq-classifiedad.id
+
+    display_name = "Create CI to deploy dramatiq-classifiedad (SHELL)"
+    description = "Estágio que cria dois Container Instances para executar a aplicação Dramatiq Classifiedad"
+
+    command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-1_dramatiq-classifiedad.id
+    timeout_in_seconds = 1200
+    
+    container_config {        
+        compartment_id = var.root_compartment
+
+        container_config_type = "CONTAINER_INSTANCE_CONFIG"
+
+        network_channel {        
+            subnet_id = oci_core_subnet.gru_subnet_svcs.id
+            network_channel_type = "SERVICE_VNIC_CHANNEL"
+        }
+
+        shape_name = "CI.Standard.E4.Flex"
+
+        shape_config {            
+            ocpus = 1
+            memory_in_gbs = 1
+        }
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_dramatiq-classifiedad.id
+        }
+    }   
+}
+
 #-----------------------------------------------#
 # Deployment Pipeline - Motando Web Application #
 #-----------------------------------------------#
-/*
+
 resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp" {
     provider = oci.gru
 
@@ -777,47 +812,17 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
             description = "Application environment (PRD = Prodution)"
         }
 
-        items {            
-            name = "WORKFLOW_OCI_LOG_ID"            
-            default_value = oci_logging_log.gru_motando-log_workflow.id
-            description = "Motando - Workflow Logging OCID"
-        }    
-
-        items {            
-            name = "MYSQL_WEBAPPL_USER"            
-            default_value = "motandousr"
-            description = "MySQL Web Application - User"
-        }
-
-        items {            
-            name = "MYSQL_WEBAPPL_SECRET_OCID"            
-            default_value = oci_vault_secret.gru_vault-secret_mysql-webappl.id
-            description = "MySQL Web Application - Vault SECRET OCID"
-        }
-
-        items {            
-            name = "MYSQL_WEBAPPL_DBNAME"            
-            default_value = "motandodb"
-            description = "MySQL Web Application - Database name"
-        }
-
-        items {            
-            name = "MYSQL_HOST"            
-            default_value = tolist(oci_dns_rrset.gru_dns_motando-rrset_mysql.items)[0].domain
-            description = "MySQL Web Application - Hostname"
-        }
-
-        items {            
-            name = "REDIS_HOST"            
-            default_value = tolist(oci_dns_rrset.gru_dns_motando-rrset_redis.items)[0].domain
-            description = "Redis Host"
-        }
-
         items {
             name = "REGION_ID"
             default_value = "sa-saopaulo-1"
             description = "Motando - OCI primary region"
-        }        
+        }
+
+        items {
+            name = "WEBAPP_OCI_LOG_ID"
+            default_value = oci_logging_log.gru_motando-log_webapp.id
+            description = "Motando - Web Application Logging OCID"
+        }
 
         items {
             name = "BUCKET_MOTANDO_IMG"
@@ -831,9 +836,39 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
             description = "Motando - Object Storage Bucket for temporary image files"
         }
 
+        items {
+            name = "BUCKET_STATICFILES"
+            default_value = oci_objectstorage_bucket.gru_motando-staticfiles.name
+            description = "Motando - Object Storage Bucket for static files"
+        }
+
+        items {
+            name = "CLASSIFIEDAD_XMLRPC_HOST"
+            default_value = oci_network_load_balancer_network_load_balancer.gru_nlb_motando-tasks.ip_addresses[0].ip_address
+            description = "Motando - Object Storage Bucket for static files"
+        }
+
+        items {
+            name = "MOTANDO_ACCESS_KEY_SECRET_OCID"
+            default_value = oci_vault_secret.gru_vault-secret_motando-access-key.id
+            description = "Motando - OCI Object Storage ACCESS KEY"
+        }
+
+        items {
+            name = "MOTANDO_SECRET_KEY_SECRET_OCID"
+            default_value = oci_vault_secret.gru_vault-secret_motando-secret-key.id
+            description = "Motando - OCI Object Storage SECRET KEY"
+        }
+
+        items {
+            name = "DJANGO_SECRET_KEY_SECRET_OCID"
+            default_value = oci_vault_secret.gru_vault-secret_django-secret-key.id
+            description = "Motando - DJANGO Framework Secret Key OCID"
+        }       
+
         items {            
             name = "IMAGE_URL"            
-            default_value = "gru.ocir.io/${local.gru_objectstorage_ns}/${oci_artifacts_container_repository.gru_ocir_dramatiq-classifiedad.display_name}:1.0.0"
+            default_value = "gru.ocir.io/${local.gru_objectstorage_ns}/${oci_artifacts_container_repository.gru_ocir_motando-webapp.display_name}:1.0.0"
             description = "Container Image URL"
         }
 
@@ -851,9 +886,8 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
 
         items {            
             name = "SUBNET_OCID"            
-            default_value = oci_core_subnet.gru_subnet_svcs.id
+            default_value = oci_core_subnet.gru_subnet_appl.id
             description = "Services Subnet"
         }
     }
 }
-*/

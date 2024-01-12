@@ -129,3 +129,33 @@ resource "oci_vault_secret" "gru_vault-secret_motando-secret-key" {
        ignore_changes = [secret_name]
     }
 }
+
+#-------------------#
+# Django Secret Key #
+#-------------------#
+
+resource "random_string" "django_random-secret-key" {
+   length = 64
+   special = true
+   override_special = "/@#$%!&-_="
+}
+
+resource "oci_vault_secret" "gru_vault-secret_django-secret-key" {
+    provider = oci.gru
+
+    compartment_id = var.root_compartment    
+    vault_id = oci_kms_vault.gru_vault_motando.id
+    key_id = oci_kms_key.gru_vault-enckey_motando.id
+
+    secret_name = "secret_django-secret-key"
+    description = "Motando - DJANGO Framework Secret Key"
+
+    secret_content {        
+        content_type = "BASE64"
+        content = base64encode("${random_string.django_random-secret-key}")
+    }
+
+    lifecycle {
+       ignore_changes = [secret_name]
+    }
+}
