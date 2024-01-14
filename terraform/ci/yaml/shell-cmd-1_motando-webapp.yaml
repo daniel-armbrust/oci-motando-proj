@@ -16,6 +16,7 @@ steps:
               --display-name "gru_ci-1_motando-webapp" \
               --wait-for-state "SUCCEEDED" \
               --containers "[{
+                    \"displayName\": \"gru_cr-1_motando-webapp\",
                     \"environmentVariables\": {
                          \"APP_ENV\": \"$APP_ENV\",
                          \"OCI_REGION_ID\": \"$REGION_ID\",
@@ -46,6 +47,7 @@ steps:
               --display-name "gru_ci-2_motando-webapp" \
               --wait-for-state "SUCCEEDED" \
               --containers "[{
+                    \"displayName\": \"gru_cr-2_motando-webapp\",
                     \"environmentVariables\": {
                          \"APP_ENV\": \"$APP_ENV\",
                          \"OCI_REGION_ID\": \"$REGION_ID\",

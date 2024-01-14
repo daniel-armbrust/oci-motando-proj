@@ -199,7 +199,7 @@ resource "oci_devops_build_pipeline" "gru_devops-build-pipeline_motando-webapp-i
     
     project_id = oci_devops_project.gru_devops_motando.id
 
-    display_name = "build_motando-webapp-init"
+    display_name = "Build - Motando Application Initialization"
     description = "Build Pipeline para inicializar a aplicação Motando"
 }
 
@@ -298,7 +298,7 @@ resource "oci_devops_build_pipeline" "gru_devops-build-pipeline_motando-webapp" 
     
     project_id = oci_devops_project.gru_devops_motando.id
 
-    display_name = "build_motando-webapp"
+    display_name = "Build - Motando Web Application"
     description = "Build Pipeline para construção da aplicação Motando"
 }
 
@@ -481,7 +481,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
 
     project_id = oci_devops_project.gru_devops_motando.id
 
-    display_name = "deploy_motando-webapp-init"
+    display_name = "Deploy - Motando Application Initialization"
     description = "Deployment Pipeline para inicializar a aplicação Motando"
     
     deploy_pipeline_parameters {        
@@ -584,7 +584,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_1-shell_mot
     deploy_stage_type = "SHELL"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
 
-    display_name = "Create CI to init Motando Application (SHELL)"
+    display_name = "Create CI to init Motando Application"
     description = "Estágio que cria um Container Instance que irá inicializar o Banco de Dados MySQL"
 
     command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-1_motando-webapp-init.id
@@ -644,7 +644,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_3-shell_mot
     deploy_stage_type = "SHELL"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
 
-    display_name = "Remove the CI used to init Motando Application (SHELL)"
+    display_name = "Remove the CI used to init Motando Application"
     description = "Estágio que remove o Container Instance usado para inicializar o Banco de Dados MySQL"
 
     command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-2_motando-webapp-init.id
@@ -684,7 +684,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_dramatiq-class
 
     project_id = oci_devops_project.gru_devops_motando.id
 
-    display_name = "deploy_dramatiq-classifiedad"
+    display_name = "Deploy - Dramatiq Classifiedad"
     description = "Deployment Pipeline para instalar a aplicação Dramatiq Classifiedad"
     
     deploy_pipeline_parameters {    
@@ -781,7 +781,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_1-shell_dra
     deploy_stage_type = "SHELL"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_dramatiq-classifiedad.id
 
-    display_name = "Create CI to deploy dramatiq-classifiedad (SHELL)"
+    display_name = "Create CI to deploy dramatiq-classifiedad"
     description = "Estágio que cria dois Container Instances para executar a aplicação Dramatiq Classifiedad"
 
     command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-1_dramatiq-classifiedad.id
@@ -821,7 +821,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
 
     project_id = oci_devops_project.gru_devops_motando.id
 
-    display_name = "deploy_motando-webapp"
+    display_name = "Deploy - Motando Web Application"
     description = "Deployment Pipeline para instalar a aplicação Web"
     
     deploy_pipeline_parameters {    
@@ -918,7 +918,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_1-shell_mot
     deploy_stage_type = "SHELL"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp.id
 
-    display_name = "Create CI to deploy motando-webapp (SHELL)"
+    display_name = "Create CI to deploy motando-webapp"
     description = "Estágio que cria dois Container Instances para executar a aplicação Web"
 
     command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-1_motando-webapp.id

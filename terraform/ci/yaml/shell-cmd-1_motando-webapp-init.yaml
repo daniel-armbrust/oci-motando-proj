@@ -16,6 +16,7 @@ steps:
               --display-name "gru_ci_motando-webapp-init" \
               --wait-for-state "SUCCEEDED" \
               --containers "[{
+                    \"displayName\": \"gru_cr_motando-webapp-init\",
                     \"environmentVariables\": {
                          \"MYSQL_ADMIN_SECRET_OCID\": \"$MYSQL_ADMIN_SECRET_OCID\", 
                          \"MYSQL_WEBAPPL_DBNAME\": \"$MYSQL_WEBAPPL_DBNAME\", 

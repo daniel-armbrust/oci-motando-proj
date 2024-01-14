@@ -16,6 +16,7 @@ steps:
               --display-name "gru_ci-1_dramatiq-classifiedad" \
               --wait-for-state "SUCCEEDED" \
               --containers "[{
+                    \"displayName\": \"gru_cr-1_dramatiq-classifiedad\",
                     \"environmentVariables\": {
                          \"APP_ENV\": \"$APP_ENV\",
                          \"MYSQL_USER\": \"$MYSQL_WEBAPPL_USER\",
@@ -42,6 +43,7 @@ steps:
               --display-name "gru_ci-2_dramatiq-classifiedad" \
               --wait-for-state "SUCCEEDED" \
               --containers "[{
+                    \"displayName\": \"gru_cr-2_dramatiq-classifiedad\",
                     \"environmentVariables\": {
                          \"APP_ENV\": \"$APP_ENV\",
                          \"MYSQL_USER\": \"$MYSQL_WEBAPPL_USER\",
