@@ -19,7 +19,7 @@ steps:
                     \"environmentVariables\": {
                          \"APP_ENV\": \"$APP_ENV\",
                          \"OCI_REGION_ID\": \"$REGION_ID\",
-                         \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\"
+                         \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\",
                          \"OCI_BUCKET_MOTANDO_IMG\": \"$BUCKET_MOTANDO_IMG\",
                          \"OCI_BUCKET_MOTANDO_IMGTMP\": \"$BUCKET_MOTANDO_IMGTMP\"
                          \"OCI_STATICFILES_BUCKET_NAME\": \"$BUCKET_STATICFILES\",
@@ -49,7 +49,7 @@ steps:
                     \"environmentVariables\": {
                          \"APP_ENV\": \"$APP_ENV\",
                          \"OCI_REGION_ID\": \"$REGION_ID\",
-                         \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\"
+                         \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\",
                          \"OCI_BUCKET_MOTANDO_IMG\": \"$BUCKET_MOTANDO_IMG\",
                          \"OCI_BUCKET_MOTANDO_IMGTMP\": \"$BUCKET_MOTANDO_IMGTMP\"
                          \"OCI_STATICFILES_BUCKET_NAME\": \"$BUCKET_STATICFILES\",

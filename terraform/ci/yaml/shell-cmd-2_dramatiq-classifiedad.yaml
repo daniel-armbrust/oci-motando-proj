@@ -14,11 +14,11 @@ steps:
     - type: Command
       name: "Get the CI #1 OCID"
       command: |
-          export CI_OCID="`oci container-instances container-instance list --compartment-id "$COMPARTMENT_OCID" --display-name "gru_ci-1_dramatiq-classifiedad" --lifecycle-state "INACTIVE" --query "data.items[0].id" --all --raw-output`"
+          export CI_1_OCID="`oci container-instances container-instance list --compartment-id "$COMPARTMENT_OCID" --display-name "gru_ci-1_dramatiq-classifiedad" --lifecycle-state "INACTIVE" --query "data.items[0].id" --all --raw-output`"
     - type: Command
       name: "Get the CI #2 OCID"
       command: |
-          export CI_OCID="`oci container-instances container-instance list --compartment-id "$COMPARTMENT_OCID" --display-name "gru_ci-2_dramatiq-classifiedad" --lifecycle-state "INACTIVE" --query "data.items[0].id" --all --raw-output`"
+          export CI_2_OCID="`oci container-instances container-instance list --compartment-id "$COMPARTMENT_OCID" --display-name "gru_ci-2_dramatiq-classifiedad" --lifecycle-state "INACTIVE" --query "data.items[0].id" --all --raw-output`"
     - type: Command
       name: "Get the CI #1 VNIC OCID"
       command: |
