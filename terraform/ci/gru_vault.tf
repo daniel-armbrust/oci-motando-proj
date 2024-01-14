@@ -54,7 +54,8 @@ resource "oci_vault_secret" "gru_vault-secret_mysql-admin" {
     vault_id = oci_kms_vault.gru_vault_motando.id
     key_id = oci_kms_key.gru_vault-enckey_motando.id
 
-    secret_name = "secret_mysql-admin_${formatdate("YYYY-MM-DD", timestamp())}"
+    #secret_name = "secret_mysql-admin_${formatdate("YYYY-MM-DD", timestamp())}"
+    secret_name = "secret_mysql-admin"
     description = "MySQL - Admin User Password"
 
     secret_content {        
@@ -75,7 +76,8 @@ resource "oci_vault_secret" "gru_vault-secret_mysql-webappl" {
     vault_id = oci_kms_vault.gru_vault_motando.id
     key_id = oci_kms_key.gru_vault-enckey_motando.id
 
-    secret_name = "secret_mysql-webappl_${formatdate("YYYY-MM-DD", timestamp())}"
+    #secret_name = "secret_mysql-webappl_${formatdate("YYYY-MM-DD", timestamp())}"
+    secret_name = "secret_mysql-webappl"
     description = "MySQL - Web Application User Password"
 
     secret_content {        
@@ -152,7 +154,7 @@ resource "oci_vault_secret" "gru_vault-secret_django-secret-key" {
 
     secret_content {        
         content_type = "BASE64"
-        content = base64encode("${random_string.django_random-secret-key}")
+        content = base64encode("${random_string.django_random-secret-key.result}")
     }
 
     lifecycle {

@@ -12,7 +12,7 @@ steps:
               --shape "CI.Standard.E4.Flex" \
               --shape-config '{"memoryInGBs": 2.0, "ocpus": 1.0}' \
               --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SUBNET_OCID\"}]" \
-              --container-restart-policy "NEVER" \
+              --container-restart-policy "ALWAYS" \
               --display-name "gru_ci-1_dramatiq-classifiedad" \
               --wait-for-state "SUCCEEDED" \
               --containers "[{
@@ -38,7 +38,7 @@ steps:
               --shape "CI.Standard.E4.Flex" \
               --shape-config '{"memoryInGBs": 2.0, "ocpus": 1.0}' \
               --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SUBNET_OCID\"}]" \
-              --container-restart-policy "NEVER" \
+              --container-restart-policy "ALWAYS" \
               --display-name "gru_ci-2_dramatiq-classifiedad" \
               --wait-for-state "SUCCEEDED" \
               --containers "[{

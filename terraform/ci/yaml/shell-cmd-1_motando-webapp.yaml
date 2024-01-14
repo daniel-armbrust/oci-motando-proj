@@ -1,0 +1,66 @@
+version: 0.1
+component: command
+timeoutInSeconds: 300
+shell: bash
+steps:
+    - type: Command    
+      name: "CI #1 creation for Motando Web Application"
+      command: |
+          oci container-instances container-instance create \
+              --compartment-id "$COMPARTMENT_OCID" \
+              --availability-domain "$AVAILABILITY_DOMAIN" \
+              --shape "CI.Standard.E4.Flex" \
+              --shape-config '{"memoryInGBs": 4.0, "ocpus": 2.0}' \
+              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SUBNET_OCID\"}]" \
+              --container-restart-policy "ALWAYS" \
+              --display-name "gru_ci-1_motando-webapp" \
+              --wait-for-state "SUCCEEDED" \
+              --containers "[{
+                    \"environmentVariables\": {
+                         \"APP_ENV\": \"$APP_ENV\",
+                         \"OCI_REGION_ID\": \"$REGION_ID\",
+                         \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\"
+                         \"OCI_BUCKET_MOTANDO_IMG\": \"$BUCKET_MOTANDO_IMG\",
+                         \"OCI_BUCKET_MOTANDO_IMGTMP\": \"$BUCKET_MOTANDO_IMGTMP\"
+                         \"OCI_STATICFILES_BUCKET_NAME\": \"$BUCKET_STATICFILES\",
+                         \"CLASSIFIEDAD_XMLRPC_HOST\": \"$CLASSIFIEDAD_XMLRPC_HOST\",
+                         \"MOTANDO_ACCESS_KEY_SECRET_OCID\": \"$MOTANDO_ACCESS_KEY_SECRET_OCID\",
+                         \"MOTANDO_SECRET_KEY_SECRET_OCID\": \"$MOTANDO_SECRET_KEY_SECRET_OCID\",
+                         \"DJANGO_SECRET_KEY_SECRET_OCID\": \"$DJANGO_SECRET_KEY_SECRET_OCID\",
+                         \"MYSQL_USER\": \"$MYSQL_WEBAPPL_USER\",
+                         \"MYSQL_WEBAPPL_SECRET_OCID\": \"$MYSQL_WEBAPPL_SECRET_OCID\",
+                         \"MYSQL_HOST\": \"$MYSQL_HOST\",
+                         \"MYSQL_DBNAME\": \"$MYSQL_WEBAPPL_DBNAME\"
+                    }, 
+                    \"imageUrl\": \"$IMAGE_URL\"}]"
+    - type: Command    
+      name: "CI #2 creation for Motando Web Application"
+      command: |
+          oci container-instances container-instance create \
+              --compartment-id "$COMPARTMENT_OCID" \
+              --availability-domain "$AVAILABILITY_DOMAIN" \
+              --shape "CI.Standard.E4.Flex" \
+              --shape-config '{"memoryInGBs": 4.0, "ocpus": 2.0}' \
+              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SUBNET_OCID\"}]" \
+              --container-restart-policy "ALWAYS" \
+              --display-name "gru_ci-2_motando-webapp" \
+              --wait-for-state "SUCCEEDED" \
+              --containers "[{
+                    \"environmentVariables\": {
+                         \"APP_ENV\": \"$APP_ENV\",
+                         \"OCI_REGION_ID\": \"$REGION_ID\",
+                         \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\"
+                         \"OCI_BUCKET_MOTANDO_IMG\": \"$BUCKET_MOTANDO_IMG\",
+                         \"OCI_BUCKET_MOTANDO_IMGTMP\": \"$BUCKET_MOTANDO_IMGTMP\"
+                         \"OCI_STATICFILES_BUCKET_NAME\": \"$BUCKET_STATICFILES\",
+                         \"CLASSIFIEDAD_XMLRPC_HOST\": \"$CLASSIFIEDAD_XMLRPC_HOST\",
+                         \"MOTANDO_ACCESS_KEY_SECRET_OCID\": \"$MOTANDO_ACCESS_KEY_SECRET_OCID\",
+                         \"MOTANDO_SECRET_KEY_SECRET_OCID\": \"$MOTANDO_SECRET_KEY_SECRET_OCID\",
+                         \"DJANGO_SECRET_KEY_SECRET_OCID\": \"$DJANGO_SECRET_KEY_SECRET_OCID\",
+                         \"MYSQL_USER\": \"$MYSQL_WEBAPPL_USER\",
+                         \"MYSQL_WEBAPPL_SECRET_OCID\": \"$MYSQL_WEBAPPL_SECRET_OCID\",
+                         \"MYSQL_HOST\": \"$MYSQL_HOST\",
+                         \"MYSQL_DBNAME\": \"$MYSQL_WEBAPPL_DBNAME\"
+                    }, 
+                    \"imageUrl\": \"$IMAGE_URL\"}]"
+    

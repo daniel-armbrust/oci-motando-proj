@@ -170,6 +170,25 @@ resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-1_dr
     deploy_artifact_type = "COMMAND_SPEC"
 }
 
+resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-1_motando-webapp" {
+    provider = oci.gru
+
+    project_id = oci_devops_project.gru_devops_motando.id
+        
+    display_name = "shell-cmd-1_motando-webapp"
+    description = "Comando para provisionar os CI da aplicação Web"
+    
+    argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
+
+    deploy_artifact_source {        
+        deploy_artifact_source_type = "INLINE"        
+        base64encoded_content = filebase64("yaml/shell-cmd-1_motando-webapp.yaml")
+    }
+
+    # DEPLOYMENT_SPEC, JOB_SPEC, KUBERNETES_MANIFEST, GENERIC_FILE, DOCKER_IMAGE,HELM_CHART,COMMAND_SPEC
+    deploy_artifact_type = "COMMAND_SPEC"
+}
+
 #----------------------------------------------#
 # Build Pipeline - Application Initialization  #
 #----------------------------------------------#
@@ -845,7 +864,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
         items {
             name = "CLASSIFIEDAD_XMLRPC_HOST"
             default_value = oci_network_load_balancer_network_load_balancer.gru_nlb_motando-tasks.ip_addresses[0].ip_address
-            description = "Motando - Object Storage Bucket for static files"
+            description = "Network Load Balancer IP"
         }
 
         items {
@@ -890,4 +909,42 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
             description = "Services Subnet"
         }
     }
+}
+
+# STAGE #1: Shell command to initialize the CI
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_1-shell_motando-webapp" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "SHELL"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp.id
+
+    display_name = "Create CI to deploy motando-webapp (SHELL)"
+    description = "Estágio que cria dois Container Instances para executar a aplicação Web"
+
+    command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-1_motando-webapp.id
+    timeout_in_seconds = 1200
+    
+    container_config {        
+        compartment_id = var.root_compartment
+
+        container_config_type = "CONTAINER_INSTANCE_CONFIG"
+
+        network_channel {        
+            subnet_id = oci_core_subnet.gru_subnet_svcs.id
+            network_channel_type = "SERVICE_VNIC_CHANNEL"
+        }
+
+        shape_name = "CI.Standard.E4.Flex"
+
+        shape_config {            
+            ocpus = 1
+            memory_in_gbs = 1
+        }
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp.id
+        }
+    }   
 }
