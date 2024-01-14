@@ -1,0 +1,61 @@
+version: 0.1
+component: command
+timeoutInSeconds: 300
+shell: bash
+env:
+    exportedVariables:
+        - CI_1_OCID
+        - CI_2_OCID
+        - CI_1_VNIC_OCID
+        - CI_2_VNIC_OCID
+        - CI_1_VNIC_IP
+        - CI_2_VNIC_IP
+steps:
+    - type: Command
+      name: "Get the CI #1 OCID"
+      command: |
+          export CI_OCID="`oci container-instances container-instance list --compartment-id "$COMPARTMENT_OCID" --display-name "gru_ci-1_dramatiq-classifiedad" --lifecycle-state "INACTIVE" --query "data.items[0].id" --all --raw-output`"
+    - type: Command
+      name: "Get the CI #2 OCID"
+      command: |
+          export CI_OCID="`oci container-instances container-instance list --compartment-id "$COMPARTMENT_OCID" --display-name "gru_ci-2_dramatiq-classifiedad" --lifecycle-state "INACTIVE" --query "data.items[0].id" --all --raw-output`"
+    - type: Command
+      name: "Get the CI #1 VNIC OCID"
+      command: |
+          export CI_1_VNIC_OCID="`oci container-instances container-instance get --container-instance-id "$CI_1_OCID" --query "data.vnics[0].\"vnic-id\"" --raw-output`"
+    - type: Command
+      name: "Get the CI #2 VNIC OCID"
+      command: |
+          export CI_2_VNIC_OCID="`oci container-instances container-instance get --container-instance-id "$CI_2_OCID" --query "data.vnics[0].\"vnic-id\"" --raw-output`"
+    - type: Command
+      name: "Get the CI #1 VNIC Private IP Address"
+      command: |
+          export CI_1_VNIC_IP="`oci network vnic get --vnic-id "$CI_1_VNIC_OCID" --query "data.\"private-ip\"" --raw-output`"
+    - type: Command
+      name: "Get the CI #2 VNIC Private IP Address"
+      command: |
+          export CI_2_VNIC_IP="`oci network vnic get --vnic-id "$CI_2_VNIC_OCID" --query "data.\"private-ip\"" --raw-output`"
+    - type: Command
+      name: "Update Network Load Balancer"
+      command: |
+          oci nlb backend-set update \
+              --network-load-balancer-id "$NLB_OCID" \
+              --backend-set-name "$NLB_BACKENDSET_NAME" \              
+              --force \
+              --wait-for-state "SUCCEEDED" \
+              --backends "[
+                  {
+                     \"ipAddress\": \"$CI_1_VNIC_IP\",
+                     \"port\": 8100,
+                     \"isBackup\": false,
+                     \"isDrain\": false,
+                     \"isOffline\": false,
+                  },
+                  {
+                     \"ipAddress\": \"$CI_2_VNIC_IP\",
+                     \"port\": 8100,
+                     \"isBackup\": false,
+                     \"isDrain\": false,
+                     \"isOffline\": false,
+                  },
+              ]"              

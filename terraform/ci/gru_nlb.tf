@@ -25,10 +25,10 @@ resource "oci_network_load_balancer_listener" "nlb_motando-tasks_listener" {
     default_backend_set_name = oci_network_load_balancer_backend_set.gru_nlb_motando-tasks_bset-1.name        
 }
 
-resource "oci_network_load_balancer_backend_set" "gru_nlb_motando-tasks_bset-1" {   
+resource "oci_network_load_balancer_backend_set" "gru_nlb_motando-tasks_backend-set" {   
     provider = oci.gru
 
-    name = "motando-tasks_bset-1"
+    name = "motando-tasks_backend-set"
 
     network_load_balancer_id = oci_network_load_balancer_network_load_balancer.gru_nlb_motando-tasks.id
     policy = "FIVE_TUPLE"
@@ -42,20 +42,3 @@ resource "oci_network_load_balancer_backend_set" "gru_nlb_motando-tasks_bset-1" 
         timeout_in_millis = 3000
     }           
 }
-
-resource "oci_network_load_balancer_backend" "gru_nlb-backend_ci-webapp-1" {
-    provider = oci.gru
-
-    backend_set_name = oci_network_load_balancer_backend_set.gru_nlb_motando-tasks_bset-1.name
-    network_load_balancer_id = oci_network_load_balancer_network_load_balancer.gru_nlb_motando-tasks.id
-
-    name = "nlb-backend_ci-webapp-1"
-    ip_address = "192.168.20.1"
-    port = 8100
-    weight = 1
-    
-    is_backup = false
-    is_drain = false
-    is_offline = false
-}
-

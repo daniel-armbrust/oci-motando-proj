@@ -77,42 +77,6 @@ resource "oci_devops_deploy_artifact" "gru_devops-artifact_motando-webapp-init" 
     argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
 }
 
-resource "oci_devops_deploy_artifact" "gru_devops-artifact_motando-webapp" {
-    provider = oci.gru
-    
-    deploy_artifact_type = "DOCKER_IMAGE"
-    project_id = oci_devops_project.gru_devops_motando.id
-       
-    display_name = "artifact_motando-webapp"    
-    description = "Docker Image: motando-webapp"
-
-    deploy_artifact_source {        
-        deploy_artifact_source_type = "OCIR"        
-        image_uri = "gru.ocir.io/${local.gru_objectstorage_ns}/motando-webapp:1.0.0"
-        repository_id = oci_artifacts_container_repository.gru_ocir_motando-webapp.id
-    }
-
-    argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
-}
-
-resource "oci_devops_deploy_artifact" "gru_devops-artifact_dramatiq-classifiedad" {
-    provider = oci.gru
-    
-    deploy_artifact_type = "DOCKER_IMAGE"
-    project_id = oci_devops_project.gru_devops_motando.id
-       
-    display_name = "artifact_dramatiq-classifiedad"    
-    description = "Docker Image: dramatiq-classifiedad"
-
-    deploy_artifact_source {        
-        deploy_artifact_source_type = "OCIR"        
-        image_uri = "gru.ocir.io/${local.gru_objectstorage_ns}/dramatiq-classifiedad:1.0.0"
-        repository_id = oci_artifacts_container_repository.gru_ocir_dramatiq-classifiedad.id
-    }
-
-    argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
-}
-
 resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-1_motando-webapp-init" {
     provider = oci.gru
 
@@ -151,6 +115,61 @@ resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-2_mo
     deploy_artifact_type = "COMMAND_SPEC"
 }
 
+resource "oci_devops_deploy_artifact" "gru_devops-artifact_motando-webapp" {
+    provider = oci.gru
+    
+    deploy_artifact_type = "DOCKER_IMAGE"
+    project_id = oci_devops_project.gru_devops_motando.id
+       
+    display_name = "artifact_motando-webapp"    
+    description = "Docker Image: motando-webapp"
+
+    deploy_artifact_source {        
+        deploy_artifact_source_type = "OCIR"        
+        image_uri = "gru.ocir.io/${local.gru_objectstorage_ns}/motando-webapp:1.0.0"
+        repository_id = oci_artifacts_container_repository.gru_ocir_motando-webapp.id
+    }
+
+    argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
+}
+
+resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-1_motando-webapp" {
+    provider = oci.gru
+
+    project_id = oci_devops_project.gru_devops_motando.id
+        
+    display_name = "shell-cmd-1_motando-webapp"
+    description = "Comando para provisionar os CI da aplicação Web"
+    
+    argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
+
+    deploy_artifact_source {        
+        deploy_artifact_source_type = "INLINE"        
+        base64encoded_content = filebase64("yaml/shell-cmd-1_motando-webapp.yaml")
+    }
+
+    # DEPLOYMENT_SPEC, JOB_SPEC, KUBERNETES_MANIFEST, GENERIC_FILE, DOCKER_IMAGE,HELM_CHART,COMMAND_SPEC
+    deploy_artifact_type = "COMMAND_SPEC"
+}
+
+resource "oci_devops_deploy_artifact" "gru_devops-artifact_dramatiq-classifiedad" {
+    provider = oci.gru
+    
+    deploy_artifact_type = "DOCKER_IMAGE"
+    project_id = oci_devops_project.gru_devops_motando.id
+       
+    display_name = "artifact_dramatiq-classifiedad"    
+    description = "Docker Image: dramatiq-classifiedad"
+
+    deploy_artifact_source {        
+        deploy_artifact_source_type = "OCIR"        
+        image_uri = "gru.ocir.io/${local.gru_objectstorage_ns}/dramatiq-classifiedad:1.0.0"
+        repository_id = oci_artifacts_container_repository.gru_ocir_dramatiq-classifiedad.id
+    }
+
+    argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
+}
+
 resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-1_dramatiq-classifiedad" {
     provider = oci.gru
 
@@ -170,19 +189,19 @@ resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-1_dr
     deploy_artifact_type = "COMMAND_SPEC"
 }
 
-resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-1_motando-webapp" {
+resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-2_dramatiq-classifiedad" {
     provider = oci.gru
 
     project_id = oci_devops_project.gru_devops_motando.id
         
-    display_name = "shell-cmd-1_motando-webapp"
-    description = "Comando para provisionar os CI da aplicação Web"
+    display_name = "shell-cmd-2_dramatiq-classifiedad"
+    description = "Comando atualizar o Network Load Balancer com o endereço IP dos CI's"
     
     argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
 
     deploy_artifact_source {        
         deploy_artifact_source_type = "INLINE"        
-        base64encoded_content = filebase64("yaml/shell-cmd-1_motando-webapp.yaml")
+        base64encoded_content = filebase64("yaml/shell-cmd-2_dramatiq-classifiedad.yaml")
     }
 
     # DEPLOYMENT_SPEC, JOB_SPEC, KUBERNETES_MANIFEST, GENERIC_FILE, DOCKER_IMAGE,HELM_CHART,COMMAND_SPEC
@@ -320,7 +339,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
 
     build_runner_shape_config {        
         build_runner_type = "CUSTOM"
-        memory_in_gbs = 2
+        memory_in_gbs = 4
         ocpus = 1
     }
 
@@ -771,6 +790,18 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_dramatiq-class
             default_value = oci_core_subnet.gru_subnet_svcs.id
             description = "Services Subnet"
         }
+
+        items {            
+            name = "NLB_OCID"            
+            default_value = oci_network_load_balancer_network_load_balancer.gru_nlb_motando-tasks.id
+            description = "Network Load Balancer OCID"
+        }
+
+        items {            
+            name = "NLB_BACKENDSET_NAME"            
+            default_value = oci_network_load_balancer_backend_set.gru_nlb_motando-tasks_backend-set.name
+            description = "Network Load Balancer Backend Set name"
+        }
     }
 }
 
@@ -808,6 +839,66 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_1-shell_dra
     deploy_stage_predecessor_collection {       
         items {            
             id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_dramatiq-classifiedad.id
+        }
+    }   
+}
+
+# STAGE #2: Wait
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_2-wait_dramatiq-classifiedad" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "WAIT"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp.id
+
+    display_name = "Wait - 300 seconds"
+    description = "Estágio para aguardar a criação dos Container Instances"    
+
+    wait_criteria {     
+        wait_type = "ABSOLUTE_WAIT"
+        wait_duration = "PT300S" # 300 seconds (ISO 8601 formatted duration string)
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-stage_1-shell_dramatiq-classifiedad.id
+        }
+    } 
+}
+
+# STAGE #3: Shell command to update the Network Load Balancer
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_3-shell_dramatiq-classifiedad" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "SHELL"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp.id
+
+    display_name = "Update the Network Load Balancer"
+    description = "Estágio que atualiza o Network Load Balancer com o endereço IP dos CI's"
+
+    command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-2_dramatiq-classifiedad.id
+    timeout_in_seconds = 900
+    
+    container_config {        
+        compartment_id = var.root_compartment
+
+        container_config_type = "CONTAINER_INSTANCE_CONFIG"
+
+        network_channel {        
+            subnet_id = oci_core_subnet.gru_subnet_svcs.id
+            network_channel_type = "SERVICE_VNIC_CHANNEL"
+        }
+
+        shape_name = "CI.Standard.E4.Flex"
+
+        shape_config {            
+            ocpus = 1
+            memory_in_gbs = 1
+        }
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-stage_2-wait_dramatiq-classifiedad.id
         }
     }   
 }
