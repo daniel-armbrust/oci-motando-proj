@@ -339,7 +339,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
 
     build_runner_shape_config {        
         build_runner_type = "CUSTOM"
-        memory_in_gbs = 4
+        memory_in_gbs = 3
         ocpus = 1
     }
 
@@ -403,7 +403,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
 
     build_runner_shape_config {        
         build_runner_type = "CUSTOM"
-        memory_in_gbs = 2
+        memory_in_gbs = 3
         ocpus = 1
     }
 
@@ -848,7 +848,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_2-wait_dram
     provider = oci.gru     
     
     deploy_stage_type = "WAIT"
-    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp.id
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_dramatiq-classifiedad.id
 
     display_name = "Wait - 300 seconds"
     description = "Estágio para aguardar a criação dos Container Instances"    
@@ -870,7 +870,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_3-shell_dra
     provider = oci.gru     
     
     deploy_stage_type = "SHELL"
-    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp.id
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_dramatiq-classifiedad.id
 
     display_name = "Update the Network Load Balancer"
     description = "Estágio que atualiza o Network Load Balancer com o endereço IP dos CI's"
