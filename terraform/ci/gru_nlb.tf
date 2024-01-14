@@ -22,7 +22,7 @@ resource "oci_network_load_balancer_listener" "nlb_motando-tasks_listener" {
     protocol = "TCP"
 
     network_load_balancer_id = oci_network_load_balancer_network_load_balancer.gru_nlb_motando-tasks.id
-    default_backend_set_name = oci_network_load_balancer_backend_set.gru_nlb_motando-tasks_bset-1.name        
+    default_backend_set_name = oci_network_load_balancer_backend_set.gru_nlb_motando-tasks_backend-set.name        
 }
 
 resource "oci_network_load_balancer_backend_set" "gru_nlb_motando-tasks_backend-set" {   
