@@ -21,7 +21,7 @@ steps:
                          \"OCI_REGION_ID\": \"$REGION_ID\",
                          \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\",
                          \"OCI_BUCKET_MOTANDO_IMG\": \"$BUCKET_MOTANDO_IMG\",
-                         \"OCI_BUCKET_MOTANDO_IMGTMP\": \"$BUCKET_MOTANDO_IMGTMP\"
+                         \"OCI_BUCKET_MOTANDO_IMGTMP\": \"$BUCKET_MOTANDO_IMGTMP\",
                          \"OCI_STATICFILES_BUCKET_NAME\": \"$BUCKET_STATICFILES\",
                          \"CLASSIFIEDAD_XMLRPC_HOST\": \"$CLASSIFIEDAD_XMLRPC_HOST\",
                          \"MOTANDO_ACCESS_KEY_SECRET_OCID\": \"$MOTANDO_ACCESS_KEY_SECRET_OCID\",
@@ -51,7 +51,7 @@ steps:
                          \"OCI_REGION_ID\": \"$REGION_ID\",
                          \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\",
                          \"OCI_BUCKET_MOTANDO_IMG\": \"$BUCKET_MOTANDO_IMG\",
-                         \"OCI_BUCKET_MOTANDO_IMGTMP\": \"$BUCKET_MOTANDO_IMGTMP\"
+                         \"OCI_BUCKET_MOTANDO_IMGTMP\": \"$BUCKET_MOTANDO_IMGTMP\",
                          \"OCI_STATICFILES_BUCKET_NAME\": \"$BUCKET_STATICFILES\",
                          \"CLASSIFIEDAD_XMLRPC_HOST\": \"$CLASSIFIEDAD_XMLRPC_HOST\",
                          \"MOTANDO_ACCESS_KEY_SECRET_OCID\": \"$MOTANDO_ACCESS_KEY_SECRET_OCID\",
