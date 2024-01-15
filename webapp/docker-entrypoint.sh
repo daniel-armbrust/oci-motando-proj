@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 cd /opt/webapp/motando/
 
 if [ "$APP_ENV" == "PRD" ]; then
