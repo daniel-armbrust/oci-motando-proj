@@ -850,12 +850,12 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_2-wait_dram
     deploy_stage_type = "WAIT"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_dramatiq-classifiedad.id
 
-    display_name = "Wait - 240 seconds"
+    display_name = "Wait - 120 seconds"
     description = "Estágio para aguardar a criação dos Container Instances"    
 
     wait_criteria {     
         wait_type = "ABSOLUTE_WAIT"
-        wait_duration = "PT240S"
+        wait_duration = "PT120S"
     }
 
     deploy_stage_predecessor_collection {       
@@ -954,8 +954,32 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
 
         items {
             name = "CLASSIFIEDAD_XMLRPC_HOST"
-            default_value = oci_network_load_balancer_network_load_balancer.gru_nlb_motando-tasks.ip_addresses[0].ip_address
+            default_value = tolist(oci_dns_rrset.gru_dns_motando-rrset_nlb_motando-tasks.items)[0].domain
             description = "Network Load Balancer IP"
+        }
+
+        items {            
+            name = "MYSQL_WEBAPPL_USER"            
+            default_value = "motandousr"
+            description = "MySQL Web Application - User"
+        }
+
+        items {            
+            name = "MYSQL_WEBAPPL_SECRET_OCID"            
+            default_value = oci_vault_secret.gru_vault-secret_mysql-webappl.id
+            description = "MySQL Web Application - Vault SECRET OCID"
+        }
+
+        items {            
+            name = "MYSQL_WEBAPPL_DBNAME"            
+            default_value = "motandodb"
+            description = "MySQL Web Application - Database name"
+        }
+
+        items {            
+            name = "MYSQL_HOST"            
+            default_value = tolist(oci_dns_rrset.gru_dns_motando-rrset_mysql.items)[0].domain
+            description = "MySQL Web Application - Hostname"
         }
 
         items {
