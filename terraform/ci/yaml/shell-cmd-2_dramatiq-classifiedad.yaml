@@ -36,26 +36,20 @@ steps:
       command: |
           export CI_2_VNIC_IP="`oci network vnic get --vnic-id "$CI_2_VNIC_OCID" --query 'data."private-ip"' --raw-output`"
     - type: Command
-      name: "Update Network Load Balancer"
+      name: "Add CI #1 to Network Load Balancer Backend"
       command: |
-          oci nlb backend-set update \
+          oci nlb backend create --debug \
               --network-load-balancer-id "$NLB_OCID" \
               --backend-set-name "$NLB_BACKENDSET_NAME" \
-              --force \
-              --wait-for-state "SUCCEEDED" \
-              --backends "[
-                  {
-                     \"ipAddress\": \"$CI_1_VNIC_IP\",
-                     \"port\": 8100,
-                     \"isBackup\": false,
-                     \"isDrain\": false,
-                     \"isOffline\": false
-                  },
-                  {
-                     \"ipAddress\": \"$CI_2_VNIC_IP\",
-                     \"port\": 8100,
-                     \"isBackup\": false,
-                     \"isDrain\": false,
-                     \"isOffline\": false
-                  }
-              ]"              
+              --port 8100 \
+              --ip-address "$CI_1_VNIC_IP" \
+              --wait-for-state "SUCCEEDED"
+    - type: Command
+      name: "Add CI #2 to Network Load Balancer Backend"
+      command: |
+          oci nlb backend create --debug \
+              --network-load-balancer-id "$NLB_OCID" \
+              --backend-set-name "$NLB_BACKENDSET_NAME" \
+              --port 8100 \
+              --ip-address "$CI_2_VNIC_IP" \
+              --wait-for-state "SUCCEEDED"
