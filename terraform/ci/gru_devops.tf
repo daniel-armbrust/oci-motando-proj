@@ -152,6 +152,25 @@ resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-1_mo
     deploy_artifact_type = "COMMAND_SPEC"
 }
 
+resource "oci_devops_deploy_artifact" "gru_devops-deploy_artifact_shell-cmd-2_motando-webapp" {
+    provider = oci.gru
+
+    project_id = oci_devops_project.gru_devops_motando.id
+        
+    display_name = "shell-cmd-2_motando-webapp"
+    description = "Comando atualizar o Load Balancer com o endereço IP dos CI's"
+    
+    argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
+
+    deploy_artifact_source {        
+        deploy_artifact_source_type = "INLINE"        
+        base64encoded_content = filebase64("yaml/shell-cmd-2_motando-webapp.yaml")
+    }
+
+    # DEPLOYMENT_SPEC, JOB_SPEC, KUBERNETES_MANIFEST, GENERIC_FILE, DOCKER_IMAGE,HELM_CHART,COMMAND_SPEC
+    deploy_artifact_type = "COMMAND_SPEC"
+}
+
 resource "oci_devops_deploy_artifact" "gru_devops-artifact_dramatiq-classifiedad" {
     provider = oci.gru
     
@@ -1023,6 +1042,18 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
             default_value = oci_core_subnet.gru_subnet_appl.id
             description = "Services Subnet"
         }
+
+        items {            
+            name = "LB_OCID"            
+            default_value = oci_load_balancer_load_balancer.gru_lb_motando.id
+            description = "Load Balancer OCID"
+        }
+
+        items {            
+            name = "LB_BACKENDSET_NAME"            
+            default_value = oci_load_balancer_backend_set.gru_lb_motando-webapp_backend-set.name
+            description = "Load Balancer Backend Set name"
+        }
     }
 }
 
@@ -1060,6 +1091,66 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_1-shell_mot
     deploy_stage_predecessor_collection {       
         items {            
             id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp.id
+        }
+    }   
+}
+
+# STAGE #2: Wait
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_2-wait_motando-webapp" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "WAIT"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp.id
+
+    display_name = "Wait - 120 seconds"
+    description = "Estágio para aguardar a criação dos Container Instances"    
+
+    wait_criteria {     
+        wait_type = "ABSOLUTE_WAIT"
+        wait_duration = "PT120S"
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-stage_1-shell_motando-webapp.id
+        }
+    } 
+}
+
+# STAGE #3: Shell command to update the Load Balancer
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_3-shell_motando-webapp" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "SHELL"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp.id
+
+    display_name = "Update the Load Balancer"
+    description = "Estágio que atualiza o Load Balancer com o endereço IP dos CI's"
+
+    command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-2_motando-webapp.id
+    timeout_in_seconds = 900
+    
+    container_config {        
+        compartment_id = var.root_compartment
+
+        container_config_type = "CONTAINER_INSTANCE_CONFIG"
+
+        network_channel {        
+            subnet_id = oci_core_subnet.gru_subnet_svcs.id
+            network_channel_type = "SERVICE_VNIC_CHANNEL"
+        }
+
+        shape_name = "CI.Standard.E4.Flex"
+
+        shape_config {            
+            ocpus = 1
+            memory_in_gbs = 1
+        }
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-stage_2-wait_motando-webapp.id
         }
     }   
 }

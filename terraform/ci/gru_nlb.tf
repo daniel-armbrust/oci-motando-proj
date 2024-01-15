@@ -14,7 +14,7 @@ resource "oci_network_load_balancer_network_load_balancer" "gru_nlb_motando-task
     is_private = true        
 }
 
-resource "oci_network_load_balancer_listener" "nlb_motando-tasks_listener" {
+resource "oci_network_load_balancer_listener" "gru_nlb_motando-tasks_listener" {
     provider = oci.gru
 
     name = "xmlrpc"

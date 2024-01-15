@@ -20,10 +20,10 @@ resource "oci_load_balancer_load_balancer" "gru_lb_motando" {
     }
 }
 
-resource "oci_load_balancer_backend_set" "gru_lb_motando-webapp_bset-1" {
+resource "oci_load_balancer_backend_set" "gru_lb_motando-webapp_backend-set" {
     provider = oci.gru
     
-    name = "motando-webapp_bset-1"
+    name = "motando-webapp_backend-set"
     policy = "IP_HASH"
 
     load_balancer_id = oci_load_balancer_load_balancer.gru_lb_motando.id
@@ -37,7 +37,7 @@ resource "oci_load_balancer_backend_set" "gru_lb_motando-webapp_bset-1" {
     }
 }
 
-resource "oci_load_balancer_listener" "lb_motando-webapp_listener-http" {
+resource "oci_load_balancer_listener" "gru_lb_motando-webapp_listener-http" {
     provider = oci.gru
 
     name = "listener-http"
@@ -50,19 +50,4 @@ resource "oci_load_balancer_listener" "lb_motando-webapp_listener-http" {
     connection_configuration {    
         idle_timeout_in_seconds = 30
     }   
-}
-
-resource "oci_load_balancer_backend" "gru_lb-backend_ci-webapp-1" {
-    provider = oci.gru
-    
-    load_balancer_id = oci_load_balancer_load_balancer.gru_lb_motando.id
-    backendset_name = oci_load_balancer_backend_set.gru_lb_motando-webapp_bset-1.name
-
-    ip_address = "192.168.20.1"
-    port = 8000
-
-    backup = false
-    drain = false
-    offline = false
-    weight = 1
 }
