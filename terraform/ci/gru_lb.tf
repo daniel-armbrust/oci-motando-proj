@@ -45,7 +45,7 @@ resource "oci_load_balancer_listener" "gru_lb_motando-webapp_listener-http" {
     protocol = "HTTP"
     
     load_balancer_id = oci_load_balancer_load_balancer.gru_lb_motando.id
-    default_backend_set_name = oci_load_balancer_backend_set.gru_lb_motando-webapp_bset-1.name
+    default_backend_set_name = oci_load_balancer_backend_set.gru_lb_motando-webapp_backend-set.name
 
     connection_configuration {    
         idle_timeout_in_seconds = 30

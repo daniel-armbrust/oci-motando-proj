@@ -43,7 +43,6 @@ steps:
               --backend-set-name "$NLB_BACKENDSET_NAME" \
               --port 8100 \
               --ip-address "$CI_1_VNIC_IP" \
-              --name "ci-1_dramatiq-classifiedad" \
               --wait-for-state "SUCCEEDED"
     - type: Command
       name: "Add CI #2 to Network Load Balancer Backend"
@@ -53,5 +52,4 @@ steps:
               --backend-set-name "$NLB_BACKENDSET_NAME" \
               --port 8100 \
               --ip-address "$CI_2_VNIC_IP" \
-              --name "ci-2_dramatiq-classifiedad" \
               --wait-for-state "SUCCEEDED"
