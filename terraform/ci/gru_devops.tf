@@ -850,12 +850,12 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_2-wait_dram
     deploy_stage_type = "WAIT"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_dramatiq-classifiedad.id
 
-    display_name = "Wait - 420 seconds"
+    display_name = "Wait - 240 seconds"
     description = "Estágio para aguardar a criação dos Container Instances"    
 
     wait_criteria {     
         wait_type = "ABSOLUTE_WAIT"
-        wait_duration = "PT420S" # 450 seconds (ISO 8601 formatted duration string)
+        wait_duration = "PT240S"
     }
 
     deploy_stage_predecessor_collection {       

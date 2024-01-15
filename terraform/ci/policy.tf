@@ -43,6 +43,8 @@ resource "oci_identity_policy" "iam_policy" {
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to manage compute-containers in compartment id ${var.root_compartment}",
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use vnics in compartment id ${var.root_compartment}",
        "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use subnets in compartment id ${var.root_compartment}",
-       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use dhcp-options in compartment id ${var.root_compartment}"
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to use dhcp-options in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to manage network-load-balancers in compartment id ${var.root_compartment}",
+       "Allow dynamic-group ${oci_identity_dynamic_group.dyngrp_motando.name} to manage load-balancers in compartment id ${var.root_compartment}"
     ]
 }

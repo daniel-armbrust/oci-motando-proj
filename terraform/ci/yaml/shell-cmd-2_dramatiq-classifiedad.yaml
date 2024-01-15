@@ -38,7 +38,7 @@ steps:
     - type: Command
       name: "Add CI #1 to Network Load Balancer Backend"
       command: |
-          oci nlb backend create --debug \
+          oci nlb backend create \
               --network-load-balancer-id "$NLB_OCID" \
               --backend-set-name "$NLB_BACKENDSET_NAME" \
               --port 8100 \
@@ -47,7 +47,7 @@ steps:
     - type: Command
       name: "Add CI #2 to Network Load Balancer Backend"
       command: |
-          oci nlb backend create --debug \
+          oci nlb backend create \
               --network-load-balancer-id "$NLB_OCID" \
               --backend-set-name "$NLB_BACKENDSET_NAME" \
               --port 8100 \
