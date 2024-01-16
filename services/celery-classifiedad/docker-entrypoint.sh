@@ -4,6 +4,9 @@
 # https://docs.docker.com/config/containers/multi-service_container/
 #
 
+# Debug
+#set -x
+
 # Celery Workers
 celery -A tasks worker -l info &
 
