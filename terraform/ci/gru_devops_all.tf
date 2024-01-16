@@ -389,7 +389,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-all" {
         items {            
             name = "APPL_SUBNET_OCID"            
             default_value = oci_core_subnet.gru_subnet_appl.id
-            description = "Services Subnet"
+            description = "Application Subnet"
         }
 
         items {            
