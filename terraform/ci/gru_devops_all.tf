@@ -479,7 +479,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline-stage_1-shell_dramatiq-classifiedad.id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage_shell_dramatiq-classifiedad.id
         }
     } 
 }
