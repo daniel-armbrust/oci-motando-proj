@@ -18,6 +18,7 @@ steps:
               --containers "[{                    
                     \"environmentVariables\": {
                          \"APP_ENV\": \"$APP_ENV\",
+                         \"DEPLOYMENT_ENV\": \"$DEPLOYMENT_ENV\",
                          \"OCI_REGION_ID\": \"$REGION_ID\",
                          \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\",
                          \"OCI_BUCKET_MOTANDO_IMG\": \"$BUCKET_MOTANDO_IMG\",
@@ -48,6 +49,7 @@ steps:
               --containers "[{                    
                     \"environmentVariables\": {
                          \"APP_ENV\": \"$APP_ENV\",
+                         \"DEPLOYMENT_ENV\": \"$DEPLOYMENT_ENV\",
                          \"OCI_REGION_ID\": \"$REGION_ID\",
                          \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\",
                          \"OCI_BUCKET_MOTANDO_IMG\": \"$BUCKET_MOTANDO_IMG\",

@@ -110,7 +110,7 @@ resource "oci_devops_build_pipeline_stage" "gru_devops-build-pipeline-stage_crea
 
     build_pipeline_stage_predecessor_collection {        
         items {        
-            id = oci_devops_build_pipeline.gru_devops-build-pipeline_motando-webapp.id
+            id = oci_devops_build_pipeline.gru_devops-build-pipeline_dramatiq-classifiedad.id
         }
     }    
 }
