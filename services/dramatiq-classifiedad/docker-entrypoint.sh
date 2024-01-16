@@ -1,14 +1,24 @@
 #!/bin/bash
 
 if [ "$APP_ENV" == 'PRD' ]; then
+    OCI_AUTH_TYPE=''
+
+    if [ "$DEPLOYMENT_ENV" == 'CI' ]; then
+       # OCI - Container Instances   
+       OCI_AUTH_TYPE='resource_principal'
+    else
+       # OCI - OKE
+       OCI_AUTH_TYPE='instance_principal'
+    fi
+
     # MySQL - Web Application Password (read the secret value from OCI VAULT)
-    export MYSQL_PASSWD="$(oci --auth resource_principal secrets secret-bundle get \
+    export MYSQL_PASSWD="$(oci --auth "$OCI_AUTH_TYPE" secrets secret-bundle get \
                                --secret-id "$MYSQL_WEBAPPL_SECRET_OCID" \
                                --stage "LATEST" --query 'data."secret-bundle-content".content' \
                                --raw-output | base64 -d)"
 
     # OCI - Object Storage Namespace
-    export OCI_OBJSTR_NAMESPACE="$(oci --auth resource_principal os ns get \
+    export OCI_OBJSTR_NAMESPACE="$(oci --auth "$OCI_AUTH_TYPE" os ns get \
                                        --query 'data' --raw-output)"
 fi
 
