@@ -241,7 +241,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_dramatiq-class
         }
 
         items {            
-            name = "IMAGE_URL"            
+            name = "DRAMATIQ_IMAGE_URL"            
             default_value = "gru.ocir.io/${local.gru_objectstorage_ns}/${oci_artifacts_container_repository.gru_ocir_dramatiq-classifiedad.display_name}:1.0.0"
             description = "Container Image URL"
         }
@@ -259,7 +259,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_dramatiq-class
         }
 
         items {            
-            name = "SUBNET_OCID"            
+            name = "SVCS_SUBNET_OCID"            
             default_value = oci_core_subnet.gru_subnet_svcs.id
             description = "Services Subnet"
         }

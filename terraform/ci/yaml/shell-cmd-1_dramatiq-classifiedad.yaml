@@ -11,7 +11,7 @@ steps:
               --availability-domain "$AVAILABILITY_DOMAIN" \
               --shape "CI.Standard.E4.Flex" \
               --shape-config '{"memoryInGBs": 2.0, "ocpus": 1.0}' \
-              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SUBNET_OCID\"}]" \
+              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SVCS_SUBNET_OCID\"}]" \
               --container-restart-policy "ALWAYS" \
               --display-name "gru_ci-1_dramatiq-classifiedad" \
               --wait-for-state "SUCCEEDED" \
@@ -29,7 +29,7 @@ steps:
                          \"OCI_BUCKET_MOTANDO_IMG\": \"$BUCKET_MOTANDO_IMG\",
                          \"OCI_BUCKET_MOTANDO_IMGTMP\": \"$BUCKET_MOTANDO_IMGTMP\"
                     }, 
-                    \"imageUrl\": \"$IMAGE_URL\"}]"
+                    \"imageUrl\": \"$DRAMATIQ_IMAGE_URL\"}]"
     - type: Command    
       name: "CI #2 creation for Dramatiq Classifiedad application"
       command: |
@@ -38,7 +38,7 @@ steps:
               --availability-domain "$AVAILABILITY_DOMAIN" \
               --shape "CI.Standard.E4.Flex" \
               --shape-config '{"memoryInGBs": 2.0, "ocpus": 1.0}' \
-              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SUBNET_OCID\"}]" \
+              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SVCS_SUBNET_OCID\"}]" \
               --container-restart-policy "ALWAYS" \
               --display-name "gru_ci-2_dramatiq-classifiedad" \
               --wait-for-state "SUCCEEDED" \
@@ -56,4 +56,4 @@ steps:
                          \"OCI_BUCKET_MOTANDO_IMG\": \"$BUCKET_MOTANDO_IMG\",
                          \"OCI_BUCKET_MOTANDO_IMGTMP\": \"$BUCKET_MOTANDO_IMGTMP\"
                     }, 
-                    \"imageUrl\": \"$IMAGE_URL\"}]"
+                    \"imageUrl\": \"$DRAMATIQ_IMAGE_URL\"}]"

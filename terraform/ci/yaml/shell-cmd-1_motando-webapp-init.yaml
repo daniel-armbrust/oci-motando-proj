@@ -25,11 +25,11 @@ steps:
                         \"MYSQL_WEBAPPL_USER\": \"$MYSQL_WEBAPPL_USER\", 
                         \"MYSQL_WEBAPPL_SECRET_OCID\": \"$MYSQL_WEBAPPL_SECRET_OCID\",
                         \"GITHUB_REPO_URL\": \"$GITHUB_REPO_URL\",
-                        \"OCI_STATICFILES_BUCKET_NAME\": \"$MOTANDO_BUCKET_STATICFILES\",
+                        \"OCI_STATICFILES_BUCKET_NAME\": \"$BUCKET_STATICFILES\",
                         \"OCI_REGION_ID\": \"$REGION_ID\",
                         \"MOTANDO_ACCESS_KEY_SECRET_OCID\": \"$MOTANDO_ACCESS_KEY_SECRET_OCID\",
                         \"MOTANDO_SECRET_KEY_SECRET_OCID\": \"$MOTANDO_SECRET_KEY_SECRET_OCID\",
                         \"WEBAPP_OCI_LOG_ID\": \"$WEBAPP_OCI_LOG_ID\"
                     }, 
-                    \"imageUrl\": \"$IMAGE_URL\"}]"
+                    \"imageUrl\": \"$MOTANDOINIT_IMAGE_URL\"}]"
               

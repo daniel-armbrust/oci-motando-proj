@@ -11,7 +11,7 @@ steps:
               --availability-domain "$AVAILABILITY_DOMAIN" \
               --shape "CI.Standard.E4.Flex" \
               --shape-config '{"memoryInGBs": 4.0, "ocpus": 2.0}' \
-              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SUBNET_OCID\"}]" \
+              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$APPL_SUBNET_OCID\"}]" \
               --container-restart-policy "ALWAYS" \
               --display-name "gru_ci-1_motando-webapp" \
               --wait-for-state "SUCCEEDED" \
@@ -33,7 +33,7 @@ steps:
                          \"MYSQL_HOST\": \"$MYSQL_HOST\",
                          \"MYSQL_DBNAME\": \"$MYSQL_WEBAPPL_DBNAME\"
                     }, 
-                    \"imageUrl\": \"$IMAGE_URL\"}]"
+                    \"imageUrl\": \"$WEBAPP_IMAGE_URL\"}]"
     - type: Command    
       name: "CI #2 creation for Motando Web Application"
       command: |
@@ -42,7 +42,7 @@ steps:
               --availability-domain "$AVAILABILITY_DOMAIN" \
               --shape "CI.Standard.E4.Flex" \
               --shape-config '{"memoryInGBs": 4.0, "ocpus": 2.0}' \
-              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SUBNET_OCID\"}]" \
+              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$APPL_SUBNET_OCID\"}]" \
               --container-restart-policy "ALWAYS" \
               --display-name "gru_ci-2_motando-webapp" \
               --wait-for-state "SUCCEEDED" \
@@ -64,5 +64,5 @@ steps:
                          \"MYSQL_HOST\": \"$MYSQL_HOST\",
                          \"MYSQL_DBNAME\": \"$MYSQL_WEBAPPL_DBNAME\"
                     }, 
-                    \"imageUrl\": \"$IMAGE_URL\"}]"
+                    \"imageUrl\": \"$WEBAPP_IMAGE_URL\"}]"
     

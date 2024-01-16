@@ -229,13 +229,13 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
         }
 
         items {            
-            name = "SUBNET_OCID"            
+            name = "APPL_SUBNET_OCID"            
             default_value = oci_core_subnet.gru_subnet_appl.id
             description = "Web Application Subnet"
         }
 
         items {            
-            name = "IMAGE_URL"            
+            name = "MOTANDOINIT_IMAGE_URL"            
             default_value = "gru.ocir.io/${local.gru_objectstorage_ns}/${oci_artifacts_container_repository.gru_ocir_motando-webapp-init.display_name}:1.0.0"
             description = "Container Image URL"
         }
@@ -247,7 +247,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
         }
 
         items {
-            name = "MOTANDO_BUCKET_STATICFILES"
+            name = "BUCKET_STATICFILES"
             default_value = oci_objectstorage_bucket.gru_motando-staticfiles.name
             description = "Motando - Object Storage Bucket for static files"
         }
