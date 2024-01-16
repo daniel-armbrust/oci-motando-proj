@@ -3,18 +3,28 @@
 # Debug
 #set -x
 
+OCI_AUTH_TYPE=''
+
+if [ "$DEPLOYMENT_ENV" == 'CI' ]; then
+    # OCI - Container Instances   
+    OCI_AUTH_TYPE='resource_principal'
+else
+    # OCI - OKE
+    OCI_AUTH_TYPE='instance_principal'
+fi
+
 #------------------#
 # Motando Database #
 #------------------# 
 
 # MySQL - Admin Password (read the secret value from OCI VAULT)
-export MYSQL_ADMIN_PASSWD="$(oci --auth resource_principal secrets secret-bundle get \
+export MYSQL_ADMIN_PASSWD="$(oci --auth "$OCI_AUTH_TYPE" secrets secret-bundle get \
                                  --secret-id "$MYSQL_ADMIN_SECRET_OCID" \
                                  --stage "LATEST" --query 'data."secret-bundle-content".content' \
                                  --raw-output | base64 -d)"
 
 # MySQL - Web Application Password (read the secret value from OCI VAULT)
-export MYSQL_WEBAPPL_PASSWD="$(oci --auth resource_principal secrets secret-bundle get \
+export MYSQL_WEBAPPL_PASSWD="$(oci --auth "$OCI_AUTH_TYPE" secrets secret-bundle get \
                                    --secret-id "$MYSQL_WEBAPPL_SECRET_OCID" \
                                    --stage "LATEST" --query 'data."secret-bundle-content".content' \
                                    --raw-output | base64 -d)"
@@ -66,17 +76,17 @@ export OCI_REGION_ID="$OCI_REGION_ID"
 export WEBAPP_OCI_LOG_ID="$WEBAPP_OCI_LOG_ID"
 
 # OCI - Object Storage Namespace
-export OCI_OBJSTR_NAMESPACE="$(oci --auth resource_principal os ns get --query 'data' --raw-output)"
+export OCI_OBJSTR_NAMESPACE="$(oci --auth "$OCI_AUTH_TYPE" os ns get --query 'data' --raw-output)"
 
 
 # Motando - OCI Object Storage ACCESS KEY (read the secret value from OCI VAULT)
-export OCI_ACCESS_KEY="$(oci --auth resource_principal secrets secret-bundle get \
+export OCI_ACCESS_KEY="$(oci --auth "$OCI_AUTH_TYPE" secrets secret-bundle get \
                              --secret-id "$MOTANDO_ACCESS_KEY_SECRET_OCID" \
                              --stage "LATEST" --query 'data."secret-bundle-content".content' \
                              --raw-output | base64 -d)"
 
 # Motando - OCI Object Storage SECRET KEY (read the secret value from OCI VAULT)
-export OCI_SECRET_KEY="$(oci --auth resource_principal secrets secret-bundle get \
+export OCI_SECRET_KEY="$(oci --auth "$OCI_AUTH_TYPE" secrets secret-bundle get \
                              --secret-id "$MOTANDO_SECRET_KEY_SECRET_OCID" \
                              --stage "LATEST" --query 'data."secret-bundle-content".content' \
                              --raw-output | base64 -d)"
@@ -106,6 +116,11 @@ mysql -u $MYSQL_WEBAPPL_USER -p$MYSQL_WEBAPPL_PASSWD -h $MYSQL_HOST \
 export OCI_STATICFILES_BUCKET_NAME="$OCI_STATICFILES_BUCKET_NAME"
 
 ./motando/manage.py collectstatic --no-input --verbosity 2 
+
+if [ "$LOAD_SAMPLE_DATA" == 'true' ]; then
+   cd ./oci-motando-proj/webapp/data/
+   ./motando/manage.py shell < load2db.py
+fi
 
 # Done...
 exit 0

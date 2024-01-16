@@ -181,6 +181,12 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
         }
 
         items {            
+            name = "LOAD_SAMPLE_DATA"            
+            default_value = "true"
+            description = "Load sample data"
+        }
+
+        items {            
             name = "MYSQL_ADMIN_SECRET_OCID"            
             default_value = oci_vault_secret.gru_vault-secret_mysql-admin.id
             description = "MySQL Admin - Vault SECRET OCID"
