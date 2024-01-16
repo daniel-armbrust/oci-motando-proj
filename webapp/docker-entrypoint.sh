@@ -54,8 +54,17 @@ cd /opt/webapp/motando/
 
 if [ "$APP_ENV" == "PRD" ]; then
    get_values_from_oci
-   #exec gunicorn motando.wsgi:application --access-logfile - --error-logfile - --bind 0.0.0.0:8000 --workers 2 --threads 2
-   exec gunicorn motando.wsgi:application --access-logfile - --error-logfile - --bind 0.0.0.0:8000
+
+   # How Many Workers?
+   # https://docs.gunicorn.org/en/latest/design.html#how-many-workers
+   workers_count=$((2 * $(grep -c ^processor /proc/cpuinfo) + 1))
+
+   exec gunicorn motando.wsgi:application \
+       --access-logfile - \
+       --error-logfile - \
+       --bind 0.0.0.0:8000 \
+       --workers "$workers_count" \
+       --timeout 0        
 else      
    exec ./manage.py runserver 0.0.0.0:8000   
 fi
