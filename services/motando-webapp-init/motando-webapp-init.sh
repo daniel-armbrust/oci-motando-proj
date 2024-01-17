@@ -118,7 +118,7 @@ export OCI_STATICFILES_BUCKET_NAME="$OCI_STATICFILES_BUCKET_NAME"
 
 if [ "$LOAD_SAMPLE_DATA" == 'true' ]; then
    cd data/
-   ../motando/manage.py shell < load2db.py
+   ../motando/manage.py shell < ./load2db.py
 fi
 
 # Done...
