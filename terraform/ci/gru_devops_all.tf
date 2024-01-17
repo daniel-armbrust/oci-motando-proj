@@ -254,6 +254,12 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-all" {
             description = "CI = Container Instances, OKE = Kubernetes"
         }
 
+        items {            
+            name = "LOAD_SAMPLE_DATA"            
+            default_value = "true"
+            description = "Load sample data"
+        }
+
         items {
             name = "REGION_ID"
             default_value = "sa-saopaulo-1"
