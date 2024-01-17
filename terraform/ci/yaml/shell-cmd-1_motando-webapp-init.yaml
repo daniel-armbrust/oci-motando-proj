@@ -11,7 +11,7 @@ steps:
               --availability-domain "$AVAILABILITY_DOMAIN" \
               --shape "CI.Standard.E4.Flex" \
               --shape-config '{"memoryInGBs": 2.0, "ocpus": 1.0}' \
-              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SUBNET_OCID\"}]" \
+              --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SVCS_SUBNET_OCID\"}]" \
               --container-restart-policy "NEVER" \
               --display-name "gru_ci_motando-webapp-init" \
               --wait-for-state "SUCCEEDED" \

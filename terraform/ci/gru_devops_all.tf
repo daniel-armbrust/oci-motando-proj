@@ -425,7 +425,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-all" {
 }
 
 # STAGE #1: Shell command to initialize the CI (Dramatiq Classifiedad)
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage_shell_dramatiq-classifiedad" {
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage-1_shell_dramatiq-classifiedad" {
     provider = oci.gru     
     
     deploy_stage_type = "SHELL"
@@ -463,7 +463,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage
 }
 
 # STAGE #2: Wait
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage_wait_dramatiq-classifiedad" {
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage-2_wait_dramatiq-classifiedad" {
     provider = oci.gru     
     
     deploy_stage_type = "WAIT"
@@ -479,13 +479,51 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage_shell_dramatiq-classifiedad.id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage-1_shell_dramatiq-classifiedad.id
         }
     } 
 }
 
-# STAGE #3: Shell command to initialize the CI (Motando App Initialization)
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage_shell_motando-webapp-init" {
+# STAGE #3: Shell command to update the Network Load Balancer (Dramatiq Classifiedad)
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage-3_shell_dramatiq-classifiedad" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "SHELL"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-all.id
+
+    display_name = "Update the Network Load Balancer (Dramatiq Classifiedad)"
+    description = "Estágio que atualiza o Network Load Balancer com o endereço IP dos CI's"
+
+    command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-2_dramatiq-classifiedad.id
+    timeout_in_seconds = 900
+    
+    container_config {        
+        compartment_id = var.root_compartment
+
+        container_config_type = "CONTAINER_INSTANCE_CONFIG"
+
+        network_channel {        
+            subnet_id = oci_core_subnet.gru_subnet_svcs.id
+            network_channel_type = "SERVICE_VNIC_CHANNEL"
+        }
+
+        shape_name = "CI.Standard.E4.Flex"
+
+        shape_config {            
+            ocpus = 1
+            memory_in_gbs = 1
+        }
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage-2_wait_dramatiq-classifiedad.id
+        }
+    }   
+}
+
+# STAGE #4: Shell command to initialize the CI (Motando App Initialization)
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage-4_shell_motando-webapp-init" {
     provider = oci.gru     
     
     deploy_stage_type = "SHELL"
@@ -517,13 +555,13 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage_wait_dramatiq-classifiedad.id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage-3_shell_dramatiq-classifiedad.id
         }
     }   
 }
 
-# STAGE #4: Wait
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage_wait_motando-webapp-init" {
+# STAGE #5: Wait
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage-5_wait_motando-webapp-init" {
     provider = oci.gru     
     
     deploy_stage_type = "WAIT"
@@ -539,13 +577,51 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage_shell_motando-webapp-init.id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage-4_shell_motando-webapp-init.id
         }
     } 
 }
 
-# STAGE #1: Shell command to initialize the CI (Web Application)
-resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage_shell_motando-webapp" {
+# STAGE #6: Shell command to remove the CI (Motando App Initialization)
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage-6_shell_motando-webapp-init" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "SHELL"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-all.id
+
+    display_name = "Remove the CI used to init Motando Application"
+    description = "Estágio que remove o Container Instance usado para inicializar o Banco de Dados MySQL"
+
+    command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-2_motando-webapp-init.id
+    timeout_in_seconds = 900
+    
+    container_config {        
+        compartment_id = var.root_compartment
+
+        container_config_type = "CONTAINER_INSTANCE_CONFIG"
+
+        network_channel {        
+            subnet_id = oci_core_subnet.gru_subnet_svcs.id
+            network_channel_type = "SERVICE_VNIC_CHANNEL"
+        }
+
+        shape_name = "CI.Standard.E4.Flex"
+
+        shape_config {            
+            ocpus = 1
+            memory_in_gbs = 1
+        }
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage-5_wait_motando-webapp-init.id
+        }
+    }   
+}
+
+# STAGE #7: Shell command to initialize the CI (Web Application)
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage-7_shell_motando-webapp" {
     provider = oci.gru     
     
     deploy_stage_type = "SHELL"
@@ -577,7 +653,45 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage
 
     deploy_stage_predecessor_collection {       
         items {            
-            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage_wait_motando-webapp-init.id
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage-6_shell_motando-webapp-init.id
+        }
+    }   
+}
+
+# STAGE #7: Shell command to update the Load Balancer (Web Application)
+resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline_motando-all_stage-8_shell_motando-webapp" {
+    provider = oci.gru     
+    
+    deploy_stage_type = "SHELL"
+    deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-all.id
+
+    display_name = "Update the Load Balancer (Web Application)"
+    description = "Estágio que atualiza o Load Balancer com o endereço IP dos CI's"
+
+    command_spec_deploy_artifact_id = oci_devops_deploy_artifact.gru_devops-deploy_artifact_shell-cmd-2_motando-webapp.id
+    timeout_in_seconds = 900
+    
+    container_config {        
+        compartment_id = var.root_compartment
+
+        container_config_type = "CONTAINER_INSTANCE_CONFIG"
+
+        network_channel {        
+            subnet_id = oci_core_subnet.gru_subnet_svcs.id
+            network_channel_type = "SERVICE_VNIC_CHANNEL"
+        }
+
+        shape_name = "CI.Standard.E4.Flex"
+
+        shape_config {            
+            ocpus = 1
+            memory_in_gbs = 1
+        }
+    }
+
+    deploy_stage_predecessor_collection {       
+        items {            
+            id = oci_devops_deploy_stage.gru_devops-deploy-pipeline_motando-all_stage-7_shell_motando-webapp.id
         }
     }   
 }

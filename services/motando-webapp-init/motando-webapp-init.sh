@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Debug
-#set -x
+set -x
 
 OCI_AUTH_TYPE=''
 
@@ -66,8 +66,7 @@ python -m pip install --no-cache-dir -r ./requirements.txt
 # https://www.djangoproject.com/  #
 #---------------------------------#
 
-# Needs for Resource Principal authentication inside OCI
-export APP_ENV='PRD'
+export APP_ENV="$APP_ENV"
 
 # OCI - Primary region (ex: sa-saopaulo-1)
 export OCI_REGION_ID="$OCI_REGION_ID"
