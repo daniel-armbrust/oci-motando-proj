@@ -247,6 +247,12 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
         }
 
         items {
+            name = "CLASSIFIEDAD_XMLRPC_HOST"
+            default_value = tolist(oci_dns_rrset.gru_dns_motando-rrset_nlb_motando-tasks.items)[0].domain
+            description = "Network Load Balancer IP"
+        }
+
+        items {
             name = "GITHUB_REPO_URL"
             default_value = "https://github.com/daniel-armbrust/oci-motando-proj"
             description = "Motando - GitHub Repository URL"
@@ -256,6 +262,18 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
             name = "BUCKET_STATICFILES"
             default_value = oci_objectstorage_bucket.gru_motando-staticfiles.name
             description = "Motando - Object Storage Bucket for static files"
+        }
+
+        items {
+            name = "BUCKET_MOTANDO_IMG"
+            default_value = oci_objectstorage_bucket.gru_motando-img.name
+            description = "Motando - Object Storage Bucket for images files"
+        }
+
+        items {
+            name = "BUCKET_MOTANDO_IMGTMP"
+            default_value = oci_objectstorage_bucket.gru_motando-tmpimg.name
+            description = "Motando - Object Storage Bucket for temporary image files"
         }
 
         items {

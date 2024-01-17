@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Debug
-set -x
+#set -x
 
 OCI_AUTH_TYPE=''
 

@@ -26,7 +26,7 @@ OCI_REGION_ID = os.environ.get('OCI_REGION_ID')
 OCI_BUCKET_NAMESPACE = os.environ.get('OCI_OBJSTR_NAMESPACE')
 CLASSIFIEDAD_TMPIMG_BUCKET = os.environ.get('OCI_BUCKET_MOTANDO_IMGTMP')
 CLASSIFIEDAD_XMLRPC_HOST = os.environ.get('CLASSIFIEDAD_XMLRPC_HOST')
-CLASSIFIEDAD_XMLRPC_PORT = os.environ.get('CLASSIFIEDAD_XMLRPC_PORT')
+CLASSIFIEDAD_XMLRPC_PORT = os.environ.get('CLASSIFIEDAD_XMLRPC_PORT', 8100)
 
 def get_motorcycle_brands():
     """Retorna todas as marcas das Motos cadastradas.
