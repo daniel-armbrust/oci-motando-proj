@@ -20,6 +20,7 @@ from state_city.models import State, StateCity
 
 
 APP_ENV = os.environ.get('APP_ENV')
+DEPLOYMENT_ENV = os.environ.get('DEPLOYMENT_ENV')
 OCI_CONFIG_FILE = os.environ.get('OCI_CONFIG_FILE')
 OCI_REGION_ID = os.environ.get('OCI_REGION_ID')
 OCI_BUCKET_NAMESPACE = os.environ.get('OCI_OBJSTR_NAMESPACE')
@@ -50,7 +51,7 @@ def create_classifiedad(user=None, max_classifiedad=3):
     """Cria classificado do usuário.
     
     """
-    global OCI_CONFIG_FILE
+    global OCI_CONFIG_FILE, APP_ENV
 
     sales_phrase_list = [
         'UNICO DONO, DOCUMENTACAO IMPECAVEL , IPVA  PAGO. Ja licenciada 2023',
@@ -72,11 +73,14 @@ def create_classifiedad(user=None, max_classifiedad=3):
         'Moto tá bem conservada relação boa 2 pneus bem conservados 61 mil km original preço pra ir embora sou de Guarulhos pimentas.'
     ]
 
-    if APP_ENV == 'PRD':
-        signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
+    if APP_ENV == 'PRD':        
+        try:
+            signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()            
+        except:
+            signer = oci.auth.signers.get_resource_principals_signer()
+        
         os_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
-    else:
-        print(OCI_CONFIG_FILE)
+    else:        
         config = oci.config.from_file(file_location=OCI_CONFIG_FILE)
         os_client = oci.object_storage.ObjectStorageClient(config=config)
 
