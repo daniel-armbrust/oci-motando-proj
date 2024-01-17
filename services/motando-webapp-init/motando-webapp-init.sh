@@ -117,8 +117,8 @@ export OCI_STATICFILES_BUCKET_NAME="$OCI_STATICFILES_BUCKET_NAME"
 ./motando/manage.py collectstatic --no-input --verbosity 2 
 
 if [ "$LOAD_SAMPLE_DATA" == 'true' ]; then
-   cd ./oci-motando-proj/webapp/data/
-   ./motando/manage.py shell < load2db.py
+   cd data/
+   ../motando/manage.py shell < load2db.py
 fi
 
 # Done...

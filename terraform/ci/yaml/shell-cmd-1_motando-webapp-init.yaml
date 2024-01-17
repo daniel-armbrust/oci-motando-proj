@@ -17,6 +17,7 @@ steps:
               --wait-for-state "SUCCEEDED" \
               --containers "[{                    
                     \"environmentVariables\": {
+                        \"APP_ENV\": \"$APP_ENV\",
                         \"DEPLOYMENT_ENV\": \"$DEPLOYMENT_ENV\",
                         \"LOAD_SAMPLE_DATA\": \"$LOAD_SAMPLE_DATA\",
                         \"MYSQL_ADMIN_SECRET_OCID\": \"$MYSQL_ADMIN_SECRET_OCID\", 

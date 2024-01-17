@@ -173,7 +173,13 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
     display_name = "Deploy - Motando Application Initialization"
     description = "Deployment Pipeline para inicializar a aplicação Motando"
     
-    deploy_pipeline_parameters {        
+    deploy_pipeline_parameters {  
+        items {            
+            name = "APP_ENV"            
+            default_value = "PRD"
+            description = "Application environment (PRD = Prodution)"
+        }
+
         items {            
             name = "DEPLOYMENT_ENV"            
             default_value = "CI"
