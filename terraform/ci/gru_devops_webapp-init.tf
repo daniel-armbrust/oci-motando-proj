@@ -347,12 +347,12 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_2-wait_mota
     deploy_stage_type = "WAIT"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
 
-    display_name = "Wait - 900 seconds"
+    display_name = "Wait - 25 minutes"
     description = "Estágio para aguardar a inicialização da aplicação e Banco de Dados MySQL"    
 
     wait_criteria {     
         wait_type = "ABSOLUTE_WAIT"
-        wait_duration = "PT900S" # 900 seconds (ISO 8601 formatted duration string)
+        wait_duration = "PT1500S" # 1500 seconds (ISO 8601 formatted duration string)
     }
 
     deploy_stage_predecessor_collection {       

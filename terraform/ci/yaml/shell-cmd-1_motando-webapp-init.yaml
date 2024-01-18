@@ -10,7 +10,7 @@ steps:
               --compartment-id "$COMPARTMENT_OCID" \
               --availability-domain "$AVAILABILITY_DOMAIN" \
               --shape "CI.Standard.E4.Flex" \
-              --shape-config '{"memoryInGBs": 4.0, "ocpus": 2.0}' \
+              --shape-config '{"memoryInGBs": 6.0, "ocpus": 3.0}' \
               --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$APPL_SUBNET_OCID\"}]" \
               --container-restart-policy "NEVER" \
               --display-name "gru_ci_motando-webapp-init" \
