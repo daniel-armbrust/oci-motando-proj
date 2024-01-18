@@ -114,7 +114,7 @@ mysql -u $MYSQL_WEBAPPL_USER -p$MYSQL_WEBAPPL_PASSWD -h $MYSQL_HOST \
 
 export OCI_STATICFILES_BUCKET_NAME="$OCI_STATICFILES_BUCKET_NAME"
 
-./motando/manage.py collectstatic --no-input --verbosity 2 
+#./motando/manage.py collectstatic --no-input --verbosity 2 
 
 if [ "$LOAD_SAMPLE_DATA" == 'true' ]; then
    cd data/
