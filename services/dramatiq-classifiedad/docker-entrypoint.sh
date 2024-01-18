@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Debug
-#set -x
+set -x
 
 if [ "$APP_ENV" == 'PRD' ]; then
     OCI_AUTH_TYPE=''

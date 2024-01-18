@@ -10,7 +10,7 @@ steps:
               --compartment-id "$COMPARTMENT_OCID" \
               --availability-domain "$AVAILABILITY_DOMAIN" \
               --shape "CI.Standard.E4.Flex" \
-              --shape-config '{"memoryInGBs": 2.0, "ocpus": 1.0}' \
+              --shape-config '{"memoryInGBs": 4.0, "ocpus": 2.0}' \
               --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SVCS_SUBNET_OCID\"}]" \
               --container-restart-policy "ALWAYS" \
               --display-name "gru_ci-1_dramatiq-classifiedad" \
@@ -37,7 +37,7 @@ steps:
               --compartment-id "$COMPARTMENT_OCID" \
               --availability-domain "$AVAILABILITY_DOMAIN" \
               --shape "CI.Standard.E4.Flex" \
-              --shape-config '{"memoryInGBs": 2.0, "ocpus": 1.0}' \
+              --shape-config '{"memoryInGBs": 4.0, "ocpus": 2.0}' \
               --vnics "[{\"isPublicIpAssigned\": false, \"subnetId\": \"$SVCS_SUBNET_OCID\"}]" \
               --container-restart-policy "ALWAYS" \
               --display-name "gru_ci-2_dramatiq-classifiedad" \
