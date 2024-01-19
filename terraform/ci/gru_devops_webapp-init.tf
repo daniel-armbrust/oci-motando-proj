@@ -249,7 +249,7 @@ resource "oci_devops_deploy_pipeline" "gru_devops-deploy-pipeline_motando-webapp
         items {
             name = "CLASSIFIEDAD_XMLRPC_HOST"
             default_value = tolist(oci_dns_rrset.gru_dns_motando-rrset_nlb_motando-tasks.items)[0].domain
-            description = "Network Load Balancer IP"
+            description = "Network Load Balancer Hostname"
         }
 
         items {
@@ -340,6 +340,7 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_1-shell_mot
     }   
 }
 
+/*
 # STAGE #2: Wait
 resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_2-wait_motando-webapp-init" {
     provider = oci.gru     
@@ -347,12 +348,12 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_2-wait_mota
     deploy_stage_type = "WAIT"
     deploy_pipeline_id = oci_devops_deploy_pipeline.gru_devops-deploy-pipeline_motando-webapp-init.id
 
-    display_name = "Wait - 25 minutes"
+    display_name = "Wait - 50 minutes"
     description = "Estágio para aguardar a inicialização da aplicação e Banco de Dados MySQL"    
 
     wait_criteria {     
         wait_type = "ABSOLUTE_WAIT"
-        wait_duration = "PT1500S" # 1500 seconds (ISO 8601 formatted duration string)
+        wait_duration = "PT3000S"
     }
 
     deploy_stage_predecessor_collection {       
@@ -399,3 +400,4 @@ resource "oci_devops_deploy_stage" "gru_devops-deploy-pipeline-stage_3-shell_mot
         }
     }   
 }
+*/

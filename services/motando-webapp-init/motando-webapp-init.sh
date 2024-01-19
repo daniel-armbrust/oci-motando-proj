@@ -121,5 +121,18 @@ if [ "$LOAD_SAMPLE_DATA" == 'true' ]; then
    ../motando/manage.py shell < ./load2db.py
 fi
 
+# Delete the CI used to initialize Motando application
+if [ "$DEPLOYMENT_ENV" == 'CI' ]; then
+    CI_OCID="`oci --auth "$OCI_AUTH_TYPE" container-instances container-instance list \
+                  --compartment-id "$COMPARTMENT_OCID" \
+                  --display-name "gru_ci_motando-webapp-init" \
+                  --lifecycle-state "ACTIVE" \
+                  --query "data.items[0].id" --all --raw-output`"
+
+    oci --auth "$OCI_AUTH_TYPE" container-instances container-instance delete \
+        --container-instance-id "$CI_OCID" \
+        --force 
+fi
+
 # Done...
 exit 0
